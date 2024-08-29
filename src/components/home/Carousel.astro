@@ -1,0 +1,109 @@
+---
+interface Props {
+    useduration?: string;   // 是否启用自动轮播  apply / disabled
+    duration?: number;      // 图片轮播时间 例如: 1000。 （组件默认 5000s）
+}
+
+const {
+    duration=5000,
+    useduration="disabled",
+} = Astro.props as Props;
+---
+
+
+<div 
+    id="carousel-wrapper" 
+    class=" relative flex flex-col justify-center items-center bg-muted" 
+    data-duration={duration}
+    data-useduration={useduration}
+>
+    <div class="md:w-[85.125rem] ">
+        <div class="carousel-item block">
+            <slot name="prev"></slot>
+        </div>
+    
+        <div class="carousel-item hidden">
+            <slot name="next"></slot>
+        </div>
+    </div>
+
+    <!-- 轮播控制按钮 -->
+    <div class='md:w-[85.125rem] absolute bottom-[20px] md:left-auto left-[20px]' >
+    
+    <div class="w-[112px]  flex justify-between ">
+        <div id="prev" class="cursor-pointer group">
+            <svg class="group-hover:hidden" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="48" height="30" viewBox="0 0 48 30"><g transform="matrix(-1,0,0,1,96,0)"><g><rect x="48" y="0" width="48" height="30" rx="15" fill="#E6F5E7" fill-opacity="1"/></g><g><g><rect x="63" y="3" width="24" height="24" rx="0" fill-opacity="0" stroke-opacity="1" stroke="#060E07" fill="none" stroke-width="0"/></g><g><path d="M84,15.75L60,15.75L60,14.25L84,14.25L84,15.75Z" fill-rule="evenodd" fill="#6B8A88" fill-opacity="1"/></g><g><path d="M85.06066,15L78.53033,8.46967L77.46967,9.53033L82.93934,15L77.46967,20.4697L78.53033,21.5303L85.06066,15Z" fill-rule="evenodd" fill="#6B8A88" fill-opacity="1"/></g></g></g></svg>
+            <svg class="hidden group-hover:block" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="48" height="30" viewBox="0 0 48 30"><g transform="matrix(-1,0,0,1,96,0)"><g><rect x="48" y="0" width="48" height="30" rx="15" fill="#E6F5E7" fill-opacity="1"/></g><g><g><rect x="63" y="3" width="24" height="24" rx="0" fill-opacity="0" stroke-opacity="1" stroke="#060E07" fill="none" stroke-width="0"/></g><g><path d="M84,15.75L60,15.75L60,14.25L84,14.25L84,15.75Z" fill-rule="evenodd" fill="#2B3B3A" fill-opacity="1"/></g><g><path d="M85.06066,15L78.53033,8.46967L77.46967,9.53033L82.93934,15L77.46967,20.4697L78.53033,21.5303L85.06066,15Z" fill-rule="evenodd" fill="#2B3B3A" fill-opacity="1"/></g></g></g></svg>
+        </div>
+        <div id="next" class="cursor-pointer ml-[16px] group">
+            <svg class="rotate-180 group-hover:hidden" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="48" height="30" viewBox="0 0 48 30"><g transform="matrix(-1,0,0,1,96,0)"><g><rect x="48" y="0" width="48" height="30" rx="15" fill="#E6F5E7" fill-opacity="1"/></g><g><g><rect x="63" y="3" width="24" height="24" rx="0" fill-opacity="0" stroke-opacity="1" stroke="#060E07" fill="none" stroke-width="0"/></g><g><path d="M84,15.75L60,15.75L60,14.25L84,14.25L84,15.75Z" fill-rule="evenodd" fill="#6B8A88" fill-opacity="1"/></g><g><path d="M85.06066,15L78.53033,8.46967L77.46967,9.53033L82.93934,15L77.46967,20.4697L78.53033,21.5303L85.06066,15Z" fill-rule="evenodd" fill="#6B8A88" fill-opacity="1"/></g></g></g></svg>
+            <svg class="rotate-180 hidden group-hover:block" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="48" height="30" viewBox="0 0 48 30"><g transform="matrix(-1,0,0,1,96,0)"><g><rect x="48" y="0" width="48" height="30" rx="15" fill="#E6F5E7" fill-opacity="1"/></g><g><g><rect x="63" y="3" width="24" height="24" rx="0" fill-opacity="0" stroke-opacity="1" stroke="#060E07" fill="none" stroke-width="0"/></g><g><path d="M84,15.75L60,15.75L60,14.25L84,14.25L84,15.75Z" fill-rule="evenodd" fill="#2B3B3A" fill-opacity="1"/></g><g><path d="M85.06066,15L78.53033,8.46967L77.46967,9.53033L82.93934,15L77.46967,20.4697L78.53033,21.5303L85.06066,15Z" fill-rule="evenodd" fill="#2B3B3A" fill-opacity="1"/></g></g></g></svg>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    // 包裹元素
+    const carouselWrapper = document.getElementById('carousel-wrapper'); 
+    // 利用 html dataset 获取 props 变量参数
+    const duration = carouselWrapper?.dataset?.duration;
+    const useduration = carouselWrapper?.dataset?.useduration;
+    // 所有可执行的轮播项
+    const items = document.querySelectorAll('.carousel-item');
+    const nextBtn = document.getElementById('next');
+    const prevBtn = document.getElementById('prev');
+
+    // 轮播切换部分
+    let currentItem = 0;
+    function showItem(index) {
+        items.forEach((item, idx) => {
+            item.style.display = 'none';
+            if (idx === index) {
+                item.style.display = 'block';
+            };
+        });
+    };
+    // 下一项
+    nextBtn.addEventListener('click', () => {
+        currentItem = (currentItem + 1) % items.length;
+        showItem(currentItem);
+    });
+    // 上一项
+    prevBtn.addEventListener('click', () => {
+        currentItem = (currentItem - 1 + items.length) % items.length;
+        showItem(currentItem);
+    });
+
+    // 计时器部分
+    let timer = null;
+    // 切换轮播、利用按钮点击事件
+    function switchPicture() {
+        if(timer) {
+            prevBtn.click();
+            timer = null;
+            timerStart();
+        };
+    };
+    function timerStart() {
+        timer = setTimeout(switchPicture, duration);
+    };
+    // 依据 proos.useduration 判断是否默认开启 循环切换图片
+    if(useduration == 'apply') {
+        // 鼠标划入 停止轮播
+        carouselWrapper.addEventListener('mouseenter',() =>{
+            if(timer) {
+                clearTimeout(timer);
+                timer = null;
+            };
+        });
+        // 鼠标划出 继续轮播
+        carouselWrapper.addEventListener('mouseleave',() =>{
+            if(!timer) {
+                timerStart();
+            };
+        });
+        // 默认开启
+        timerStart();
+    };
+ </script>

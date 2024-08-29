@@ -1,0 +1,44 @@
+[
+
+	{
+		"label": "概览",
+		"translations": {
+			"en": "Overview"
+		},
+		"link": "docs/overview"
+	},
+	{
+		"label": "核心概念",
+		"translations": {
+			"en": "Concepts"
+		},
+		"link": "docs/concepts"
+	},
+	{
+		"label": "快速开始",
+		"translations": {
+			"en": "Quick Start"
+		},
+		"link": "docs/get-started"
+    },
+	{
+		"label": "使用教程",
+		"translations": {
+			"en": "Tutorials"
+		},
+		"autogenerate": {
+			"directory": "tutorials"
+		},
+		"collapsed": false
+	},
+	{
+		"label": "最佳实践",
+		"translations": {
+			"en": "Best Practice"
+		},
+		"autogenerate": {
+			"directory": "practices"
+		},
+		"collapsed": false
+	}
+]

@@ -1,0 +1,1 @@
+var o=async(...[n,a])=>{if(e=await r(async t=>t.endsWith("/")?t:`${t}/`,await r(async t=>t instanceof URL?(await import("url")).fileURLToPath(t):t,n)),e instanceof Map)for(const[t,i]of e)a.set(t.toString(),i.toString());else typeof e=="string"&&a.set(e,e);return a};const{default:r}=await import("./Apply.js");let e;export{r as Apply,e as _Path,o as default};

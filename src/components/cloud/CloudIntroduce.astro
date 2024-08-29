@@ -1,0 +1,350 @@
+---
+import { useTranslations } from "@i18n/util";
+const t = useTranslations(Astro);
+import BaseContainer from "@components/common/BaseContainer.astro";
+import { Button } from "@serverless-cd/goat-ui";
+import { getCloudPostpaidData, getCloudResourcePackData } from "@/constant";
+---
+
+<span class="cloud-introduce-div">
+  <cloud-introduce
+    class="cloud-introduce flex flex-col justify-center items-center pt-10 pb-14"
+  >
+    <BaseContainer class="top-introduce flex">
+      <div class="left-section flex-1 flex flex-col">
+        <div class="pt-[1.375rem] pb-4 warning text-xs">
+          {t("cloud.introduce.about")}
+        </div>
+        <div
+          class="title leading-[5rem] text-neutral mb-[1.1875rem] text-[4rem]"
+        >
+          {t("cloud.introduce.title")}
+        </div>
+        <span class="start-cloud text-info text-2xl"
+          >{t("cloud.introduce.invite")}</span
+        >
+      </div>
+    </BaseContainer>
+    <div role="tablist" class="tabs tabs-boxed bg-muted mt-4">
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab"
+        aria-label="后付费"
+        checked="checked"
+      />
+      <div role="tabpanel" class="tab-content">
+        <BaseContainer class="bottom-package flex justify-center mt-8">
+          {
+            getCloudPostpaidData(t).map((item, index) => {
+              return (
+                <div class="card-package cursor-pointer bg-muted border-[.0313rem] hover:border border-text-neutral rounded-2xl flex-1 text-center p-8 ">
+                  <div class="package h-16">
+                    <div class="title text-warning text-2xl font-sans font-medium">
+                      {item?.title}
+                    </div>
+                  </div>
+                  <div class="price-content pt-4 border-b border-t border-info h-32">
+                    <span class="price text-[2.75rem] leading-[3rem] font-bold text-link3">
+                      {item?.price}
+                    </span>
+                    <span class="price font-bold text-success">
+                      {item?.priceSupply}
+                    </span>
+                    <div class="description pt-1 font-sans text-xs text-warning line-clamp-2">
+                      {item?.priceDesc.map((el, i) => {
+                        return (
+                          <div class="description font-sans pt-1 text-xs text-warning line-clamp-2">
+                            {el}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div class="pl-2 h-20">
+                    {item?.feature?.map((el, i) => {
+                      return (
+                        <div class="feature text-left text-xs text-neutral/[0.8] mt-4 line-clamp-2">
+                          {el}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div class="subscribe text-center mt-6 mb-2">
+                    <Button
+                      class="rounded-full w-full cloud-button-primary"
+                      theme="accent"
+                      href={item?.link}
+                      target="_blank"
+                      text={item?.linkName}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </BaseContainer>
+      </div>
+
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab"
+        aria-label="资源包"
+      />
+      <div role="tabpanel" class="tab-content">
+        <BaseContainer class="bottom-package flex justify-center mt-8">
+          {
+            getCloudResourcePackData(t).map((item, index) => {
+              return (
+                <div class="card-package cursor-pointer bg-muted border-[.0313rem] hover:border border-text-neutral rounded-2xl flex-1 text-center p-8 ">
+                  <div class="package h-16">
+                    <div class="title text-warning text-2xl font-sans font-medium">
+                      {item?.title}
+                    </div>
+                  </div>
+                  <div class="price-content pt-4 border-b border-t border-info h-32">
+                    <span class="price text-[2.75rem] leading-[3rem] font-bold text-link3">
+                      {item?.price}
+                    </span>
+                    <span class="price font-bold text-success">
+                      {item?.priceSupply}
+                    </span>
+                    <p class="font-sans text-xs text-warning">
+                      {item?.priceDes}
+                    </p>
+                    <div class="description pt-1 font-sans text-xs text-warning line-clamp-2">
+                      {item?.priceDesc.map((el, i) => {
+                        return (
+                          <div class="description font-sans pt-1 text-xs text-warning line-clamp-2">
+                            {el}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div class="pl-2 h-20">
+                    {item?.feature?.map((el, i) => {
+                      return (
+                        <div class="feature text-left text-xs text-neutral/[0.8] mt-2 line-clamp-2">
+                          {el}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div class="subscribe text-center mt-6 mb-2">
+                    <Button
+                      class="rounded-full w-full cloud-button-primary"
+                      theme="accent"
+                      href={item?.link}
+                      target="_blank"
+                      text={item?.linkName}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          }
+        </BaseContainer>
+      </div>
+    </div>
+
+  </cloud-introduce>
+</span>
+
+<style is:global>
+  .cloud-introduce-div {
+    .cloud-introduce {
+      background-color: theme("colors.muted");
+      /* background-image: url("https://img.alicdn.com/imgextra/i3/O1CN01WdSy2u1glrf0I5cXJ_!!6000000004183-2-tps-2400-2400.png"); 设置背景图片 */
+      background-repeat: no-repeat;
+      background-position: right;
+      background-size: 70%;
+    }
+    .tabs {
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .tabs::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 616px;
+      width: 168px;
+      height: 40px;
+      background-color: theme("colors.error");
+      pointer-events: none;
+      border-radius: 20px;
+    }
+
+    .bottom-package .card-package:nth-child(1) .cloud-button-primary {
+      background-color: theme("colors.muted");
+    }
+    .bottom-package .card-package:nth-child(1) .cloud-button-primary:hover {
+      background: linear-gradient(
+        226deg,
+        theme("colors.accent") -2%,
+        theme("colors.muted") 43%
+      );
+    }
+    .card-package {
+      flex: 1;
+      margin: 0 0.5rem;
+      transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+    }
+    .card-package:hover {
+      transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+      transform: translateY(-4px);
+      box-shadow:
+        4px 4px 8px rgba(0, 0, 0, 0.1),
+        -4px -4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .bottom-package .card-package:nth-child(1) {
+      margin-left: 0;
+      background-color: theme("colors.base-100");
+    }
+    .bottom-package .card-package:nth-child(1) .package .title {
+      color: theme("colors.neutral");
+    }
+    .bottom-package .card-package:nth-child(1) .price-content {
+      border-color: theme("colors.warning");
+    }
+    .bottom-package .card-package:nth-child(1) .price-content .price {
+      color: theme("colors.neutral");
+    }
+    .bottom-package .card-package:nth-child(1) .price-content .description {
+      color: theme("colors.neutral");
+    }
+    .bottom-package .card-package:nth-child(1) .feature {
+      color: theme("colors.warning");
+    }
+    .bottom-package .card-package:last-child {
+      margin-right: 0;
+    }
+    .button-transform {
+      display: inline-block;
+      vertical-align: middle;
+      -webkit-transform: perspective(1px) translateZ(0);
+      transform: perspective(1px) translateZ(0);
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+      -webkit-transition-duration: 0.3s;
+      transition-duration: 0.3s;
+      -webkit-transition-property: box-shadow, transform;
+      transition-property: box-shadow, transform;
+      transition: background-color 0.5s ease;
+    }
+
+    .button-transform:hover {
+      color: theme("colors.neutral");
+      background-color: theme("colors.secondary");
+    }
+    .tab-content {
+      width: 1392px;
+      padding-left: 16px;
+    }
+
+    .tab:is(input[type="radio"]) {
+      width: 80px;
+      border-radius: 20px;
+      left: 616px;
+    }
+    /* 小于50rem  小于 800px */
+    @media (max-width: 50rem) {
+      .cloud-introduce {
+        padding: 1.5rem;
+      }
+      .top-introduce {
+        width: 100%;
+      }
+      .top-introduce .left-section .title {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+      }
+      .top-introduce .left-section .start-cloud {
+        font-size: 1.125rem; /* 18px */
+        line-height: 1.75rem; /* 28px */
+      }
+      .top-introduce .right-section {
+        display: none;
+      }
+      .bottom-package {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .bottom-package .card-package {
+        padding: 1.5rem;
+        flex: 0 0 100%;
+        margin: 0 0 1rem 0;
+      }
+      .bottom-package .card-package:last-child {
+        margin-bottom: 0;
+      }
+
+      /* 手机端卡片样式单独设置 */
+      .price-content .price {
+        font-size: 1rem; /* 30px */
+        line-height: 1rem; /* 36px */
+      }
+      .subscribe {
+        margin-bottom: 0;
+      }
+      .subscribe .button-transform {
+        height: 2rem;
+        min-height: 2rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .tab-content {
+        width: 100%;
+      }
+      .tab:is(input[type="radio"]) {
+        left: 0px;
+      }
+      .tabs::before {
+        position: absolute;
+        left:0;
+      }
+    }
+
+    /* 大于50rem 小于 72rem  800px < width < 1152 */
+    @media (min-width: 50rem) and (max-width: 86rem) {
+      .cloud-introduce {
+        padding: 2.5rem;
+      }
+      .top-introduce {
+        width: 100%;
+      }
+      .bottom-package {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      .bottom-package .card-package {
+        flex: 0 0 40%;
+        margin: 0 0.5rem 1rem 0.5rem;
+      }
+      .bottom-package .card-package:nth-child(1) {
+        margin-left: 0.5rem;
+      }
+      .bottom-package .card-package:last-child {
+        margin-right: 0.5rem;
+      }
+      .tab-content {
+        width: 100%;
+      }
+      .tab:is(input[type="radio"]) {
+        left: 100px;
+      }
+      .tabs::before {
+        position: absolute;
+        left:100px;
+      }
+    }
+  }
+</style>

@@ -1,0 +1,204 @@
+---
+import { useTranslations, isChinese } from "@i18n/util";
+import StarAndForkV2 from "./StarAndForkV2/index.jsx";
+import Carousel from "./Carousel.astro";
+import ProductDisplayCard from "@components/home/ProductDisplayCard.astro";
+import { SITE } from "@utils/config";
+import sendFetch from "@/utils/sendFetch";
+import type { StarAndForkT } from 'src/types';
+
+const t = useTranslations(Astro);
+const ifzh = isChinese(Astro);
+
+// 服务端构建预先获取star数和fork数作为兜底
+const { stargazers_count=0, forks_count=0 }:StarAndForkT = await sendFetch("https://api.github.com/repos/alibaba/spring-cloud-alibaba");
+---
+
+<div class="home-introduce-wrapper">
+    <Carousel
+        useduration="apply"
+        duration={5000}
+    >
+        <a 
+            slot="prev" 
+            href="/docs/2023/user-guide/ai/overview/" 
+            target="_blank"
+            class="block md:w-full min-h-[366px] bg-muted flex"
+        >
+          <img 
+            class="w-full md:h-[366px] flex hidden md:inline-block"
+            src={
+            ifzh
+            ?'https://img.alicdn.com/imgextra/i4/O1CN01aBL7MT1fmUcZG1WtR_!!6000000004049-2-tps-1440-366.png'
+            :'https://img.alicdn.com/imgextra/i3/O1CN01wLrk0I1KxO71GScBG_!!6000000001230-2-tps-1440-366.png'}
+          />
+          <img 
+            class="h-[366px] md:hidden"
+            src={
+              ifzh
+              ?'https://img.alicdn.com/imgextra/i2/O1CN01gOj3s728PFNTjwTfl_!!6000000007924-2-tps-780-732.png'
+              :'https://img.alicdn.com/imgextra/i2/O1CN01XbmHfa1YaOqwo9Lnf_!!6000000003075-2-tps-780-732.png'
+              }
+          />
+        </a>
+
+        <home-introduce
+            slot="next"
+            class="introduce flex flex-col justify-center items-center  min-h-[366px]"
+        >
+            <div class="top-section flex flex-col relative mb-[111px]">
+                <div class="introduce_about pt-6 pb-4 text-warning text-xs mt-[2.375rem]">
+                    {t("home.introduce.about")}
+                </div>
+                <div class=`title leading-[5rem] text-neutral mb-8 ${ifzh ? 'text-[3.75rem]' : 'text-[4rem]'}`>
+                    {t("home.introduce.title")}
+                </div>
+                <StarAndForkV2 client:load SITE={SITE} stargazers_count={stargazers_count} forks_count={forks_count} />
+            </div>
+        </home-introduce>
+    </Carousel>
+    <ProductDisplayCard />
+</div>
+
+<style is:global>
+  .home-introduce-wrapper {
+    a {
+      text-decoration: inherit;
+      color: theme("colors.accent");
+    }
+    
+      /* min-height: calc(100vh - 4rem); */
+    
+    .top-section {
+      width: 85.125rem;
+      overflow: hidden;
+    }
+    .top-section .notes .pc-version-intro {
+      display: inline;
+    }
+    .top-section .notes .mobile-version-intro {
+      display: none;
+    }
+    .top-section .shortcut button {
+      height: 3rem;
+      min-height: 3rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    .bottom-section {
+      width: 85.125rem;
+    }
+    .bottom-section .desc {
+      width: 9.75rem;
+      height: 22.5rem;
+      background-color: theme("colors.accent");
+      transition: width 0.8s;
+    }
+
+    .bottom-section .desc .text {
+      opacity: 0;
+      transition: opacity 0.8s;
+    }
+    .bottom-section .log {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      transition: width 0.8s;
+    }
+    .bottom-section .desc:hover {
+      width: 31.25rem;
+    }
+    .bottom-section .desc:hover .log {
+      flex: 1;
+    }
+    .bottom-section .desc:hover .text {
+      opacity: 1;
+    }
+    .bottom-section .desc:hover .arrow {
+      display: none;
+    }
+    .divider-horizontal {
+      width: 1px;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+    a {
+      text-decoration: none;
+    }
+    .fork {
+      background: rgba(244, 244, 246, 0.2);
+      backdrop-filter: blur(36px);
+    }
+    .fork:hover {
+      background: rgba(244, 244, 246, 0.2) !important;
+      backdrop-filter: blur(36px);
+    }
+
+    /* 小于50rem  小于 800px */
+    @media (max-width: 50rem) {
+      .introduce {
+        min-height: 0;
+        padding: 1.5rem;
+      }
+      .top-section {
+        width: 100%;
+      }
+      .top-section .title {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+      }
+      .top-section .notes .pc-version-intro {
+        display: none;
+      }
+      .top-section .notes .mobile-version-intro {
+        display: inline;
+      }
+      .top-section .shortcut button {
+        height: 2rem;
+        min-height: 2rem;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .introduce_about {
+        margin-top: 0rem;
+      }
+      .top-section .notes {
+        margin-top: 1.25rem;
+      }
+      .bottom-section {
+        width: 100%;
+        display: none !important;
+      }
+      .mobile-bottom-section {
+        display: block !important;
+      }
+      .mobile-bottom-section .btn:hover {
+        background-color: theme(colors.neutral) !important;
+      }
+    }
+
+    /* 大于50rem 小于 72rem  800px < width < 1440 */
+    @media (min-width: 50rem) and (max-width: 86rem) {
+      .introduce {
+        padding: 2.5rem;
+      }
+      .top-section,
+      .bottom-section {
+        width: 100%;
+      }
+      .top-section .notes .pc-version-intro {
+        display: none;
+      }
+      .top-section .notes .mobile-version-intro {
+        display: inline;
+      }
+      .bottom-section .desc div {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+      }
+    }
+  }
+</style>

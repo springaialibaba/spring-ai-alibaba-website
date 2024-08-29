@@ -1,0 +1,50 @@
+[
+
+	{
+		"label": "开发者",
+		"translations": {
+			"en": "Developer"
+		},
+		"collapsed": false,
+		"items": [
+            {
+				"label": "开发人员",
+				"translations": {
+					"en": "Development Team"
+				},
+				"link": "docs/developer/developers_dev/"
+			},
+			{
+				"label": "贡献者指南",
+				"translations": {
+					"en": "Contribute Guide"
+				},
+                "items": [
+                    {
+						"label": "文档编写指南",
+						"translations": {
+							"en": "Writing Document"
+						},
+						"link": "docs/developer/contributor-guide/file-write-guide_dev/"
+					},
+                    {
+						"label": "如何贡献",
+						"translations": {
+							"en": "How Contribute"
+						},
+						"link": "docs/developer/contributor-guide/new-contributor-guide_dev/"
+					},
+                    {
+						"label": "如何汇报安全漏洞",
+						"translations": {
+							"en": "How Report"
+						},
+						"link": "docs/developer/contributor-guide/reporting-security-issues_dev/"
+					}
+                ]
+			}
+
+		]
+	}
+
+]
