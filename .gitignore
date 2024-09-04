@@ -5,6 +5,7 @@ node_modules
 build
 dist
 .astro
+.idea
 
 # misc
 .DS_Store
