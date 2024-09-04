@@ -1,0 +1,1 @@
+var a=(...[f,r])=>{if(typeof f<"u")if(Array.isArray(f)||f instanceof Set)for(const e of f)o.add(e);else o.add(f);for(const e of o)for(const t of r)switch(!0){case typeof e=="string":{(t[0].match(e)||t[1].match(e))&&r.delete(t[0]);break}case typeof e=="function":(e(t[0])||e(t[1]))&&r.delete(t[0])}return r};const o=new Set;export{o as Filters,a as default};
