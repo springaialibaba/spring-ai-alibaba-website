@@ -6,74 +6,67 @@ description: "Spring Cloud Alibaba核心概念"
 
 # 核心概念
 
-本节介绍 Spring Cloud Alibaba AI 框架使用的核心概念。我们建议仔细阅读，以了解框架实现背后的思想。
+本节介绍 Spring AI 框架使用的核心概念。我们建议仔细阅读，以了解框架实现背后的思想。
 
-## 交互模型（ChatModel）
+## 模型（Model）
 
-AI 模型是用于处理和生成信息的算法，通常模仿人类的认知功能。通过从大型数据集中学习模式和见解，这些模型可以做出预测、文本、图像或其他输出，从而增强各行各业的各种应用。
+AI 模型是旨在处理和生成信息的算法，通常模仿人类的认知功能。通过从大型数据集中学习模式和见解，这些模型可以做出预测、文本、图像或其他输出，从而增强各个行业的各种应用。
 
-人工智能模型有很多种，每种模型都适用于特定的用例。虽然 ChatGPT 及其生成式人工智能功能通过文本输入和输出吸引了用户，但许多模型和公司都提供多样化的输入和输出。在 ChatGPT 之前，许多人对文本到图像的生成模型着迷，例如 Midjourney 和 Stable Diffusion。
+AI 模型有很多种，每种都适用于特定的用例。虽然 ChatGPT 及其生成 AI 功能通过文本输入和输出吸引了用户，但许多模型和公司都提供不同的输入和输出。在 ChatGPT 之前，许多人都对文本到图像的生成模型着迷，例如 Midjourney 和 Stable Diffusion。
 
-下表根据输入（Input）和输出（Output）类型对几种模型进行了分类：
+![spring-ai-concepts-model-types](/img/user/ai/concepts/spring-ai-concepts-model-types.png)
 
-![spring-ai-concepts-model-types](/img/user/ai/overview/spring-ai-concepts-model-types.png)
+Sprig AI 目前支持以语言、图像和音频形式处理输入和输出的模型。上表中的最后一行接受文本作为输入并输出数字，通常称为嵌入文本（Embedding Text），用来表示 AI 模型中使用的内部数据结构。Sprig AI 提供了对 Embedding 的支持以支持开发更高级的应用场景。
 
-Sprig Cloud Alibaba AI 目前支持以语言、图像和音频形式处理输入和输出的模型。上表中的最后一行接受文本作为输入并输出数字，通常称为嵌入文本，表示 AI 模型中使用的内部数据结构。Sprig Cloud Alibaba AI 支持嵌入以支持更高级的用例。
-
-GPT 等模型的独特之处在于其预训练特性，正如 GPT 中的“P”所示——Chat Generative Pre-trained Transformer。这种预训练功能将 AI 转变为通用的开发工具，不需要广泛的机器学习或模型训练背景。
+GPT 等模型的独特之处在于其预训练特性，正如 GPT 中的“P”所示——Chat Generative Pre-trained Transformer。这种预训练功能将 AI 转变为通用的开发工具，开发者使用这种工具不再需要广泛的机器学习或模型训练背景。
 
 ## 提示（Prompt）
 
-提示是基于语言的输入的基础，可指导 AI 模型产生特定输出。对于熟悉 ChatGPT 的人来说，提示可能看起来只是输入到对话框中并发送到 API 的文本。然而，它包含的内容远不止这些。在许多 AI 模型中，提示的文本不仅仅是一个简单的字符串。
+Prompt作为语言基础输入的基础，指导AI模型生成特定的输出。对于熟悉ChatGPT的人来说，Prompt似乎只是输入到对话框中的文本，然后发送到API。然而，它的内涵远不止于此。在许多AI模型中，Prompt的文本不仅仅是一个简单的字符串。
 
-ChatGPT 的 API 在一个提示中有多个文本输入，每个文本输入都被分配一个角色。例如，系统角色会告诉模型如何表现并设置交互的上下文。还有用户角色，通常是来自用户的输入。
+ChatGPT的API包含多个文本输入，每个文本输入都有其角色。例如，系统角色用于告知模型如何行为并设定交互的背景。还有用户角色，通常是来自用户的输入。
 
-制作有效的提示既是一门艺术，也是一门科学。ChatGPT 是为人类对话而设计的。这与使用 SQL 之类的东西“‘提出问题’”有很大不同。人们必须像与另一个人交谈一样与人工智能模型进行交流。
+撰写有效的Prompt既是一门艺术，也是一门科学。ChatGPT旨在模拟人类对话，这与使用SQL“提问”有很大的区别。与AI模型的交流就像与另外一个人对话一样。
 
-这种互动方式如此重要，以至于“提示工程”一词已经发展成为一门学科。有越来越多的技术可以提高提示的有效性。花时间制作提示可以大大改善最终的输出。
+这种互动风格的重要性使得“Prompt工程”这一学科应运而生。现在有越来越多的技术被提出，以提高Prompt的有效性。投入时间去精心设计Prompt可以显著改善生成的输出。
 
-分享提示词已成为一种公共实践，学术界也正在积极研究这一主题。作为创建有效提示（例如，与 SQL 形成对比）是多么违反直觉的一个例子，[最近的一篇研究论文](https://arxiv.org/abs/2205.11916)发现，您可以使用的最有效的提示之一以“深呼吸，一步一步地进行操作”这句话开头。这应该能让您明白为什么语言如此重要。我们尚未完全了解如何最有效地利用该技术的先前版本，例如 ChatGPT 3.5，更不用说正在开发的新版本了。
+分享Prompt已成为一种共同的实践，且正在进行积极的学术研究。例如，最近的一篇研究论文发现，最有效的Prompt之一可以以“深呼吸一下，分步进行此任务”开头。这表明语言的重要性之高。我们尚未完全了解如何充分利用这一技术的前几代版本，例如ChatGPT 3.5，更不用说正在开发的新版本了。
 
 ### 提示词模板（Prompt Template）
 
-创建有效的提示包括建立请求的上下文并用特定于用户输入的值替换请求的各部分。
+创建有效的Prompt涉及建立请求的上下文，并用用户输入的特定值替换请求的部分内容。这个过程使用传统的基于文本的模板引擎来进行Prompt的创建和管理。Spring AI采用开源库StringTemplate来实现这一目的。
 
-此过程使用传统的基于文本的模板引擎来快速创建和管理，Spring Cloud Alibaba AI 依赖 OSS 库 [StringTemplate](https://www.stringtemplate.org/) 进行处理。
-
-例如，考虑简单的提示模板：
+例如，考虑以下简单的Prompt模板：
 
 ```text
 Tell me a {adjective} joke about {content}.
 ```
 
-在 Spring Cloud Alibaba AI 中，提示模板可以比作 Spring MVC 架构中的“视图”。`java.util.Map`提供一个模型对象（通常是使用 Map），用于填充模板中的占位符。最后，框架会使用 Map 中的字符串渲染模版并替换占位符，最终作为输入传入模型。
+在Spring AI中，Prompt模板可以类比于Spring MVC架构中的“视图”。一个模型对象，通常是java.util.Map，提供给Template，以填充模板中的占位符。渲染后的字符串成为传递给AI模型的Prompt的内容。
 
-提示词 Prompt 的具体数据格式存在相当大的差异，最初只是简单的字符串，后来演变为包含多条消息，其中每条消息中的每个字符串代表模型的不同角色。
+传递给模型的Prompt在具体数据格式上有相当大的变化。从最初的简单字符串开始，Prompt逐渐演变为包含多条消息的格式，其中每条消息中的每个字符串代表模型的不同角色。
 
 ## 嵌入（Embedding）
 
-嵌入是文本、图像或视频的数字表示，用于捕捉输入之间的关系。
+嵌入（Embedding）是文本、图像或视频的数值表示，能够捕捉输入之间的关系，Embedding通过将文本、图像和视频转换为称为向量（Vector）的浮点数数组来工作。这些向量旨在捕捉文本、图像和视频的含义，Embedding数组的长度称为向量的维度。
 
-嵌入的工作原理是将文本、图像和视频转换为浮点数数组（称为向量 Vector）。这些向量旨在捕捉文本、图像和视频的含义，嵌入数组的长度称为向量的维数。
+通过计算两个文本片段的向量表示之间的数值距离，应用程序可以确定用于生成嵌入向量的对象之间的相似性。
 
-通过计算两段文本的向量表示之间的数值距离，应用程序可以确定原始数据对象之间的相似性。
+![spring-ai-embeddings](/img/user/ai/concepts/spring-ai-embeddings.png)
 
-![spring-ai-embeddings](/img/user/ai/overview/spring-ai-embeddings.png)
+作为一名探索人工智能的Java开发者，理解这些向量表示背后的复杂数学理论或具体实现并不是必需的。对它们在人工智能系统中的作用和功能有基本的了解就足够了，尤其是在将人工智能功能集成到您的应用程序中时。
 
-作为探索 AI 的 Java 开发人员，没有必要理解这些矢量表示背后的复杂数学理论或具体实现。对它们在 AI 系统中的作用和功能有基本的了解就足够了，特别是当您将 AI 功能集成到您的应用程序中时。
+Embedding在实际应用中，特别是在检索增强生成（RAG）模式中，具有重要意义。它们使数据能够在语义空间中表示为点，这类似于欧几里得几何的二维空间，但在更高的维度中。这意味着，就像欧几里得几何中平面上的点可以根据其坐标的远近关系而接近或远离一样，在语义空间中，点的接近程度反映了意义的相似性。关于相似主题的句子在这个多维空间中的位置较近，就像图表上彼此靠近的点。这种接近性有助于文本分类、语义搜索，甚至产品推荐等任务，因为它允许人工智能根据这些点在扩展的语义空间中的“位置”来辨别和分组相关概念。
 
-嵌入在实际应用中尤为重要，例如检索增强生成 (RAG) 模式。它们能够将数据表示为语义空间中的点，这类似于欧几里得几何的二维空间，但在更高的维度上。这意味着，就像欧几里得几何中平面上的点可以根据其坐标而接近或远离一样，在语义空间中，点的接近度反映了含义的相似性。关于相似主题的句子在这个多维空间中的位置更近，就像图上彼此靠近的点一样。这种接近度有助于文本分类、语义搜索甚至产品推荐等任务，因为它允许 AI 根据相关概念在这个扩展的语义景观中的“位置”来辨别和分组相关概念。
-
-你可以把这个语义空间想象成一个向量。
+您可以将这个语义空间视为一个向量。
 
 ## Token
-----------------------------------------------------------------------
 
 token是 AI 模型工作原理的基石。输入时，模型将单词转换为token。输出时，它们将token转换回单词。
 
 在英语中，一个token大约对应一个单词的 75%。作为参考，莎士比亚的全集总共约 90 万个单词，翻译过来大约有 120 万个token。
 
-![spring-ai-concepts-tokens](/img/user/ai/overview/spring-ai-concepts-tokens.png)
+![spring-ai-concepts-tokens](/img/user/ai/concepts/spring-ai-concepts-tokens.png)
 
 也许更重要的是 “token = 金钱”。在托管 AI 模型的背景下，您的费用由使用的token数量决定。输入和输出都会影响总token数量。
 
@@ -81,7 +74,7 @@ token是 AI 模型工作原理的基石。输入时，模型将单词转换为to
 
 例如，ChatGPT3 的token限制为 4K，而 GPT4 则提供不同的选项，例如 8K、16K 和 32K。Anthropic 的 Claude AI 模型的token限制为 100K，而 Meta 的最新研究则产生了 1M token限制模型。
 
-要使用 GPT4 总结莎士比亚全集，您需要制定软件工程策略来切分数据并在模型的上下文窗口限制内呈现数据。Spring Cloud Alibaba AI 项目可以帮助您完成此任务。
+要使用 GPT4 总结莎士比亚全集，您需要制定软件工程策略来切分数据并在模型的上下文窗口限制内呈现数据。Spring AI 项目可以帮助您完成此任务。
 
 ## 结构化输出（Structured Output）
 
@@ -89,9 +82,9 @@ token是 AI 模型工作原理的基石。输入时，模型将单词转换为to
 
 这种复杂性导致了一个专门领域的出现，涉及创建 Prompt 以产生预期的输出，然后将生成的简单字符串转换为可用于应用程序集成的数据结构。
 
-![结构化输出转换器架构](/img/user/ai/overview/structured-output-architecture.png)
+![结构化输出转换器架构](/img/user/ai/concepts/structured-output-architecture.png)
 
-[结构化输出转换](https://docs.spring.io/spring-ai/reference/api/structured-output-converter.html#_structuredoutputconverter)采用精心设计的提示，通常需要与模型进行多次交互才能实现所需的格式。
+[结构化输出转换](./tutorials/structured-output/)采用精心设计的提示，通常需要与模型进行多次交互才能实现所需的格式。
 
 ## 将您的数据和 API 引入 AI 模型
 
@@ -102,11 +95,11 @@ token是 AI 模型工作原理的基石。输入时，模型将单词转换为to
 有三种技术可以定制 AI 模型以整合您的数据：
 
 * `Fine Tuning` 微调：这种传统的机器学习技术涉及定制模型并更改其内部权重。然而，即使对于机器学习专家来说，这是一个具有挑战性的过程，而且由于 GPT 等模型的大小，它极其耗费资源。此外，有些模型可能不提供此选项。
-* `Prompt Stuffing` 提示词填充：一种更实用的替代方案是将您的数据嵌入到提供给模型的提示中。考虑到模型的令牌限制，我们需要具备过滤相关数据的能力，并将过滤出的数据填充到在模型交互的上下文窗口中，这种方法俗称“提示词填充”。Spring Cloud Alibaba AI 库可帮助您基于“提示词填充” 技术，也称为[检索增强生成 (RAG)](https://docs.spring.io/spring-ai/reference/concepts.html#concept-rag)实现解决方案。
+* `Prompt Stuffing` 提示词填充：一种更实用的替代方案是将您的数据嵌入到提供给模型的提示中。考虑到模型的令牌限制，我们需要具备过滤相关数据的能力，并将过滤出的数据填充到在模型交互的上下文窗口中，这种方法俗称“提示词填充”。Spring AI 库可帮助您基于“提示词填充” 技术，也称为[检索增强生成 (RAG)](./#检索增强生成rag)实现解决方案。
 
-![prompt-stuffing](/img/user/ai/overview/spring-ai-prompt-stuffing.png)
+![prompt-stuffing](/img/user/ai/concepts/spring-ai-prompt-stuffing.png)
 
-* [Function Calling](https://docs.spring.io/spring-ai/reference/concepts.html#concept-fc)：此技术允许注册自定义的用户函数，将大型语言模型连接到外部系统的 API。Spring Cloud Alibaba AI 大大简化了支持[函数调用](https://docs.spring.io/spring-ai/reference/api/functions.html)所需编写的代码。
+* [Function Calling](./tutorials/function-calling/)：此技术允许注册自定义的用户函数，将大型语言模型连接到外部系统的 API。Spring AI 大大简化了支持[函数调用](./tutorials/function-calling/)所需编写的代码。
 
 
 ### 检索增强生成（RAG）
@@ -121,12 +114,12 @@ token是 AI 模型工作原理的基石。输入时，模型将单词转换为to
 2. 将文档的各部分进一步拆分成大小仅为 AI 模型令牌 token 限制的一小部分的部分。
 
 
-RAG 的下一个阶段是处理用户输入。当用户的问题需要由 AI 模型回答时，问题和所有“类似”的文档片段都会被放入发送给 AI 模型的提示中。这就是使用矢量数据库的原因，它非常擅长查找类似内容。
+RAG 的下一个阶段是处理用户输入。当用户的问题需要由 AI 模型回答时，问题和所有“类似”的文档片段都会被放入发送给 AI 模型的提示中。这就是使用矢量数据库的原因，它非常擅长查找具有一定相似度的“类似”内容。
 
-![Spring Cloud Alibaba AI RAG](/img/user/ai/overview/spring-ai-rag.png)
+![Spring AI RAG](/img/user/ai/concepts/spring-ai-rag.png)
 
-* [ETL 管道](https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html)提供了有关协调从数据源提取数据并将其存储在结构化向量存储中的流程的更多信息，确保在将数据传递给 AI 模型时数据具有最佳的检索格式。
-* ChatClient [\- RAG](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_retrieval_augmented_generation)解释了如何使用`QuestionAnswerAdvisor`顾问在您的应用程序中启用 RAG 功能。
+* <a target="_blank" href="https://docs.spring.io/spring-ai/reference/api/etl-pipeline.html">ETL 管道</a> 提供了有关协调从数据源提取数据并将其存储在结构化向量存储中的流程的更多信息，确保在将数据传递给 AI 模型时数据具有最佳的检索格式。
+* [ChatClient - RAG](./tutorials/chat-client/#检索增强生成rag) 解释了如何使用`QuestionAnswerAdvisor` Advisor 在您的应用程序中启用 RAG 功能。
 
 
 ### 函数调用（Function Calling）
@@ -135,13 +128,13 @@ RAG 的下一个阶段是处理用户输入。当用户的问题需要由 AI 模
 
 [Function Calling](https://docs.spring.io/spring-ai/reference/api/functions.html)机制解决了这些缺点，它允许您注册自己的函数，以将大型语言模型连接到外部系统的 API。这些系统可以为 LLM 提供实时数据并代表它们执行数据处理操作。
 
-Spring Cloud Alibaba AI 大大简化了您需要编写的代码以支持函数调用。它为您处理函数调用对话。您可以将函数作为提供，`@Bean`然后在提示选项中提供该函数的 bean 名称以激活该函数。此外，您可以在单个提示中定义和引用多个函数。
+Spring AI 大大简化了您需要编写的代码以支持函数调用。它为您处理函数调用对话。您可以将函数作为提供，`@Bean`然后在提示选项中提供该函数的 bean 名称以激活该函数。此外，您可以在单个提示中定义和引用多个函数。
 
-![Spring Cloud Alibaba AI Function Calling](/img/user/ai/overview/spring-ai-function-calling.png)
+![Spring AI Function Calling](/img/user/ai/concepts/spring-ai-function-calling.png)
 
 * （1）执行聊天请求并发送函数定义信息。后者提供`name`（`description`例如，解释模型何时应调用该函数）和`input parameters`（例如，函数的输入参数模式）。
 * （2）当模型决定调用该函数时，它将使用输入参数调用该函数，并将输出返回给模型。
-* （3）Spring Cloud Alibaba AI 为您处理此对话。它将函数调用分派给适当的函数，并将结果返回给模型。
+* （3）Spring AI 为您处理此对话。它将函数调用分派给适当的函数，并将结果返回给模型。
 * （4）模型可以执行多个函数调用来检索所需的所有信息。
 * （5）一旦获取了所有需要的信息，模型就会生成响应。
 
@@ -155,4 +148,4 @@ Evaluation 评估过程涉及分析响应是否符合用户的意图、与查询
 
 一种方法是把用户的请求、模型的响应一同作为输入给到模型服务，对比模型给的响应或回答是否与提供的响应数据一致。
 
-此外，利用矢量数据库中存储的信息作为补充数据可以增强评估过程，有助于确定响应的相关性。
+此外，利用矢量数据库（Vector Database）中存储的信息作为补充数据可以增强评估过程，有助于确定响应的相关性。

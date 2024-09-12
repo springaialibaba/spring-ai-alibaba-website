@@ -6,7 +6,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 
 ## ChatClient 简介
 
-`ChatClient` 提供了与 AI 模型通信的 Fluent API，它支持同步和反应式（Reactive）编程模型。与 `ChatModel`、`Message`、`ChatMemory` 等原子 API 相比，使用 `ChatClient` 可以将与 LLM 和其他组件交互的复杂性隐藏在背后，因为基于 LLM 的应用程序通常要多个组件协同工作（例如，提示词模板、聊天记忆、LLM Model、输出解析器、RAG 组件：嵌入模型和存储），并且通常涉及多个交互，因此协调它们会让编码变得繁琐。当然使用 `ChatModel` 等原子 API 可以为应用程序带来更多的灵活性，成本就是您需要编写大量样板代码。
+`ChatClient` 提供了与 AI 模型通信的 Fluent API，它支持同步和反应式（Reactive）编程模型。与 `ChatModel`、`Message`、`ChatMemory` 等原子 API 相比，使用 `ChatClient` 可以将与 LLM 及其他组件交互的复杂性隐藏在背后，因为基于 LLM 的应用程序通常要多个组件协同工作（例如，提示词模板、聊天记忆、LLM Model、输出解析器、RAG 组件：嵌入模型和存储），并且通常涉及多个交互，因此协调它们会让编码变得繁琐。当然使用 `ChatModel` 等原子 API 可以为应用程序带来更多的灵活性，成本就是您需要编写大量样板代码。
 
 ChatClient 类似于应用程序开发中的服务层，它为应用程序直接提供 `AI 服务`，开发者可以使用 ChatClient Fluent API 快速完成一整套 AI 交互流程的组装。
 
@@ -82,97 +82,72 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
 
 ### 返回实体类（Entity）
 
-您经常希望返回一个预先定义好的实体类型响应，由框架自动替我们完成从 `String` 到。该`entity`方法提供了此功能。
+您经常希望返回一个预先定义好的实体类型响应，Spring AI 框架可以自动替我们完成从 `String` 到实体类的转换，调用`entity()` 方法可完成响应数据转换。
 
-例如，给定 Java 记录：
+例如，给定 Java record（POJO）定义：
 
+```java
     record ActorFilms(String actor, List<String> movies) {
     }
+```
 
-您可以使用该方法轻松地将 AI 模型的输出映射到此记录`entity`，如下所示：
+您可以使用该 `entity` 方法轻松地将 AI 模型的输出映射到 ActorFilms 类型，如下所示：
 
     ActorFilms actorFilms = chatClient.prompt()
         .user("Generate the filmography for a random actor.")
         .call()
         .entity(ActorFilms.class);
 
-还有一种`entity`带有签名的重载方法`entity(ParameterizedTypeReference<T> type)`，可让您指定通用列表等类型：
+`entity` 还有一种带有参数的重载方法 `entity(ParameterizedTypeReference<T> type)`，可让您指定如泛型 List 等类型：
 
+```java
     List<ActorFilms> actorFilms = chatClient.prompt()
         .user("Generate the filmography of 5 movies for Tom Hanks and Bill Murray.")
         .call()
         .entity(new ParameterizedTypeReference<List<ActorFilms>>() {
         });
+```
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_streaming_responses)流式响应
+### 流式响应
 
-让`stream`您获得异步响应，如下所示
+`stream` 方法是一种异步的、持续的获得模型响应的方式：
 
+```java
     Flux<String> output = chatClient.prompt()
         .user("Tell me a joke")
         .stream()
         .content();
+```
 
-您还可以`ChatResponse`使用该方法进行流式传输`Flux<ChatResponse> chatResponse()`。
+相比于上面的 `Flux<String>`，您还可以使用 `Flux<ChatResponse> chatResponse()` 方法获得 `ChatResponse` 响应数据流。
 
-在 1.0.0 M2 中，我们将提供一种便捷方法，让您使用反应式`stream()`方法返回 Java 实体。同时，您应该使用[结构化输出转换器](https://docs.spring.io/spring-ai/reference/api/structured-output-converter.html#StructuredOutputConverter)明确转换聚合响应，如下所示。这也演示了流畅 API 中参数的使用，本文档后面的部分将对此进行更详细的讨论。
+## call() 返回值
 
-        var converter = new BeanOutputConverter<>(new ParameterizedTypeReference<List<ActorsFilms>>() {
-        });
-
-        Flux<String> flux = this.chatClient.prompt()
-            .user(u -> u.text("""
-                                Generate the filmography for a random actor.
-                                {format}
-                              """)
-                    .param("format", converter.getFormat()))
-            .stream()
-            .content();
-
-        String content = flux.collectList().block().stream().collect(Collectors.joining());
-
-        List<ActorFilms> actorFilms = converter.convert(content);
-
-[](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_call_return_values)call() 返回值
-------------------------------------------------------------------------------------------------
-
-指定`call`方法后，`ChatClient`响应类型有几种不同的选项。
+`ChatClient.call()` 方法支持几种不同类型的响应格式。
 
 *   `String content()`：返回响应的字符串内容
-
 *   `ChatResponse chatResponse()`：返回`ChatResponse`包含多个代以及有关响应的元数据的对象，例如，使用了多少个令牌来创建响应。
-
-*   `entity`返回 Java 类型
-
+*   `entity` 返回 Java 类型
     *   entity(ParameterizedTypeReference<T> type)：用于返回实体类型的集合。
-
     *   entity(Class<T> type): 用于返回特定的实体类型。
+    *   entity(StructuredOutputConverter<T> structuredOutputConverter): 用于指定一个实例 `StructuredOutputConverter`，将 `String` 转换为实体类型。
 
-    *   entity(StructuredOutputConverter<T> structuredOutputConverter): 用于指定一个实例，`StructuredOutputConverter`将一个实例转换`String`为实体类型。
+## stream() 返回值
 
-
-
-您还可以调用该`stream`方法而`call`不是
-
-[](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_stream_return_values)stream() 返回值
-----------------------------------------------------------------------------------------------------
-
-在指定`stream`方法后`ChatClient`，响应类型有几个选项：
+您还可以调用该`stream`方法而`call`不是，在指定`stream`方法后`ChatClient`，响应类型有几个选项：
 
 *   `Flux<String> content()`：返回由AI模型生成的字符串的Flux。
-
 *   `Flux<ChatResponse> chatResponse()`：返回对象的 Flux `ChatResponse`，其中包含有关响应的附加元数据。
 
+## 定制 ChatClient 默认值
+在前面 ChatClient 的初步体验中，我们使用 `ChatClient.Builder.build()` 快速创建了一个 ChatClient 实例，**开发者还可以通过修改 `ChatClient.Builder` 定制 ChatClient 实例**。
 
-[](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_using_defaults)使用默认值
----------------------------------------------------------------------------------------
+注意，**创建 ChatClient 时指定的配置将作为与模型交互时的默认参数，这样可以避免每次调用都重复设置**。
 
-在类中创建带有默认系统文本的 ChatClient`@Configuration`可简化运行时代码。通过设置默认值，您只需在调用时指定用户文本`ChatClient`，无需在运行时代码路径中为每个请求设置系统文本。
+### 设置默认 System Message
+在以下示例中，我们为 ChatClient 设置了一个默认的 system message（以海盗风格回答所有问题），这样，当 ChatClient 与模型交互时都会自动携带这条 system message，用户只需要指定 user message 即可。
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_default_system_text)默认系统文本
-
-在以下示例中，我们将配置系统文本以始终以海盗的声音回复。为了避免在运行时代码中重复系统文本，我们将`ChatClient`在类中创建一个实例`@Configuration`。
-
+```java
     @Configuration
     class Config {
 
@@ -183,9 +158,11 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
         }
 
     }
+```
 
-并`@RestController`调用它
+在 Controller 中使用这个 ChatClient
 
+```java
     @RestController
     class AIController {
 
@@ -200,16 +177,18 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
     		return Map.of("completion", chatClient.prompt().user(message).call().content());
     	}
     }
+```
 
-通过 curl 调用它
+启动示例，通过 curl 测试效果：
 
-    ❯ curl localhost:8080/ai/simple
-    {"generation":"Why did the pirate go to the comedy club? To hear some arrr-rated jokes! Arrr, matey!"}
+```shell
+> curl localhost:8080/ai/simple
+{"generation":"Why did the pirate go to the comedy club? To hear some arrr-rated jokes! Arrr, matey!"}
+```
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_default_system_text_with_parameters)带参数的默认系统文本
+在上面 `builder.defaultSystem()` 创建 ChatClient 的时，我们还可以选择使用模板，类似 "You are a friendly chat bot that answers question in the voice of a {voice}"，这让我们有机会在每次调用前修改请求参数。
 
-在下面的例子中，我们将使用系统文本中的占位符来指定在运行时而不是设计时完成的语音。
-
+```java
     @Configuration
     class Config {
 
@@ -238,79 +217,81 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
     						.content());
     	}
     }
+```
 
 答案是
 
+```shell
     http localhost:8080/ai voice=='Robert DeNiro'
     {
         "completion": "You talkin' to me? Okay, here's a joke for ya: Why couldn't the bicycle stand up by itself? Because it was two tired! Classic, right?"
     }
+```
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_other_defaults)其他默认设置
+### 其他默认设置
 
-在`ChatClient.Builder`级别上，您可以指定默认提示。
+除了 `defaultSystem` 之外，您还可以在 `ChatClient.Builder` 级别上指定其他默认提示。
 
-*   `defaultOptions(ChatOptions chatOptions)`：传入`ChatOptions`类中定义的可移植选项或特定于模型的选项（例如 中的选项）`OpenAiChatOptions`。有关特定于模型的`ChatOptions`实现的更多信息，请参阅 JavaDocs。
+*   `defaultOptions(ChatOptions chatOptions)`：传入 `ChatOptions` 类中定义的可移植选项或特定于模型实现的如 `DashScopeChatOptions` 选项。有关特定于模型的`ChatOptions`实现的更多信息，请参阅 JavaDocs。
 
-*   `defaultFunction(String name, String description, java.util.function.Function<I, O> function)`：`name`用于在用户文本中引用该函数。`description`解释该函数的用途并帮助 AI 模型选择正确的函数以获得准确的响应。参数`function`是模型将在必要时执行的 Java 函数实例。
+*   `defaultFunction(String name, String description, java.util.function.Function<I, O> function)`：`name` 用于在用户文本中引用该函数，`description`解释该函数的用途并帮助 AI 模型选择正确的函数以获得准确的响应，参数 `function` 是模型将在必要时执行的 Java 函数实例。
 
-*   `defaultFunctions(String…​ functionNames)`：应用程序上下文中定义的 java.util.Function 的 bean 名称。
+*   `defaultFunctions(String... functionNames)`：应用程序上下文中定义的 java.util.Function 的 bean 名称。
 
-*   `defaultUser(String text)`、、`defaultUser(Resource text)`：`defaultUser(Consumer<UserSpec> userSpecConsumer)`这些方法允许您定义用户文本。`Consumer<UserSpec>`允许您使用 lambda 指定用户文本和任何默认参数。
+*   `defaultUser(String text)`、`defaultUser(Resource text)`、`defaultUser(Consumer<UserSpec> userSpecConsumer)` 这些方法允许您定义用户消息输入，`Consumer<UserSpec>`允许您使用 lambda 指定用户消息输入和任何默认参数。
 
-*   `defaultAdvisors(RequestResponseAdvisor…​ advisor)`：顾问允许修改用于创建的数据`Prompt`。该实现通过在提示中附加与用户文本相关的上下文信息来`QuestionAnswerAdvisor`实现模式。`Retrieval Augmented Generation`
+*   `defaultAdvisors(RequestResponseAdvisor... advisor)`：Advisors 允许修改用于创建 `Prompt` 的数据，`QuestionAnswerAdvisor` 实现通过在 Prompt 中附加与用户文本相关的上下文信息来实现 `Retrieval Augmented Generation` 模式。
 
-*   `defaultAdvisors(Consumer<AdvisorSpec> advisorSpecConsumer)`：此方法允许您定义一个`Consumer`以使用配置多个顾问`AdvisorSpec`。顾问可以修改用于创建最终的数据`Prompt`。`Consumer<AdvisorSpec>`允许您指定 lambda 来添加顾问，例如`QuestionAnswerAdvisor`，它`Retrieval Augmented Generation`通过根据用户文本附加带有相关上下文信息的提示来支持。
+*   `defaultAdvisors(Consumer<AdvisorSpec> advisorSpecConsumer)`：此方法允许您定义一个 `Consumer` 并使用 `AdvisorSpec` 配置多个 Advisor，Advisor 可以修改用于创建 `Prompt` 的最终数据，`Consumer<AdvisorSpec>` 允许您指定 lambda 来添加 Advisor 例如 `QuestionAnswerAdvisor`。
 
-
-您可以在运行时使用不带前缀的相应方法覆盖这些默认值`default`。
+您可以在运行时使用 `ChatClient` 提供的不带 `default` 前缀的相应方法覆盖这些默认值。
 
 *   `options(ChatOptions chatOptions)`
 
 *   `function(String name, String description, java.util.function.Function<I, O> function)`
 
-*   \`函数（字符串…​ 函数名称）
+*   `functions(String... functionNames)`
 
-*   `user(String text)`，，`user(Resource text)`​`user(Consumer<UserSpec> userSpecConsumer)`
+*   `user(String text)`、`user(Resource text)`、`user(Consumer<UserSpec> userSpecConsumer)`
 
-*   `advisors(RequestResponseAdvisor…​ advisor)`
+*   `advisors(RequestResponseAdvisor... advisor)`
 
 *   `advisors(Consumer<AdvisorSpec> advisorSpecConsumer)`
 
 
-[](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_advisors)顾问
-------------------------------------------------------------------------------
+## Advisors
 
-使用用户文本调用 AI 模型时的一个常见模式是使用上下文数据附加或扩充提示。
+在使用用户输入文本构建 Prompt 调用 AI 模型时，一个常见模式是使用上下文数据附加或扩充 Prompt，最终使用扩充后的 Prompt 与模型交互。
 
-这些上下文数据可以是不同类型的。常见类型包括：
+这些用于扩充 Prompt 的上下文数据可以是不同类型的，常见类型包括：
 
-*   **您自己的数据**：这是 AI 模型尚未训练过的数据。即使模型已经看到过类似的数据，附加的上下文数据也会优先生成响应。
+* **您自己的数据**：这是 AI 模型尚未训练过的数据，如特定领域知识、产品文档等，即使模型已经看到过类似的数据，附加的上下文数据也会优先生成响应。
+* **对话历史记录**：聊天模型的 API 是无状态的，如果您告诉 AI 模型您的姓名，它不会在后续交互中记住它，每次请求都必须发送对话历史记录，以确保在生成响应时考虑到先前的交互。
 
-*   **对话历史记录**：聊天模型的 API 是无状态的。如果您告诉 AI 模型您的姓名，它不会在后续交互中记住它。每次请求都必须发送对话历史记录，以确保在生成响应时考虑到先前的交互。
+### 检索增强生成（RAG）
 
+向量数据库存储的是 AI 模型不知道的数据，当用户问题被发送到 AI 模型时，`QuestionAnswerAdvisor`  会在向量数据库中查询与用户问题相关的文档。
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_retrieval_augmented_generation)检索增强生成
+来自向量数据库的响应被附加到用户消息 Prompt 中，为 AI 模型生成响应提供上下文。
 
-向量数据库存储的是 AI 模型不知道的数据。当用户问题被发送到 AI 模型时，它会在`QuestionAnswerAdvisor`向量数据库中查询与用户问题相关的文档。
+假设您已将数据加载到中 `VectorStore`，则可以通过向 `ChatClient` 提供 `QuestionAnswerAdvisor` 实例来执行检索增强生成 (RAG ) 。
 
-来自向量数据库的响应被附加到用户文本中，为 AI 模型生成响应提供上下文。
-
-假设您已将数据加载到中`VectorStore`，则可以通过向提供实例来执行检索增强生成 (RAG `QuestionAnswerAdvisor`) `ChatClient`。
-
+```java
     ChatResponse response = ChatClient.builder(chatModel)
             .build().prompt()
             .advisors(new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults()))
             .user(userText)
             .call()
             .chatResponse();
+```
 
-在此示例中，`SearchRequest.defaults()`将对 Vector 数据库中的所有文档执行相似性搜索。为了限制要搜索的文档类型，采用`SearchRequest`了可移植到所有数据库中的类似 SQL 的筛选表达式`VectorStores`。
+在此示例中，`SearchRequest.defaults()` 将对 Vector 向量数据库中的所有文档执行相似性搜索。为了限制要搜索的文档类型，`SearchRequest` 采用了可移植到任意向量数据库中的类似 SQL 筛选表达式。
 
-#### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_dynamic_filter_expressions)动态过滤表达式
+#### 动态过滤表达式
 
-`SearchRequest`使用`FILTER_EXPRESSION`顾问上下文参数在运行时更新过滤表达式：
+`SearchRequest` 使用 `FILTER_EXPRESSION` Advisor 上下文参数在运行时更新过滤表达式：
 
+```java
     ChatClient chatClient = ChatClient.builder(chatModel)
         .defaultAdvisors(new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults()))
         .build();
@@ -321,30 +302,32 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
         .advisors(a -> a.param(QuestionAnswerAdvisor.FILTER_EXPRESSION, "type == 'Spring'"))
         .call()
         .content();
+```
 
-该`FILTER_EXPRESSION`参数允许您根据提供的表达式动态过滤搜索结果。
+该 `FILTER_EXPRESSION` 参数允许您根据提供的表达式动态过滤搜索结果。
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_chat_memory)聊天记忆
+### 聊天记忆
 
-该接口`ChatMemory`表示聊天对话历史记录的存储。它提供向对话添加消息、从对话中检索消息以及清除对话历史记录的方法。
+`ChatMemory` 接口表示聊天对话历史记录的存储，它提供向对话添加消息、从对话中检索消息以及清除对话历史记录的方法。
 
-有两种实现方式`InMemoryChatMemory`，`CassandraChatMemory`分别为聊天对话历史记录提供内存存储和`time-to-live`相应的持久存储。
+目前提供两种实现方式 `InMemoryChatMemory`、`CassandraChatMemory`，分别为聊天对话历史记录提供内存存储和 `time-to-live` 类型的持久存储。
 
-要创建`CassandraChatMemory`一个`time-to-live`
+创建一个包含 `time-to-live` 配置的 `CassandraChatMemory`
 
+```java
     CassandraChatMemory.create(CassandraChatMemoryConfig.builder().withTimeToLive(Duration.ofDays(1)).build());
+```
 
-以下顾问实现使用`ChatMemory`接口来建议带有对话历史记录的提示，这些提示在将内存添加到提示的细节上有所不同
+以下 Advisor 实现使用 `ChatMemory` 接口来使用对话历史记录来增强（advice）Prompt，这些 advisor 实现在如何将对话历史记录添加到 Prompt 的细节上有所不同。
 
 *   `MessageChatMemoryAdvisor`：内存被检索并作为消息集合添加到提示中
-
 *   `PromptChatMemoryAdvisor`：检索内存并将其添加到提示的系统文本中。
-
 *   `VectorStoreChatMemoryAdvisor` ：构造函数`VectorStoreChatMemoryAdvisor(VectorStore vectorStore, String defaultConversationId, int chatHistoryWindowSize)`允许您指定要从中检索聊天历史记录的 VectorStore、唯一的对话 ID、要检索的聊天历史记录的大小（以令牌大小为单位）。
 
 
-`@Service`下面是一个使用多个顾问的示例实现
+下面的 `@Service` 提供了一个使用多个 Advisor 的示例实现：
 
+```java
     import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
     import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
@@ -386,37 +369,46 @@ AI 模型的响应是一种由[ChatResponse](https://docs.spring.io/spring-ai/re
                 .stream().content();
         }
     }
+```
 
-### [](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_logging)日志记录
+### 日志记录
 
-这是一个用于记录ChatClient 的和数据的`SimpleLoggerAdvisor`顾问。这对于调试和监控您的 AI 交互非常有用。`request``response`
+ `SimpleLoggerAdvisor` 是一个用于记录 ChatClient 的 `request` 和 `response` 数据 Advisor，这对于调试和监控您的 AI 交互非常有用。
 
-要启用日志记录，请`SimpleLoggerAdvisor`在创建 ChatClient 时将其添加到顾问链中。建议将其添加到链的末尾：
+要启用日志记录，请在创建 ChatClient 时将 `SimpleLoggerAdvisor` 添加到 Advisor 链中。建议将其添加到链的末尾：
 
+```java
     ChatResponse response = ChatClient.create(chatModel).prompt()
             .advisors(new SimpleLoggerAdvisor())
             .user("Tell me a joke?")
             .call()
             .chatResponse();
+```
 
-要查看日志，请将顾问包的日志记录级别设置为`DEBUG`：
+要查看日志，请将 Advisor 包的日志记录级别设置为 `DEBUG`：
 
-日志记录.级别.org.springframework.ai.chat.client.advisor=DEBUG
+```properties
+org.springframework.ai.chat.client.advisor=DEBUG
+```
 
-将其添加到您的`application.properties`或`application.yaml`文件中。
+将其添加到您的 `application.properties` 或 `application.yaml` 文件中。
 
-您可以使用以下构造函数自定义记录来自 AdvisedRequest 和 ChatResponse 的数据：
+您可以使用以下构造函数自定义如何使用 `SimpleLoggerAdvisor` 记录来自 AdvisedRequest 和 ChatResponse 的数据：
 
+```java
     SimpleLoggerAdvisor(
         Function<AdvisedRequest, String> requestToString,
         Function<ChatResponse, String> responseToString
     )
+```
 
 使用示例：
 
+```java
     javaCopySimpleLoggerAdvisor customLogger = new SimpleLoggerAdvisor(
         request -> "Custom request: " + request.userText,
         response -> "Custom response: " + response.getResult()
     );
+```
 
-这使得您可以根据您的特定需要定制记录的信息。
+这使得您可以根据您的特定需求定制需要记录的信息。
