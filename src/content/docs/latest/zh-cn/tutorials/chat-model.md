@@ -24,7 +24,20 @@ ChatModel API 让应用开发者可以非常方便的与 AI 模型进行文本�
 
 以下是 ChatModel 基本使用示例，它可以接收 String 字符串作为输入：
 ```java
+@RestController
+public class ChatModelController {
+	private final ChatModel chatModel;
 
+	public ChatModelController(ChatModel chatModel) {
+		this.chatModel = chatModel;
+	}
+
+	@RequestMapping("/chat")
+	public String chat(String input) {
+		ChatResponse response = chatModel.call(new Prompt(input));
+		return response.getResult().getOutput().getContent();
+	}
+}
 ```
 
 使用 Prompt 作为输入：
@@ -42,9 +55,6 @@ Streaming 示例：
 
 ```
 
-### API 概览
-
-
 ## Image Model
 ImageModel API 抽象了应用程序通过模型调用实现“文生图”的交互过程，即应用程序接收文本，调用模型生成图片。ImageModel 的入参为包装类型 `ImagePrompt`，输出类型为 `ImageResponse`。
 
@@ -53,20 +63,33 @@ ImageModel API 抽象了应用程序通过模型调用实现“文生图”的�
 `spring-ai-alibaba-starter` AutoConfiguration 默认初始化了 ImageModel 实例，我们可以选择直接注入并使用默认实例。
 
 ```java
+@RestController
+public class ImageModelController {
+	private final ImageModel imageModel;
 
-```
+	ImageModelController(ImageModel imageModel) {
+		this.imageModel = imageModel;
+	}
 
-以下是 Image 基本使用示例：
-```java
+	@RequestMapping("/image")
+	public String image(String input) {
+		ImageOptions options = ImageOptionsBuilder.builder()
+				.withModel("dall-e-3")
+				.build();
 
+		ImagePrompt imagePrompt = new ImagePrompt(input, options);
+		ImageResponse response = imageModel.call(imagePrompt);
+		String imageUrl = response.getResult().getOutput().getUrl();
+
+		return "redirect:" + imageUrl;
+	}
+}
 ```
 
 通过 ImageOptions 在每次调用中调整模型参数：
 ```java
 
 ```
-
-### API 概览
 
 ## Audio Model
 当前，Spring AI Alibaba 支持以下两种通义语音模型的适配，分别是：
@@ -75,14 +98,4 @@ ImageModel API 抽象了应用程序通过模型调用实现“文生图”的�
 
 ### 使用示例
 
-文本生成语音使用示例：
-```java
-
-```
-
-录音生成文字使用示例：
-```java
-```
-
-### API 概览
-
+请及时查看源码示例仓库更新。
