@@ -130,6 +130,66 @@ public record Request(String location, Unit unit) {}
 
 最佳做法是使用信息注释请求对象，以便该函数生成的 JSON 模式尽可能具有描述性，以帮助 AI 模型选择要调用的正确函数。
 
+如果已经有定义的@Service，那么可以通过以下方式来通过function call来调用已有的service的方法。
+```java
+// 1. 已存在的MockOrderService
+@Service
+public class MockOrderService {
+    public Response getOrder(Request request) {
+        String productName = "尤尼克斯羽毛球拍";
+        return new Response(String.format("%s的订单编号为%s, 购买的商品为: %s", request.userId, request.orderId, productName));
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public record Request(
+            //这里的JsonProperty将转换为function的parameters信息, 包括参数名称和参数描述等
+            /* 
+             {
+                "orderId": {
+                    "type": "string",
+                    "description": "订单编号, 比如1001***"
+                    },
+                "userId": {
+                    "type": "string",
+                    "description": "用户编号, 比如2001***"
+                }
+            }
+            */
+            @JsonProperty(required = true, value = "orderId") @JsonPropertyDescription("订单编号, 比如1001***") String orderId,
+            @JsonProperty(required = true, value = "userId") @JsonPropertyDescription("用户编号, 比如2001***") String userId) {
+    }
+
+    public record Response(String description) {
+    }
+}
+
+//2. 将MockOrderService的getOrder注册为function call的bean
+@Configuration
+public class FunctionCallConfiguration {
+    @Bean
+    @Description("根据用户编号和订单编号查询订单信息")  //function的描述
+    public Function<MockOrderService.Request, MockOrderService.Response> getOrderFunction(MockOrderService mockOrderService) {
+        return mockOrderService::getOrder;
+    }
+}
+
+//3. 调用function call
+DashScopeChatModel dashscopeChatModel = ...; 
+ChatClient chatClient = ChatClient.builder(dashscopeChatModel)
+        .defaultFunctions("getOrderFunction")
+        .build();
+
+ChatResponse response = chatClient
+        .prompt()
+        .user("帮我一下订单, 用户编号为1001, 订单编号为2001")
+        .call()
+        .chatResponse();
+
+String content = response.getResult().getOutput().getContent();
+logger.info("content: {}", content);
+
+```
+
 > 还有一种函数注册方式是使用 `FunctionCallbackWrapper`，具体请查看示例仓库中的源码。
 
 ### 为 Prompt 指定函数
@@ -148,12 +208,12 @@ public record Request(String location, Unit unit) {}
 #### ChatModel
 
 ```java
-OpenAiChatModel chatModel = ...
+DashScopeChatModel chatModel = ...
 
 UserMessage userMessage = new UserMessage("What's the weather like in San Francisco, Tokyo, and Paris?");
 
 ChatResponse response = chatModel.call(new Prompt(List.of(userMessage),
-		OpenAiChatOptions.builder().withFunction("CurrentWeather").build())); // (1) Enable the function
+        DashScopeChatOptions.builder().withFunction("CurrentWeather").build())); // (1) Enable the function
 
 logger.info("Response: {}", response);
 ```
@@ -172,11 +232,11 @@ Here is the current weather for the requested cities:
 除了自动配置之外，您还可以使用 Prompt 请求动态注册回调函数：
 
 ```java
-OpenAiChatModel chatModel = ...
+DashScopeChatModel chatModel = ...;
 
 UserMessage userMessage = new UserMessage("What's the weather like in San Francisco, Tokyo, and Paris?");
 
-var promptOptions = OpenAiChatOptions.builder()
+var promptOptions = DashScopeChatOptions.builder()
 	.withFunctionCallbacks(List.of(new FunctionCallbackWrapper<>(
 		"CurrentWeather", // name
 		"Get the weather in location", // function description
