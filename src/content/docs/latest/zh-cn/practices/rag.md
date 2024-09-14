@@ -12,7 +12,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 RAG 对于诸如回答问题和内容生成等任务，具有极大价值，因为它能支持生成式 AI 系统使用外部信息源生成更准确且更符合语境的回答。它会实施搜索检索方法（通常是语义搜索或混合搜索）来回应用户的意图并提供更相关的结果。
 
 下图是一个RAG链路的两个阶段，包括Indexing pipeline阶段和RAG的阶段。
-![img_1.png](img_1.png)
+![img_1.png](/img/user/ai/tutorials/practices/rag_diagram.png)
 
 从上图可以看到, indexing pipeline的阶段主要是将结构化或者非结构化的数据或文档进行加载和解析、chunk切分、文本向量化并保存到向量数据库。
 RAG的阶段主要包括将prompt文本内容转为向量、从向量数据库检索内容、对检索后的文档chunk进行重排和prompt重写、最后调用大模型进行结果的生成。
