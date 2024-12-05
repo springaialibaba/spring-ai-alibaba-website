@@ -1,9 +1,11 @@
 ---
 id: "question-history-14747"
 title: "springcloud alibaba与springboot版本对应关系是怎样的？"
-date: "2024-05-30"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据已有的知识内容，Spring Cloud Alibaba与Spring Boot的版本对应关系如下：1. 确定您当前使用的Spring Boot版本。2. 参照版本对应表，找到与您的Spring Boot版本相匹配的Spring Cloud Alibaba版本及其对应的Spring Cloud版"
+tags: ["sca","spring-cloud-alibaba","springcloud","alibaba","springboot","版本","对应关系"]
+keywords: ["sca","spring-cloud-alibaba","springcloud","alibaba","springboot","版本","对应关系"]
 ---
 
 ## 用户问题 ： 
@@ -44,7 +46,12 @@ description: "根据已有的知识内容，Spring Cloud Alibaba与Spring Boot�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14751)给我们反馈。

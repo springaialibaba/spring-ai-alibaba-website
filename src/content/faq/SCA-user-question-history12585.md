@@ -1,11 +1,11 @@
 ---
 id: "question-history-12585"
 title: "springboot activemq"
-date: "2024-04-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在SCA（Spring Cloud Alibaba）与Spring Boot集成ActiveMQ时，我们主要关注如何在Spring Boot应用中配置并使用ActiveMQ作为消息服务。虽然直接的参考内容未提供，但基于Spring Boot的一般集成方式及Sca的特性，我们可以推导出以下步骤：###"
-tags: ["spring-cloud-alibaba","springboot","activemq"]
-keywords: ["spring-cloud-alibaba","springboot","activemq"]
+tags: ["sca","spring-cloud-alibaba","springboot","activemq"]
+keywords: ["sca","spring-cloud-alibaba","springboot","activemq"]
 ---
 
 ## 用户问题 ： 
@@ -86,7 +86,7 @@ ActiveMQ是一个成熟的消息中间件，常用于解耦系统组件、异步
 
 ## 参考链接 ：
 
-* 专家经验：sca 与 springboot 快速启动 
+* 专家经验：springboot 快速启动 
  
  * 专家经验：springboot 与测试类(springboot test )的集成方案 
 
@@ -97,7 +97,12 @@ ActiveMQ是一个成熟的消息中间件，常用于解耦系统组件、异步
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=12678)给我们反馈。

@@ -1,9 +1,11 @@
 ---
 id: "question-history-14917"
 title: "spring-cloud阿里巴巴ai包用哪个版本？"
-date: "2024-06-03"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据提供的知识内容，Spring Cloud Alibaba AI包的推荐版本为2023.0.1.0。为了在项目中集成并使用该版本的AI功能，您可以遵循以下步骤：1. **添加依赖**: 在项目的`pom.xml`文件中，确保添加了Spring Cloud Alibaba依赖管理部分，并指定版本为2"
+tags: ["sca","spring-cloud","alibaba","ai","包","版本"]
+keywords: ["sca","spring-cloud","alibaba","ai","包","版本"]
 ---
 
 ## 用户问题 ： 
@@ -71,7 +73,7 @@ spring.cloud.ai.tongyi.chat.options.api-key=sk-a3d73b1709bf4a178c28ed7c8b3b5axx
 
 * 专家经验：spring cloud 、Spring Boot 与 Spring Cloud Alibaba (SCA)版本对应关系 
  
- * 专家经验：sca ai 调用通义大模型实现聊天交互 
+ * 专家经验：spring ai alibaba 使用说明 
 
 
  <font color="#949494">---------------</font> 
@@ -80,7 +82,12 @@ spring.cloud.ai.tongyi.chat.options.api-key=sk-a3d73b1709bf4a178c28ed7c8b3b5axx
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14920)给我们反馈。

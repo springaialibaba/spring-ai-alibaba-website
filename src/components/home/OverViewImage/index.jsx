@@ -45,7 +45,7 @@ function App({ colors = defaultColorConfig, linkStyle = "text-sm", className = '
       }}
     >
       <div
-        class={` flex flex-col justify-around px-2 pt-4 pb-2 ` + className}
+        class={`overflow-auto flex flex-col justify-around px-2 pt-4 pb-2 ` + className}
         id="overview-image-root"
         style={{
           background: colors.background,

@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "8月2日（周五）开源沙龙首个 AI 原生应用架构专场 | 上海站 ，欢迎报名！",
-    "mobileText": "欢迎报名8月2日上海首个AI原生应用架构开源沙龙！",
-    "link": "https://summit.aliyun.com/cloudnative2024_developer_shanghai?spm=5176.20960838.0.0.7802305eyqMQf8",
+    "text": "云栖回顾 | 2024 云栖大会微服务和网关相关演讲材料",
+    "mobileText": "云栖回顾 | 2024 云栖大会微服务和网关相关演讲材料",
+    "link": "https://developer.aliyun.com/ebook/8379",
     "target": "_blank",
     "display": true
 }
@@ -30,13 +30,43 @@ export const DOCS_BANNER = {
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
   {
-    key: "1.0.0-m2",
-    label: "1.0.0-m2",
+    key: "2023",
+    label: "2023.0.x",
     target: "_self",
-    link: "/docs/latest/overview/",
+    link: "/docs/2023/overview/what-is-sca/",
     translations: {
-      en: "1.0.0-m2",
-      link: "/en/docs/latest/overview/",
+      en: "2023.0.x",
+      link: "/en/docs/2023/overview/what-is-sca/",
+    }
+  },
+  {
+    key: "2022",
+    label: "2022.0.x",
+    target: "_self",
+    link: "/docs/2022/overview/what-is-sca/",
+    translations: {
+      en: "2022.0.x",
+      link: "/en/docs/2022/overview/what-is-sca/",
+    }
+  },
+  {
+    key: "2021",
+    label: "2021.0.x",
+    target: "_self",
+    link: "/docs/2021/overview/what-is-sca/",
+    translations: {
+      en: "2021.0.x",
+      link: "/en/docs/2021/overview/what-is-sca/",
+    }
+  },
+  {
+    key: "2.2.x",
+    label: "2.2.x",
+    target: "_self",
+    link: "/docs/2.2.x/overview/what-is-sca/",
+    translations: {
+      en: "2.2.x",
+      link: "/en/docs/2.2.x/overview/what-is-sca/",
     }
   },
 ];
@@ -64,6 +94,24 @@ export const CHOOSE_REASON_LIST: ChooseReason[] = [
     description: "home.website.edge.4.description",
   },
 ]
+// 核心特性
+export const CORE_FEATURE_LIST: ChooseReason[] = [
+  {
+    title: "home.website.ai.1.title",
+    svgKey: "aibox",
+    description: "home.website.ai.1.description",
+  },
+  {
+    title: "home.website.ai.2.title",
+    svgKey: "aibook",
+    description: "home.website.ai.2.description",
+  },
+  {
+    title: "home.website.ai.3.title",
+    svgKey: "aicen",
+    description: "home.website.ai.3.description",
+  }
+];
 
 // 合作客户反馈
 export const COMPANY_CUSTOMERS: Customer[] = [
@@ -71,7 +119,7 @@ export const COMPANY_CUSTOMERS: Customer[] = [
     name: "cloud.feedback.soul.name",
     theme: "gray",
     logo: "https://img.alicdn.com/imgextra/i2/O1CN01GZhEqR1bY3dY5SOuY_!!6000000003476-2-tps-160-130.png",
-    href: "https://code.alibaba-inc.com/goat/astro-nacos",
+    href: "https://developer.aliyun.com/article/1174616",
     description: "cloud.feedback.soul.description",
   },
   {
@@ -92,14 +140,14 @@ export const COMPANY_CUSTOMERS: Customer[] = [
     name: "cloud.feedback.ykc.name",
     theme: "gray",
     logo: "https://img.alicdn.com/imgextra/i1/O1CN01LWMfwx1Ggf9VGmXBF_!!6000000000652-2-tps-160-130.png",
-    href: "https://developer.aliyun.com/article/1172572?groupCode=mse",
+    href: "https://developer.aliyun.com/article/1172572",
     description: "cloud.feedback.ykc.description",
   },
   {
     name: "cloud.feedback.bosideng.name",
     theme: "dark",
     logo: "https://img.alicdn.com/imgextra/i2/O1CN01d7EDXs1HLsnXSTgGG_!!6000000000742-2-tps-160-130.png",
-    href: "https://developer.aliyun.com/article/1147221?groupCode=mse",
+    href: "https://developer.aliyun.com/article/1147221",
     description: "cloud.feedback.bosideng.description",
   },
   {
@@ -158,7 +206,7 @@ export const SOLUTION_LIST: Solution[] = [
   },
   {
     checked: false,
-    src: "https://developer.aliyun.com/article/1265016?spm=5176.21213303.J_qCOwPWspKEuWcmp8qiZNQ.10.c89e2f3dQa2WtF&scm=20140722.S_community@@%E6%96%87%E7%AB%A0@@1265016._.ID_community@@%E6%96%87%E7%AB%A0@@1265016-RL_%E4%BA%91%E5%8E%9F%E7%94%9F%E7%BD%91%E5%85%B3%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E8%83%BD%E5%8A%9B-LOC_llm-OR_ser-V_3-RK_rerank-P0_2",
+    src: "https://developer.aliyun.com/article/1265016",
     title: "home.solutions.card.3",
     keyword: [
       "home.solutions.card.keyword.three_in_one",
@@ -169,7 +217,7 @@ export const SOLUTION_LIST: Solution[] = [
   },
   {
     checked: false,
-    src: "https://help.aliyun.com/zh/mse/use-cases/implement-graceful-start-and-shutdown-of-microservice-applications-by-using-mse/?spm=a2c4g.11186623.0.0.385116bftBJhAY",
+    src: "https://help.aliyun.com/zh/mse/use-cases/implement-graceful-start-and-shutdown-of-microservice-applications-by-using-mse",
     title: "home.solutions.card.4",
     keyword: [
       "home.solutions.card.keyword.lossless",
@@ -557,22 +605,22 @@ export const SOLUTIONS_CARD_LIST = [
   {
     title: "commmon.header.microservices.engine",
     description: "commmon.header.microservices.engine.describe",
-    href: "https://help.aliyun.com/zh/mse/use-cases/implement-high-availability-capabilities-of-mse-microservices-registry?spm=a2c4g.11186623.0.0.102a27e0juv8vG",
+    href: "https://help.aliyun.com/zh/mse/use-cases/implement-high-availability-capabilities-of-mse-microservices-registry",
   },
   {
     title: "commmon.header.microservices.cloud.native.gateway",
     description: "commmon.header.microservices.cloud.native.gateway.describe",
-    href: "https://developer.aliyun.com/article/1265016?spm=5176.21213303.J_qCOwPWspKEuWcmp8qiZNQ.10.c89e2f3dQa2WtF&scm=20140722.S_community@@%E6%96%87%E7%AB%A0@@1265016._.ID_community@@%E6%96%87%E7%AB%A0@@1265016-RL_%E4%BA%91%E5%8E%9F%E7%94%9F%E7%BD%91%E5%85%B3%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%AE%89%E5%85%A8%E9%98%B2%E6%8A%A4%E8%83%BD%E5%8A%9B-LOC_llm-OR_ser-V_3-RK_rerank-P0_2",
+    href: "https://developer.aliyun.com/article/1265016",
   },
   {
     title: "commmon.header.microservices.governance",
     description: "commmon.header.microservices.governance.describe",
-    href: "https://help.aliyun.com/zh/mse/use-cases/implement-an-end-to-end-canary-release-by-using-mse-cloud-native-gateways?spm=a2c4g.11186623.0.i3",
+    href: "https://help.aliyun.com/zh/mse/use-cases/implement-an-end-to-end-canary-release-by-using-mse-cloud-native-gateways",
   },
   {
     title: "commmon.header.microservices.application.service",
     description: "commmon.header.microservices.application.service.describe",
-    href: "https://help.aliyun.com/zh/arms/?spm=5176.8140086.J_5253785160.8.3e87be45mtM0kX",
+    href: "https://help.aliyun.com/zh/arms/",
   },
 ];
 

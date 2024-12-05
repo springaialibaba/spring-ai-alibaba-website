@@ -1,9 +1,11 @@
 ---
 id: "question-history-14982"
 title: "先介绍一下SpringCloud Gateway, 再对比下刚才提到的Higress G"
-date: "2024-06-05"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "首先，让我们从Spring Cloud Gateway开始介绍。Spring Cloud Gateway作为Spring Cloud生态中的API网关组件，它提供了统一的路由、过滤以及负载均衡等功能，旨在为微服务架构提供一种简单而有效的方式来处理请求的接入层。Spring Cloud Gateway"
+tags: ["sca","spring-cloud-alibaba","SpringCloud","Gateway","Higress","Gateway","对比"]
+keywords: ["sca","spring-cloud-alibaba","SpringCloud","Gateway","Higress","Gateway","对比"]
 ---
 
 ## 用户问题 ： 
@@ -43,7 +45,12 @@ description: "首先，让我们从Spring Cloud Gateway开始介绍。Spring Clo
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15087)给我们反馈。

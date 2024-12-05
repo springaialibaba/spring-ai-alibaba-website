@@ -25,7 +25,8 @@ const faq = defineCollection({
 		updatedDate: z.coerce.date().optional(),
 		heroImage: z.string().optional(),
 		author: z.string().optional(),
-		category: z.string().optional()
+		category: z.string().optional(),
+		tags: z.string().or(z.array(z.string().or(z.number())).optional()),
 	}),
 });
 

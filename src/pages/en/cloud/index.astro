@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CloudIntroduce from "@components/cloud/CloudIntroduce.astro";
+import FunctionalCompare from "@components/cloud/FunctionalCompare/index";
+import CompaniesFeedback from "@components/home/CompaniesFeedback.astro";
+import CloudFooter from "@components/common/Footer.astro";
+import { useTranslations } from "@i18n/util";
+const t = useTranslations(Astro);
+---
+
+<BaseLayout title={t("cloud.title")} description={t("cloud.description")}>
+  <CloudIntroduce />
+
+  <FunctionalCompare client:load/> 
+
+  <CompaniesFeedback />
+
+  <CloudFooter />
+</BaseLayout>

@@ -5,6 +5,7 @@ import Carousel from "./Carousel.astro";
 import ProductDisplayCard from "@components/home/ProductDisplayCard.astro";
 import { SITE } from "@utils/config";
 import sendFetch from "@/utils/sendFetch";
+import AiButton from "@components/ai/AiButton.astro";
 import type { StarAndForkT } from 'src/types';
 
 const t = useTranslations(Astro);
@@ -14,45 +15,42 @@ const ifzh = isChinese(Astro);
 const { stargazers_count=0, forks_count=0 }:StarAndForkT = await sendFetch("https://api.github.com/repos/alibaba/spring-cloud-alibaba");
 ---
 
-<div class="home-introduce-wrapper">
+<div class="home-introduce-wrapper bg-base-100">
     <Carousel
         useduration="apply"
         duration={5000}
     >
-        <a 
-            slot="prev" 
-            href="/docs/2023/user-guide/ai/overview/" 
-            target="_blank"
-            class="block md:w-full min-h-[366px] bg-muted flex"
-        >
-          <img 
-            class="w-full md:h-[366px] flex hidden md:inline-block"
-            src={
-            ifzh
-            ?'https://img.alicdn.com/imgextra/i4/O1CN01aBL7MT1fmUcZG1WtR_!!6000000004049-2-tps-1440-366.png'
-            :'https://img.alicdn.com/imgextra/i3/O1CN01wLrk0I1KxO71GScBG_!!6000000001230-2-tps-1440-366.png'}
-          />
-          <img 
-            class="h-[366px] md:hidden"
-            src={
-              ifzh
-              ?'https://img.alicdn.com/imgextra/i2/O1CN01gOj3s728PFNTjwTfl_!!6000000007924-2-tps-780-732.png'
-              :'https://img.alicdn.com/imgextra/i2/O1CN01XbmHfa1YaOqwo9Lnf_!!6000000003075-2-tps-780-732.png'
-              }
-          />
-        </a>
+        <div slot="prev" class="block w-full min-h-[500] flex banner-toai max-w-[90rem]">
+          <a
+              href="/ai/" 
+              target="_blank"
+              class="block w-full"
+          >
+            <div class="w-full min-h-[31.25rem] px-[2.5rem]">
+              <p class="cursor-pointer font-bold xl:pt-[5.625rem] lg:pt-[5.625rem] md:pt-[6rem] pt-[5.625rem] xl:text-[4.5rem] lg:text-[4rem] md:text-[4rem] sm:text-[3rem] text-[2rem] text-neutral">
+                Spring AI Alibaba
+              </p>
+              <p class="cursor-pointer leading-[5rem] text-neutral mb-8 xl:text-[2rem] lg:text-[2rem] md:text-[2rem] sm:text-[1.5rem] text-[1rem]">
+                {t('home.website.ai.quickly.develop')}
+              </p>
+            </div>
+          </a>
+          <div class="aibutton-a absolute bottom-[8.125rem] left-[2.5rem]">
+            <AiButton />
+          </div>
+        </div>
 
         <home-introduce
             slot="next"
-            class="introduce flex flex-col justify-center items-center  min-h-[366px]"
+            class="introduce flex flex-col justify-center items-center h-full min-h-[31.25rem]"
         >
-            <div class="top-section flex flex-col relative mb-[111px]">
-                <div class="introduce_about pt-6 pb-4 text-warning text-xs mt-[2.375rem]">
+            <div class="top-section flex flex-col relative">
+                <h1 class="font-light introduce_about pt-6 pb-4 text-warning text-xs">
                     {t("home.introduce.about")}
-                </div>
-                <div class=`title leading-[5rem] text-neutral mb-8 ${ifzh ? 'text-[3.75rem]' : 'text-[4rem]'}`>
+                </h1>
+                <p class=`title leading-[5rem] text-neutral mb-8 ${ifzh ? 'lg:text-[3.75rem] text-[2.75rem]' : 'text-[4rem]'}`>
                     {t("home.introduce.title")}
-                </div>
+                </p>
                 <StarAndForkV2 client:load SITE={SITE} stargazers_count={stargazers_count} forks_count={forks_count} />
             </div>
         </home-introduce>
@@ -65,12 +63,21 @@ const { stargazers_count=0, forks_count=0 }:StarAndForkT = await sendFetch("http
     a {
       text-decoration: inherit;
       color: theme("colors.accent");
+    }    
+    .banner-toai{
+      background: url('https://gw.alicdn.com/imgextra/i3/O1CN01MLx4AB1MAxV8Z6pGh_!!6000000001395-0-tps-5760-2000.jpg') no-repeat;
+      background-size: cover;
+      background-position: 0 0;
     }
-    
-      /* min-height: calc(100vh - 4rem); */
-    
+    .aibutton-a a:nth-child(1) {
+      color: theme("colors.base-100");
+    }
+    .aibutton-a a:nth-child(2) {
+      color: theme("colors.neutral");
+    }
     .top-section {
-      width: 85.125rem;
+      max-width: 85.125rem;
+      width: 100%;
       overflow: hidden;
     }
     .top-section .notes .pc-version-intro {
@@ -134,11 +141,29 @@ const { stargazers_count=0, forks_count=0 }:StarAndForkT = await sendFetch("http
       background: rgba(244, 244, 246, 0.2) !important;
       backdrop-filter: blur(36px);
     }
+    .introduce {
+      background: url('https://img.alicdn.com/imgextra/i2/O1CN019ckV3m1s2m7zNXIpc_!!6000000005709-0-tps-5760-2000.jpg') no-repeat;
+      background-size: cover;
+      background-position: 0 0;
+      padding: 0 2rem;
+    }
+    
+    @media (min-width: 40rem) and (max-width: 50rem) { 
+      .banner-toai {
+        background-position: 0 -6rem!important;
+      }
+    }
 
     /* 小于50rem  小于 800px */
     @media (max-width: 50rem) {
+      .banner-toai {
+        background: url('https://img.alicdn.com/imgextra/i4/O1CN01EH1c9x1Xw62QgLKke_!!6000000002987-0-tps-3120-2928.jpg') no-repeat;
+        background-size: cover;
+        background-position: 0 0;
+      }
+      
       .introduce {
-        min-height: 0;
+        /* min-height: 0; */
         padding: 1.5rem;
       }
       .top-section {
@@ -177,7 +202,11 @@ const { stargazers_count=0, forks_count=0 }:StarAndForkT = await sendFetch("http
         background-color: theme(colors.neutral) !important;
       }
     }
-
+    @media (min-width: 50rem) and (max-width: 60rem) {
+      .banner-toai {
+        background-position: -5rem 0;
+      }
+    }
     /* 大于50rem 小于 72rem  800px < width < 1440 */
     @media (min-width: 50rem) and (max-width: 86rem) {
       .introduce {

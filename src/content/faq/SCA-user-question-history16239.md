@@ -1,9 +1,11 @@
 ---
 id: "question-history-16239"
 title: "Sentinel 支持spring cloud gateway mvc模式吗"
-date: "2024-07-18"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据已有的知识内容，我没有直接找到关于Sca(Spring Cloud Alibaba) Sentinel 是否支持Spring Cloud Gateway MVC模式的具体信息。不过，我可以依据现有的知识为您提供一些相关分析与指导。首先，让我们回顾一下Spring Cloud Alibaba的关键"
+tags: ["sca","spring-cloud-alibaba","Sentinel","spring-cloud-gateway","mvc","支持","模式"]
+keywords: ["sca","spring-cloud-alibaba","Sentinel","spring-cloud-gateway","mvc","支持","模式"]
 ---
 
 ## 用户问题 ： 
@@ -49,7 +51,12 @@ description: "根据已有的知识内容，我没有直接找到关于Sca(Sprin
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=16252)给我们反馈。

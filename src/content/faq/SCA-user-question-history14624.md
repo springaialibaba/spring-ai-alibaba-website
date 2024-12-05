@@ -1,11 +1,11 @@
 ---
 id: "question-history-14624"
 title: "add a spring.config.import=nacos: property t"
-date: "2024-05-27"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在使用Spring Cloud Alibaba集成Nacos作为配置中心时，若遇到需要动态添加`spring.config.import=nacos:`属性到配置中，且在配置不是必须时希望使用`optional:`前缀，或者想要禁用此检查的情况，可以根据以下步骤操作：1. **分析问题原因**：  "
-tags: ["nacos","spring.config.import","configuration","optional","disable","spring.cloud.nacos.config.import-check.enabled"]
-keywords: ["nacos","spring.config.import","configuration","optional","disable","spring.cloud.nacos.config.import-check.enabled"]
+tags: ["spring-cloud-alibaba","nacos","springconfigimport","configuration","optional","disable","springcloudnacosconfigimport-checkenabled"]
+keywords: ["spring-cloud-alibaba","nacos","springconfigimport","configuration","optional","disable","springcloudnacosconfigimport-checkenabled"]
 ---
 
 ## 用户问题 ： 
@@ -62,7 +62,12 @@ keywords: ["nacos","spring.config.import","configuration","optional","disable","
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14626)给我们反馈。

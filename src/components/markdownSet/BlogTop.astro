@@ -25,20 +25,20 @@ const typeArr = ["home", "blog-sub", "learn-sub", "wuyi-sub"];
   class="blog-top-wrapper bg-muted w-full text-neutral blog_header flex justify-center items-center"
 >
   <BaseContainer class="blog_header_content mt-9">
-    <div class="blog_header_title">{title}</div>
+    <h1 class="blog_header_title font-light">{title}</h1>
     <div class="blog_category_menu">
       {
         typeArr.includes(type) &&
         category &&
             category.map((category) => {
                 return (
-                <>
+                <b>
                     <BlogButton
                         href={category.href}
                         text={t(i18nMap[source][category.type])}
                         variant={category.type == activeCategory? 'primary':'secondary'}
                     />
-                </>
+                </b>
                 );
             })
       }

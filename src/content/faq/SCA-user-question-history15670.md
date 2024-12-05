@@ -1,9 +1,11 @@
 ---
 id: "question-history-15670"
 title: "spring.cloud.alibaba.seata.tx‐service‐group"
-date: "2024-06-18"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在Spring Cloud Alibaba中，`spring.cloud.alibaba.seata.tx-service-group`这个配置项是Seata（分布式事务组件）使用的，用于指定事务群组的名称。这个配置帮助Seata识别和管理不同服务间的事务，确保分布式事务的一致性。根据你的问题，你可"
+tags: ["sca","spring-cloud-alibaba","seata","tx-service-group","分布式事务","管理","阿里巴巴云"]
+keywords: ["sca","spring-cloud-alibaba","seata","tx-service-group","分布式事务","管理","阿里巴巴云"]
 ---
 
 ## 用户问题 ： 
@@ -60,7 +62,12 @@ description: "在Spring Cloud Alibaba中，`spring.cloud.alibaba.seata.tx-servic
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15721)给我们反馈。

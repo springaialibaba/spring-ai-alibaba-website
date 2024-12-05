@@ -1,11 +1,11 @@
 ---
 id: "question-history-13926"
 title: "为什么要使用spring cloud alibaba ai"
-date: "2024-05-17"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "使用Spring Cloud Alibaba AI主要有以下几个原因：1. **标准化接口与易用性**：Spring Cloud Alibaba AI标准化了不同AI提供者的接口实现，使得开发者能够通过统一的API与多种AI服务交互。这意味着，一旦应用需要从一个AI服务提供商迁移到另一个，比如从Op"
-tags: ["spring-cloud-alibaba","ai","为什么使用","spring cloud alibaba ai"]
-keywords: ["spring-cloud-alibaba","ai","为什么使用","spring cloud alibaba ai"]
+tags: ["sca","spring-cloud-alibaba","ai","为什么使用","技术","优势","应用场景"]
+keywords: ["sca","spring-cloud-alibaba","ai","为什么使用","技术","优势","应用场景"]
 ---
 
 ## 用户问题 ： 
@@ -36,7 +36,7 @@ keywords: ["spring-cloud-alibaba","ai","为什么使用","spring cloud alibaba a
 
 * 专家经验：sca ai (spring cloud alibaba ai）介绍 
  
- * 专家经验：sca ai 调用通义大模型实现聊天交互 
+ * 专家经验：spring ai alibaba 使用说明 
 
 
  <font color="#949494">---------------</font> 
@@ -45,7 +45,12 @@ keywords: ["spring-cloud-alibaba","ai","为什么使用","spring cloud alibaba a
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=13929)给我们反馈。

@@ -90,6 +90,36 @@ let height,
       super();
       this.ifscroll = false;
       window.addEventListener("scroll", this.handleScroll);
+      this.cnpliot_load();
+    }
+
+    cnpliot_load = () => {
+      document.addEventListener('DOMContentLoaded', function() {
+        const htmlElement = document.documentElement;
+        const observer = new MutationObserver(function(mutationsList) {
+            mutationsList.forEach(function(mutation) {
+              checkHtmlWidth();
+            });
+        });
+        const config = { 
+          attributes: true,
+          attributeFilter: ['style', 'class'],
+        };
+        observer.observe(htmlElement, config);
+
+        function checkHtmlWidth() {
+            const headerElement = document.querySelector('.header-content');
+            if(headerElement && headerElement.clientWidth) {
+              const header_rem =  headerElement.clientWidth / 16;
+              const hasClass = headerElement.classList.contains('width-for-html');
+              if(header_rem > 62 && hasClass) {
+                headerElement.classList.remove('width-for-html');
+              } else if(header_rem < 62 && !hasClass){
+                headerElement.classList.add('width-for-html');
+              };
+            };
+        };
+      });
     }
 
     handleScroll = () => {
@@ -140,8 +170,34 @@ let height,
       }
     }
 
-    @media (max-width: 50rem) {
+    @media (max-width: 62rem) {
       /** header 特殊处理 屏幕小于 800px 就显示不完全 */
+      .header-content {
+        width: 100%;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+      .left-content .mobile-navbar {
+        display: block;
+      }
+      .center-content {
+        display: none;
+      }
+      .code-toggle {
+        padding: 0 !important;
+        background-color: transparent !important;
+        span {
+          display: none;
+        }
+        svg {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+    }
+
+    .width-for-html {
+      /** 用于兼容 cnpliot 打开改变html标签宽度 */
       .header-content {
         width: 100%;
         padding-left: 1.5rem;
@@ -172,8 +228,7 @@ let height,
   function addCopilot() {
     const copilotJSScript = document.createElement("script");
     copilotJSScript.type = "text/javascript";
-    copilotJSScript.src =
-      "https://g.alicdn.com/cm-design/copilot-booter/0.0.26/copilot-booter.js";
+    copilotJSScript.src = "https://g.alicdn.com/cm-design/copilot-booter/0.0.26/copilot-booter.js";
     copilotJSScript.addEventListener("load", function () {
       if (window.CNPilot) {
         window.CNPilot.mounted({
@@ -197,7 +252,7 @@ let height,
           },
           headerProps: {
             closeIcon: { show: true },
-            titleText: "AI答疑专家",
+            titleText: "专家智能答疑",
           },
         });
       }
@@ -205,10 +260,18 @@ let height,
     document.body.append(copilotJSScript);
   }
 
-  addCopilot();
-
-  document.addEventListener("astro:page-load", function () {
-    if (window.CNPilot) window.CNPilot.unmounted();
+  const htmlElement = document.documentElement;
+  const computedStyle = window.getComputedStyle(htmlElement);
+  const rootFontSize = parseFloat(computedStyle.fontSize);
+  const htmlWidthInPixels = htmlElement.clientWidth;
+  const htmlWidthInRem = htmlWidthInPixels / rootFontSize;
+  // 30rem
+  if(htmlWidthInRem > 30) {
     addCopilot();
-  });
+
+    document.addEventListener("astro:page-load", function () {
+      if (window.CNPilot) window.CNPilot.unmounted();
+      addCopilot();
+    });
+  }
 </script>

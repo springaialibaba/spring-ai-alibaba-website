@@ -1,0 +1,44 @@
+[
+	{
+        "label": "概览",
+        "translations": {
+            "en": "Introduction"
+        },
+        "link": "docs/ai/overview/"
+    },
+    {
+        "label": "核心概念",
+        "translations": {
+            "en": "Concepts"
+        },
+        "link": "docs/ai/concepts/"
+	},
+    {
+        "label": "快速开始",
+        "translations": {
+            "en": "Quick Start"
+        },
+        "link": "docs/ai/get-started/"
+	},
+	{
+        "label": "使用教程",
+        "translations": {
+            "en": "Tutorials"
+        },
+        "autogenerate": {
+            "directory": "tutorials"
+        },
+        "items": []
+	},
+	{
+        "label": "最佳实践",
+        "translations": {
+            "en": "practices"
+        },
+        "autogenerate": {
+            "directory": "practices"
+        },
+        "items": []
+	}
+
+]

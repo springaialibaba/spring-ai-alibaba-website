@@ -1,0 +1,55 @@
+---
+import type { GetStaticPathsOptions } from "astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import Pagination from "@components/common/Paginate/Pagination.astro";
+import BlogTop from "@components/markdownSet/BlogTop.astro";
+import { useTranslations } from "@i18n/util";
+import SimpleContainer from '@components/markdownSet/SimpleContainer.astro';
+import { LEARN_CATEGORY } from "@/constant";
+import type { Post } from '@/types';
+const t = useTranslations(Astro);
+
+// 分页数据在page参数中传递
+const { page } = Astro.props;
+
+const allPages = [...Array(page.lastPage).keys()].map((num) => {
+    return (
+        "/learn/spring-cloud-alibaba" + (num === 0 ? "" : `/${String(num + 1)}`)
+    );
+});
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+    const posts = await getCollection("learn");
+
+    const sortedPosts = posts.sort(
+        (a, b) =>
+            new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+    );
+
+    const casePosts = sortedPosts.filter((post) => {
+        return post.data.category === "spring-cloud-alibaba";
+    });
+    return paginate(casePosts, { pageSize: 9 });
+}
+---
+
+<BaseLayout title={t("learn.article.spring-cloud-alibaba")} channel={t("commmon.header.comm.learn")}>
+    <BlogTop 
+        title={t("learn.article.spring-cloud-alibaba")} 
+        type="learn-sub" 
+        source="learn"
+        category={LEARN_CATEGORY}
+        activeCategory="spring-cloud-alibaba"
+    />
+    <div 
+        class="mx-auto flex flex-col items-center gap-20 py-8 lg:p-12 xl:p-20 bg-error"
+    >
+        <SimpleContainer 
+            pageList={page.data as Post[]}
+            source="learn"
+        />
+
+        <Pagination restRoute allPages={allPages} page={page} class="mx-auto" />
+    </div>
+</BaseLayout>

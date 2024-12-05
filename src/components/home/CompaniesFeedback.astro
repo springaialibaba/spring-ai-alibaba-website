@@ -35,12 +35,13 @@ const themeCardColor = {
     taglineTheme="info"
   />
 
-  <div
-    class="w-full lg:w-[85.125rem] relative flex overflow-hidden rounded-2xl"
+  <ul
+    class="p-0 w-full lg:w-[85.125rem] relative flex overflow-hidden rounded-2xl"
   >
     <CarouselCard datasource={COMPANY_CUSTOMERS} time="100s">
       {
         (item) => (
+          <li class="list-none">
           <a href={item.href} target="_blank" class="no-underline">
             <div
               class:list={[
@@ -65,7 +66,7 @@ const themeCardColor = {
                 },
               ]}
             >
-              <div
+              <p
                 class:list={[
                   "normal-case",
                   "md:whitespace-normal",
@@ -79,7 +80,7 @@ const themeCardColor = {
                 ]}
               >
                {t(item.description)}
-              </div>
+              </p>
               <div class="flex justify-between md:mt-[10rem] mt-[1.5rem] items-center ">
                 <div
                   class:list={[
@@ -103,6 +104,7 @@ const themeCardColor = {
               </div>
             </div>
           </a>
+          </li>
         )
       }
     </CarouselCard>
@@ -111,6 +113,7 @@ const themeCardColor = {
 
 <style is:global>
   .companies-feedback{
+    overflow: hidden;
   .slider {
     transition: background-color 0.5s;
   }

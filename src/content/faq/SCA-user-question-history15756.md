@@ -1,9 +1,11 @@
 ---
 id: "question-history-15756"
 title: "spring ai 怎么适配 阿里大模型"
-date: "2024-06-20"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "Spring Cloud Alibaba AI 为了适配阿里大模型，主要是通过以下步骤进行的，这些步骤已经在提供的知识内容中有详细阐述：1. **确保技术栈兼容性**：首先确认你的项目技术环境，特别是JDK版本需在JDK 17及以上，以保证与Spring Cloud Alibaba AI的兼容性。2"
+tags: ["sca","spring-cloud-alibaba","spring","ai","适配","阿里","大模型"]
+keywords: ["sca","spring-cloud-alibaba","spring","ai","适配","阿里","大模型"]
 ---
 
 ## 用户问题 ： 
@@ -41,7 +43,7 @@ Spring Cloud Alibaba AI 为了适配阿里大模型，主要是通过以下步�
 
 * 专家经验：sca ai (spring cloud alibaba ai）介绍 
  
- * 专家经验：sca ai 调用通义大模型实现聊天交互 
+ * 专家经验：spring ai alibaba 使用说明 
 
 
  <font color="#949494">---------------</font> 
@@ -50,7 +52,12 @@ Spring Cloud Alibaba AI 为了适配阿里大模型，主要是通过以下步�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15757)给我们反馈。

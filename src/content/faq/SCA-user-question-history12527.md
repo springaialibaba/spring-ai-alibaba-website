@@ -1,11 +1,11 @@
 ---
 id: "question-history-12527"
 title: "springboot scheduler"
-date: "2024-04-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在Spring Cloud Alibaba (SCA)与Spring Boot环境下实现Scheduler（计划任务）功能，主要可以通过Spring Boot自带的`@Scheduled`注解来完成。虽然直接提及Spring Cloud Alibaba与定时任务结合的特定内容较少，但我们可以基于标准"
-tags: ["spring-cloud-alibaba","springboot","scheduler"]
-keywords: ["spring-cloud-alibaba","springboot","scheduler"]
+tags: ["sca","spring-cloud-alibaba","springboot","scheduler"]
+keywords: ["sca","spring-cloud-alibaba","springboot","scheduler"]
 ---
 
 ## 用户问题 ： 
@@ -74,7 +74,7 @@ Spring Boot提供了丰富的功能来支持后台任务调度，包括使用`@E
 
 ## 参考链接 ：
 
-* 专家经验：sca 与 springboot 快速启动 
+* 专家经验：springboot 快速启动 
  
  * 专家经验：springboot 与测试类(springboot test )的集成方案 
 
@@ -85,7 +85,12 @@ Spring Boot提供了丰富的功能来支持后台任务调度，包括使用`@E
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=12620)给我们反馈。

@@ -1,9 +1,11 @@
 ---
 id: "question-history-15820"
 title: "spring ai alibaba 支持function-call吗"
-date: "2024-06-21"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据提供的知识内容，Spring Cloud Alibaba AI 是支持多样化的AI模型和服务的，包括但不限于对话、文生图、文生语音等功能，这些功能暗示了对不同类型的请求和交互模式的支持。尽管直接提及`function-call`的支持没有在参考内容中明确表述，但考虑到Spring AI框架设计的"
+tags: ["sca","spring-cloud-alibaba","spring","ai","alibaba","function-call","支持"]
+keywords: ["sca","spring-cloud-alibaba","spring","ai","alibaba","function-call","支持"]
 ---
 
 ## 用户问题 ： 
@@ -18,7 +20,7 @@ description: "根据提供的知识内容，Spring Cloud Alibaba AI 是支持多
 
 如果问题是关于如何在Spring Cloud Alibaba AI中实现对function-call的支持，鉴于Spring AI的灵活性和对模型服务的高度抽象，理论上可以通过调整模型使用的Prompt或集成自定义的后处理逻辑（例如OutputParser）来间接实现对function-call类型交互的支持。但具体实现细节会依赖于所使用的AI模型的具体能力和阿里云灵积模型服务的支持范畴。
 
-请提供更多的上下文或明确您的具体需求，以便我能提供更加精确和有帮助的。
+请提供更多的上下文或明确您的具体需求，以便我能提供更加精确和有帮助的回答。
 
 
 <font color="#949494">---------------</font> 
@@ -39,7 +41,12 @@ description: "根据提供的知识内容，Spring Cloud Alibaba AI 是支持多
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15839)给我们反馈。

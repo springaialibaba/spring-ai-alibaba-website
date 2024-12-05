@@ -1,9 +1,11 @@
 ---
 id: "question-history-16136"
 title: "提示找不到org.springframework.ai.chat.ChatClient，"
-date: "2024-07-05"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据你提供的问题和现有知识，这里是对问题的分析与解答：**问题分析：**你在使用`sca(spring-cloud-alibaba)`时遇到了`org.springframework.ai.chat.ChatClient`找不到的错误，即使已经引入了相关依赖。根据知识内容，这可能是由于依赖版本不匹配"
+tags: ["sca","spring-cloud-alibaba","依赖问题","orgspringframeworkaichat","ChatClient","引入提示找不到"]
+keywords: ["sca","spring-cloud-alibaba","依赖问题","orgspringframeworkaichat","ChatClient","引入提示找不到"]
 ---
 
 ## 用户问题 ： 
@@ -81,7 +83,12 @@ description: "根据你提供的问题和现有知识，这里是对问题的分
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=16147)给我们反馈。

@@ -10,14 +10,14 @@ const {
 } = Astro.props as Props;
 ---
 
-
+<user-carousel>
 <div 
     id="carousel-wrapper" 
-    class=" relative flex flex-col justify-center items-center bg-muted" 
+    class="max-w-[90rem] mx-auto relative flex flex-col justify-center items-center bg-base-100" 
     data-duration={duration}
     data-useduration={useduration}
 >
-    <div class="md:w-[85.125rem] ">
+    <div class="lg:max-w-[90rem] w-full">
         <div class="carousel-item block">
             <slot name="prev"></slot>
         </div>
@@ -28,7 +28,7 @@ const {
     </div>
 
     <!-- 轮播控制按钮 -->
-    <div class='md:w-[85.125rem] absolute bottom-[20px] md:left-auto left-[20px]' >
+    <div class='max-w-[85.125rem] absolute bottom-[20px] left-[2.5rem]' >
     
     <div class="w-[112px]  flex justify-between ">
         <div id="prev" class="cursor-pointer group">
@@ -42,68 +42,95 @@ const {
     </div>
 </div>
 </div>
+</user-carousel>
 
 <script>
-    // 包裹元素
-    const carouselWrapper = document.getElementById('carousel-wrapper'); 
-    // 利用 html dataset 获取 props 变量参数
-    const duration = carouselWrapper?.dataset?.duration;
-    const useduration = carouselWrapper?.dataset?.useduration;
-    // 所有可执行的轮播项
-    const items = document.querySelectorAll('.carousel-item');
-    const nextBtn = document.getElementById('next');
-    const prevBtn = document.getElementById('prev');
+  class UserCarousel extends HTMLElement {
+    private carousel_items?: HTMLElement[];
+    private nextBtn?: HTMLElement;
+    private prevBtn?: HTMLElement;
+    private useduration?: string;
+    private duration?: any;
+    private currentItem?: number;
+    private timer?: any;
+    constructor() {
+        super();
+        // 包裹元素
+        const carouselWrapper = document.getElementById('carousel-wrapper'); 
+        // 利用 html dataset 获取 props 变量参数
+        this.duration = carouselWrapper?.dataset?.duration;
+        this.useduration = carouselWrapper?.dataset?.useduration;
+        this.carousel_items = Array.from(document.querySelectorAll('.carousel-item'));
+        this.nextBtn = document.getElementById('next');
+        this.prevBtn = document.getElementById('prev');
+        this.currentItem = 0;
+        this.timer = null;
 
-    // 轮播切换部分
-    let currentItem = 0;
-    function showItem(index) {
-        items.forEach((item, idx) => {
+        // 依据 proos.useduration 判断是否默认开启 循环切换图片
+        if(this.useduration == 'apply') {
+            // 鼠标划入 停止轮播
+            carouselWrapper.addEventListener('mouseenter',() =>{
+                if(this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                };
+            });
+            // 鼠标划出 继续轮播
+            carouselWrapper.addEventListener('mouseleave',() =>{
+                if(!this.timer) {
+                    this.timerStart();
+                };
+            });
+        };
+    };
+
+    connectedCallback() {
+        this.start();
+        // 默认开启
+        this.timerStart();
+    };
+
+    disconnectedCallback() {
+        if(this.timer) {
+            clearTimeout(this.timer);
+        }
+    };
+
+    start = () => {
+        // 下一项
+        this.nextBtn.addEventListener('click', () => {
+            this.currentItem = (this.currentItem + 1) % this.carousel_items.length;
+            this.showItem(this.currentItem);
+        });
+        // 上一项
+        this.prevBtn.addEventListener('click', () => {
+            this.currentItem = (this.currentItem - 1 + this.carousel_items.length) % this.carousel_items.length;
+            this.showItem(this.currentItem);
+        });
+    };
+
+    showItem = (index) => {
+        this.carousel_items.forEach((item, idx) => {
             item.style.display = 'none';
             if (idx === index) {
                 item.style.display = 'block';
             };
         });
     };
-    // 下一项
-    nextBtn.addEventListener('click', () => {
-        currentItem = (currentItem + 1) % items.length;
-        showItem(currentItem);
-    });
-    // 上一项
-    prevBtn.addEventListener('click', () => {
-        currentItem = (currentItem - 1 + items.length) % items.length;
-        showItem(currentItem);
-    });
 
-    // 计时器部分
-    let timer = null;
-    // 切换轮播、利用按钮点击事件
-    function switchPicture() {
-        if(timer) {
-            prevBtn.click();
-            timer = null;
-            timerStart();
+    switchPicture = () => {
+        if(this.timer) {
+            this.prevBtn.click();
+            this.timer = null;
+            this.timerStart();
         };
     };
-    function timerStart() {
-        timer = setTimeout(switchPicture, duration);
+
+    timerStart = () => {
+        this.timer = setTimeout(this.switchPicture, this.duration);
     };
-    // 依据 proos.useduration 判断是否默认开启 循环切换图片
-    if(useduration == 'apply') {
-        // 鼠标划入 停止轮播
-        carouselWrapper.addEventListener('mouseenter',() =>{
-            if(timer) {
-                clearTimeout(timer);
-                timer = null;
-            };
-        });
-        // 鼠标划出 继续轮播
-        carouselWrapper.addEventListener('mouseleave',() =>{
-            if(!timer) {
-                timerStart();
-            };
-        });
-        // 默认开启
-        timerStart();
-    };
- </script>
+
+  };
+
+  customElements.define("user-carousel", UserCarousel);
+</script>

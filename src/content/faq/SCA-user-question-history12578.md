@@ -1,11 +1,11 @@
 ---
 id: "question-history-12578"
 title: "springmvc 执行流程"
-date: "2024-04-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "Sca（Spring Cloud Alibaba）中的Spring MVC执行流程与标准Spring MVC流程大体一致，具体步骤如下：1. **接收请求**：用户的HTTP请求首先被Servlet容器（如默认的Tomcat）接收。2. **请求分发**：接着，请求被转发给Spring的核心组件Di"
-tags: ["spring-cloud-alibaba","springmvc","执行流程"]
-keywords: ["spring-cloud-alibaba","springmvc","执行流程"]
+tags: ["sca","spring-cloud-alibaba","springmvc","执行流程"]
+keywords: ["sca","spring-cloud-alibaba","springmvc","执行流程"]
 ---
 
 ## 用户问题 ： 
@@ -40,7 +40,7 @@ Sca（Spring Cloud Alibaba）中的Spring MVC执行流程与标准Spring MVC流�
 
 * 专家经验：spring mvc 的主要工作流程是怎样的？ 
  
- * 专家经验：sca 与 springboot 快速启动 
+ * 专家经验：springboot 快速启动 
  
  * 专家经验：springboot 与测试类(springboot test )的集成方案 
 
@@ -51,7 +51,12 @@ Sca（Spring Cloud Alibaba）中的Spring MVC执行流程与标准Spring MVC流�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=12671)给我们反馈。

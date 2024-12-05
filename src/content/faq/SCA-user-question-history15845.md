@@ -1,9 +1,11 @@
 ---
 id: "question-history-15845"
 title: "程序包org.springframework.ai.chat.model不存在"
-date: "2024-06-21"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据你提供的问题「sca(spring-cloud-alibaba) 程序包org.springframework.ai.chat.model不存在」，我可以依托现有知识进行分析和解答。**原因分析：**你在使用Spring Cloud Alibaba时遇到`org.springframework."
+tags: ["sca","spring-cloud-alibaba","orgspringframeworkaichatmodel","不存在","程序包","问题","错误"]
+keywords: ["sca","spring-cloud-alibaba","orgspringframeworkaichatmodel","不存在","程序包","问题","错误"]
 ---
 
 ## 用户问题 ： 
@@ -97,7 +99,12 @@ description: "根据你提供的问题「sca(spring-cloud-alibaba) 程序包org.
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15847)给我们反馈。

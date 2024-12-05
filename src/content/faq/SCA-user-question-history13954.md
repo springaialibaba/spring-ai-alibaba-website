@@ -1,11 +1,11 @@
 ---
 id: "question-history-13954"
 title: "No spring.config.import property has been de"
-date: "2024-05-21"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据提供的知识内容，遇到No spring.config.import property has been defined的问题，其原因在于Spring Cloud应用在尝试集成Nacos作为配置中心时，没有正确地在配置文件中定义`spring.config.import=nacos:`属性来导入N"
-tags: ["spring-cloud-alibaba","No spring.config.import property","defined","Action","Add","spring.config.import=nacos:","configuration","optional:nacos:","disable","spring.cloud.nacos.config.import-check.enabled=false"]
-keywords: ["spring-cloud-alibaba","No spring.config.import property","defined","Action","Add","spring.config.import=nacos:","configuration","optional:nacos:","disable","spring.cloud.nacos.config.import-check.enabled=false"]
+tags: ["sca","spring-cloud-alibaba","springconfigimport","defined","Action","Add","nacos"]
+keywords: ["sca","spring-cloud-alibaba","springconfigimport","defined","Action","Add","nacos"]
 ---
 
 ## 用户问题 ： 
@@ -93,7 +93,12 @@ keywords: ["spring-cloud-alibaba","No spring.config.import property","defined","
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=13955)给我们反馈。

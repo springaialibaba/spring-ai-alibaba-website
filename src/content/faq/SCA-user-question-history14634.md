@@ -1,11 +1,11 @@
 ---
 id: "question-history-14634"
 title: "spring.cloud.nacos.discovery.server-addr 介绍"
-date: "2024-05-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在Spring Cloud Alibaba体系中，`spring.cloud.nacos.discovery.server-addr` 是一个关键属性，用于配置Nacos作为服务发现组件时的服务地址。这个配置项指定了Nacos服务器的地址和端口，允许Spring Cloud应用发现并注册到指定的Na"
-tags: ["spring-cloud-alibaba","nacos","discovery","server-addr","介绍"]
-keywords: ["spring-cloud-alibaba","nacos","discovery","server-addr","介绍"]
+tags: ["sca","spring-cloud-alibaba","nacos","discovery","server-addr","介绍"]
+keywords: ["sca","spring-cloud-alibaba","nacos","discovery","server-addr","介绍"]
 ---
 
 ## 用户问题 ： 
@@ -52,7 +52,12 @@ spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14640)给我们反馈。

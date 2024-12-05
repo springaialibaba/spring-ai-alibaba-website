@@ -1,9 +1,11 @@
 ---
 id: "question-history-13940"
 title: "springboot集成ai插件的具体做法"
-date: "2024-06-17"
+date: "2024-09-26"
 category: "expertConsultation"
-description: "为了关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件的具体做法，我们首先需要理解几个关键点从已有的知识内容中：1. **Spring AI简介**：它是一个为AI工程设计的应用框架，旨在将Spring生态系统的灵活性和模块化带入AI开发，并通过标准化接口"
+description: "为了回答关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件的具体做法，我们首先需要理解几个关键点从已有的知识内容中：1. **Spring AI简介**：它是一个为AI工程设计的应用框架，旨在将Spring生态系统的灵活性和模块化带入AI开发，并通过标准化"
+tags: ["sca","springboot","集成","ai","插件","具体","做法"]
+keywords: ["sca","springboot","集成","ai","插件","具体","做法"]
 ---
 
 ## 用户问题 ： 
@@ -12,7 +14,7 @@ description: "为了关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件�
 ---------------
 ## 专家官方解答 ：
 
-为了关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件的具体做法，我们首先需要理解几个关键点从已有的知识内容中：
+为了回答关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件的具体做法，我们首先需要理解几个关键点从已有的知识内容中：
 
 1. **Spring AI简介**：它是一个为AI工程设计的应用框架，旨在将Spring生态系统的灵活性和模块化带入AI开发，并通过标准化接口实现不同AI提供商的接入，简化开发和迁移工作。
 
@@ -59,7 +61,12 @@ description: "为了关于`sca(spring-cloud-alibaba)` Spring Boot集成AI插件�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15598)给我们反馈。

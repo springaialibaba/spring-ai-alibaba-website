@@ -1,9 +1,11 @@
 ---
 id: "question-history-15561"
 title: "有基于spring boot3的spring cloud alibaba框架嘛"
-date: "2024-06-17"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据已有的知识内容，可以确认的是Spring Cloud Alibaba确实支持基于Spring Boot 3的框架。具体来说：1. **兼容性确认**: 在提供的信息中，明确提到了Spring Cloud Alibaba支持Spring Boot 3.2.4及更低版本的对应关系。例如，当Sprin"
+tags: ["sca","spring-boot3","spring-cloud-alibaba","框架","存在","支持","更新"]
+keywords: ["sca","spring-boot3","spring-cloud-alibaba","框架","存在","支持","更新"]
 ---
 
 ## 用户问题 ： 
@@ -41,7 +43,12 @@ description: "根据已有的知识内容，可以确认的是Spring Cloud Aliba
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15586)给我们反馈。

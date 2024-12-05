@@ -1,11 +1,11 @@
 ---
 id: "question-history-12574"
 title: "什么是springboot"
-date: "2024-04-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "Spring Boot 是一种基于 Spring 框架的快速开发框架，它旨在简化新 Spring 应用程序的初始设置和配置过程。在 Spring Cloud Alibaba (SCA) 的上下文中，Spring Boot 的核心优势依然保留，并且与 SCA 的集成使得构建微服务架构变得更加高效和便捷"
-tags: ["spring-cloud-alibaba","springboot","什么是"]
-keywords: ["spring-cloud-alibaba","springboot","什么是"]
+tags: ["spring-cloud-alibaba","springboot","什么是","构建","微服务","框架","云端"]
+keywords: ["spring-cloud-alibaba","springboot","什么是","构建","微服务","框架","云端"]
 ---
 
 ## 用户问题 ： 
@@ -34,7 +34,7 @@ Spring Boot 是一种基于 Spring 框架的快速开发框架，它旨在简化
 
 ## 参考链接 ：
 
-* 专家经验：sca 与 springboot 快速启动 
+* 专家经验：springboot 快速启动 
  
  * 专家经验：springboot 与测试类(springboot test )的集成方案 
  
@@ -47,7 +47,12 @@ Spring Boot 是一种基于 Spring 框架的快速开发框架，它旨在简化
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=12667)给我们反馈。

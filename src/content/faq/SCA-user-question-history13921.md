@@ -1,11 +1,11 @@
 ---
 id: "question-history-13921"
 title: "spring cloud alibaba ai 是什么"
-date: "2024-05-17"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "Spring Cloud Alibaba AI是基于Spring AI框架针对阿里云服务定制的一个实现。它旨在简化AI应用的开发过程，特别是对于那些希望利用阿里云提供的强大AI服务能力的开发者而言。Spring Cloud Alibaba AI使得开发者能够方便地接入阿里云的灵积模型服务，该服务基于"
-tags: ["spring-cloud-alibaba","ai"]
-keywords: ["spring-cloud-alibaba","ai"]
+tags: ["sca","spring-cloud-alibaba","spring","cloud","alibaba","ai","什么是"]
+keywords: ["sca","spring-cloud-alibaba","spring","cloud","alibaba","ai","什么是"]
 ---
 
 ## 用户问题 ： 
@@ -41,7 +41,12 @@ Spring Cloud Alibaba AI是基于Spring AI框架针对阿里云服务定制的一
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=13924)给我们反馈。

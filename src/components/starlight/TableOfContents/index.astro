@@ -7,6 +7,12 @@ import "../style.css";
 import { useTranslations } from "@i18n/util";
 const t = useTranslations(Astro);
 const { locale, toc, editUrl, entry } = Astro.props;
+let isAIpage = false;
+if(Astro.props.id && Astro.props.id.includes('ai/')) {
+	isAIpage = true
+} else {
+	isAIpage = false
+};
 ---
 
 {
@@ -21,11 +27,15 @@ const { locale, toc, editUrl, entry } = Astro.props;
 						{t("rightSidebar.onThisPage")}
 					</h2>
 					<TableOfContentsList toc={toc.items} />
+					{isAIpage?null:
+					<>
 					<ContributeMenu
 						editHref={editUrl.href}
 						title={entry?.data?.title}
 					/>
 					<CommunityMenu />
+					</>
+					}
 				</div>
 			</nav>
 		</starlight-toc>

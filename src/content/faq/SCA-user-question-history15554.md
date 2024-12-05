@@ -1,9 +1,11 @@
 ---
 id: "question-history-15554"
 title: "在尝试获取`org.springframework.ai:spring-ai-core:"
-date: "2024-06-17"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据你提供的信息以及我了解的知识中的相关内容，遇到`org.springframework.ai:spring-ai-core:jar:0.8.1`依赖无法获取的问题，主要是因为Spring官方没有将spring-ai相关包发布到Maven中央仓库。鉴于你已经尝试了使用`-U`标志强制更新快照但问题"
+tags: ["sca","spring-cloud-alibaba","依赖","获取","orgspringframeworkai","spring-ai-core","jar"]
+keywords: ["sca","spring-cloud-alibaba","依赖","获取","orgspringframeworkai","spring-ai-core","jar"]
 ---
 
 ## 用户问题 ： 
@@ -73,7 +75,12 @@ repositories {
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15579)给我们反馈。

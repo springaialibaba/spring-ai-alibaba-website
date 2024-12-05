@@ -7,29 +7,29 @@ const t = useTranslations(Astro);
 const ifzh = isChinese(Astro);
 
 ---
-<div class="flex flex-col justify-center items-center pt-14 solution-wrapper bg-base-100 hidden md:flex">
-  <div class="lg:w-[85.125rem] md:w-full mb-[10px]">
-  <div
-    class=`solution-slogan h-[41px] text-success text-[16px] md:text-[20px] leading-4 rounded-[20px] px-5 py-3`
-    class:list={[
-      {
-        "w-[438px]": ifzh,
-        "w-[543px]": !ifzh,
-      },
-    ]}
-  >
-    {t('home.product.introduce.title')}
+<div class="flex flex-col justify-center items-center pt-14 solution-wrapper bg-base-100 hidden md:flex max-w-[85.125rem] mx-auto">
+  <div class="w-full mb-[10px]">
+    <h2
+      class=`font-light solution-slogan h-[41px] text-success text-[16px] md:text-[20px] leading-4 rounded-[20px] px-5 py-3`
+      class:list={[
+        {
+          "w-[438px]": ifzh,
+          "w-[543px]": !ifzh,
+        },
+      ]}
+    >
+      {t('home.product.introduce.title')}
+    </h2>
   </div>
-  </div>
-  <div class="flex justify-center items-center lg:w-[85.125rem] md:w-full flex-wrap">
+  <ul class="p-0 flex justify-center items-center w-full flex-wrap">
   {
     ProductDisplayCardData.map((item, index) => {
       return (
-      <div class="solution_content w-[328px] h-[306px] border-t border-success/[0.3] mt-7 px-0 mb-[42px] mr-[12px]">
+      <li class="list-none solution_content w-[328px] h-[306px] border-t border-success/[0.3] mt-7 px-0 mb-[42px] mr-[12px]">
         <a class="block" href={item.href}>
         <div class="pt-4 pb-6 px-4 h-[86px]">
           <div class="text-warning text-[18px] leading-[18px] font-medium mb-[12px] flex justify-between">
-            <span>{item.title}</span>
+            <h3 class="font-light">{item.title}</h3>
             <span class="arrow-icon hidden">
               <Arrow classes="fill-info" />
             </span>
@@ -38,11 +38,11 @@ const ifzh = isChinese(Astro);
         </div>
         <img class='w-[328px] h-[220px] object-cover rounded-2xl' src={item.cover} alt="" />
         </a>
-      </div>
+      </li>
       );
     })
   }
-  </div>
+  </ul>
 </div>
   <style is:global>
     .solution-wrapper {

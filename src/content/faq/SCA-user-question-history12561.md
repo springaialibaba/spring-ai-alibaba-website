@@ -1,11 +1,11 @@
 ---
 id: "question-history-12561"
 title: "springboot重定向"
-date: "2024-04-28"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "在Spring Cloud Alibaba (SCA)集成的SpringBoot应用中处理重定向，其原理和标准SpringBoot应用一致。重定向通常涉及到HTTP状态码的改变，特别是302（临时重定向）或301（永久重定向），以指导客户端从当前请求的URL跳转到另一个URL。尽管参考内容未直接提及"
-tags: ["spring-cloud-alibaba","springboot","重定向"]
-keywords: ["spring-cloud-alibaba","springboot","重定向"]
+tags: ["sca","spring-cloud-alibaba","springboot","重定向"]
+keywords: ["sca","spring-cloud-alibaba","springboot","重定向"]
 ---
 
 ## 用户问题 ： 
@@ -82,7 +82,7 @@ public ResponseEntity<Void> customRedirect() {
 
 ## 参考链接 ：
 
-* 专家经验：sca 与 springboot 快速启动 
+* 专家经验：springboot 快速启动 
  
  * 专家经验：springboot 与测试类(springboot test )的集成方案 
 
@@ -93,7 +93,12 @@ public ResponseEntity<Void> customRedirect() {
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=12654)给我们反馈。

@@ -1,9 +1,11 @@
 ---
 id: "question-history-14959"
 title: "阿里巴巴分布式事务 接入具体步骤"
-date: "2024-06-05"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "要接入Sca（Spring Cloud Alibaba）中的阿里巴巴分布式事务Seata，您可以遵循以下详细步骤：**第一步：启动Seata Server**1. **配置UNDO_LOG表**：在您的数据库中创建undo_log表，这是Seata AT模式所必需的，用于记录事务回滚信息。请参照提供"
+tags: ["sca","spring-cloud-alibaba","分布式事务","阿里巴巴","接入",""]
+keywords: ["sca","spring-cloud-alibaba","分布式事务","阿里巴巴","接入",""]
 ---
 
 ## 用户问题 ： 
@@ -72,7 +74,12 @@ description: "要接入Sca（Spring Cloud Alibaba）中的阿里巴巴分布式�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14967)给我们反馈。

@@ -1,9 +1,11 @@
 ---
 id: "question-history-16247"
 title: "dubbo相对于其他调用服务技术上有什么优势"
-date: "2024-07-18"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "Dubbo相对于其他服务调用技术，主要在以下几个方面展现出其技术优势：1. **高性能与低延迟**：Dubbo采用高效的RPC通信协议，支持多种序列化方式，能够确保服务间通信的高性能与低延迟。这对于追求极致响应速度和吞吐量的应用场景尤为重要。2. **服务治理能力**：Dubbo原生支持服务注册与发"
+tags: ["sca","spring-cloud-alibaba","dubbo","优势","调用服务","技术","对比"]
+keywords: ["sca","spring-cloud-alibaba","dubbo","优势","调用服务","技术","对比"]
 ---
 
 ## 用户问题 ： 
@@ -49,7 +51,12 @@ Dubbo相对于其他服务调用技术，主要在以下几个方面展现出其
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=16275)给我们反馈。

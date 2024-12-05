@@ -1,9 +1,11 @@
 ---
 id: "question-history-15864"
 title: "spring ai alibaba 是否支持其他模型比如openai"
-date: "2024-06-25"
+date: "2024-09-26"
 category: "expertConsultation"
-description: "根据提供的知识内容，我可以明确您的问题：****是的，Spring Cloud Alibaba AI 支持其他模型，比如OpenAI。Spring AI 的核心设计理念之一就是写一次代码，支持所有模型。由于它接入了阿里云灵积模型服务，该服务本身支持包括通义、LLaMA等多种模型。因此，您可以通过配置"
+description: "根据提供的知识内容，我可以明确回答您的问题：**回答：**是的，Spring Cloud Alibaba AI 支持其他模型，比如OpenAI。Spring AI 的核心设计理念之一就是写一次代码，支持所有模型。由于它接入了阿里云灵积模型服务，该服务本身支持包括通义、LLaMA等多种模型。因此，您可"
+tags: ["sca","spring-cloud-alibaba","spring","ai","alibaba","支持","模型"]
+keywords: ["sca","spring-cloud-alibaba","spring","ai","alibaba","支持","模型"]
 ---
 
 ## 用户问题 ： 
@@ -12,9 +14,9 @@ description: "根据提供的知识内容，我可以明确您的问题：****�
 ---------------
 ## 专家官方解答 ：
 
-根据提供的知识内容，我可以明确您的问题：
+根据提供的知识内容，我可以明确回答您的问题：
 
-****
+**回答：**
 
 是的，Spring Cloud Alibaba AI 支持其他模型，比如OpenAI。Spring AI 的核心设计理念之一就是写一次代码，支持所有模型。由于它接入了阿里云灵积模型服务，该服务本身支持包括通义、LLaMA等多种模型。因此，您可以通过配置的方式轻松地切换到OpenAI或其他支持的模型上。具体操作时，您需要在开通服务后，通过指定模型名称(model = xxxx)的方式来设置所需的模型。
 
@@ -96,7 +98,12 @@ description: "根据提供的知识内容，我可以明确您的问题：****�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15880)给我们反馈。

@@ -1,9 +1,11 @@
 ---
 id: "question-history-16236"
 title: "我怎么初始化springcloudalibaba"
-date: "2024-07-18"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "要初始化Spring Cloud Alibaba项目，你可以遵循以下步骤，这些步骤基于提供的知识内容：1. **确认JDK版本**：首先，请确保你的开发环境安装了JDK 17或更高版本，因为Spring Cloud Alibaba 2023.0.1.0需要此版本的支持。2. **添加依赖**：在你的"
+tags: ["sca","spring-cloud-alibaba","初始化","springcloudalibaba"]
+keywords: ["sca","spring-cloud-alibaba","初始化","springcloudalibaba"]
 ---
 
 ## 用户问题 ： 
@@ -69,7 +71,7 @@ description: "要初始化Spring Cloud Alibaba项目，你可以遵循以下步�
 
 ## 参考链接 ：
 
-* 专家经验：sca ai 调用通义大模型实现聊天交互 
+* 专家经验：spring ai alibaba 使用说明 
 
 
  <font color="#949494">---------------</font> 
@@ -78,7 +80,12 @@ description: "要初始化Spring Cloud Alibaba项目，你可以遵循以下步�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=16249)给我们反馈。

@@ -30,20 +30,20 @@ export type Props = {
 
 const { post, source, class: className = "", useAnchor=false, } = Astro.props;
 ---
-<a class={"card h-[250px] p-[24px] shadow-none w-full flex " + className}href={`${ifzh ? '' : '/en'}/${source}/${post.slug}/?source=${source}/`}>
+<a class={"card h-[250px] p-[24px] shadow-none w-full flex " + className} href={`${ifzh ? '' : '/en'}/${source}/${post.slug}/?source=${source}/`}>
     <!-- 锚点 -->
     {useAnchor?<p id={post.slug} class={"absolute z-[-100] top-[-4rem]"}></p>:null}
     
-    <p class="flex-1 text-gray-07 text-xs font-normal">
+    <p class="flex-1 text-gray-07 text-xs font-normal mb-[1rem]">
         {formatDate(post.data.date)}
     </p>
     <h2 class="flex-1 card-title text-gray-14 line-clamp-2 font-normal text-2xl truncate">
       {post.data.title}
     </h2>
-    <div class="flex-[3_3_0%] w-full text-lg leading-8 overflow-hidden mt-[24px] simple-card-desc">
+    <p class="flex-[3_3_0%] w-full text-lg leading-8 overflow-hidden mt-[24px] simple-card-desc">
         {post.excerpt || post.data.description}
-    </div>
-</div>
+    </p>
+</a>
 
 <style>
   .card {

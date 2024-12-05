@@ -22,9 +22,11 @@ let _dataSource = cloneDeep(dataSource);
   if (ifzh && !pathname.startsWith("/docs/")) return;
   if (ifzh && pathname.startsWith("/docs/ebook")) return;
   if (ifzh && pathname.startsWith("/docs/developer")) return;
+  if (ifzh && pathname.startsWith("/docs/ai")) return;
   if (!ifzh && !pathname.startsWith("/en/docs/")) return;
   if (!ifzh && pathname.startsWith("/en/docs/ebook")) return;
   if (!ifzh && pathname.startsWith("/en/docs/developer")) return;
+  if (!ifzh && pathname.startsWith("/en/docs/ai")) return;
 
   // TODO: 设置config
   const regex = ifzh

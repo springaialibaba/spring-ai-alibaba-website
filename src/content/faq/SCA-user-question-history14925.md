@@ -1,9 +1,11 @@
 ---
 id: "question-history-14925"
 title: "Springboot3.1.5用那个版本nacos啊？"
-date: "2024-06-03"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据已有的知识信息，直接查找不到Spring Boot 3.1.5对应的Spring Cloud Alibaba及Nacos版本。但是，我们可以根据版本发布的规律进行推理。通常，Spring Cloud Alibaba的版本会与特定范围内的Spring Boot版本保持兼容。从提供的信息中，可以看到"
+tags: ["sca","spring-cloud-alibaba","Springboot","315","nacos","版本","选用"]
+keywords: ["sca","spring-cloud-alibaba","Springboot","315","nacos","版本","选用"]
 ---
 
 ## 用户问题 ： 
@@ -49,7 +51,12 @@ description: "根据已有的知识信息，直接查找不到Spring Boot 3.1.5�
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=14926)给我们反馈。

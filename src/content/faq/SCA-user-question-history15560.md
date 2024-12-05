@@ -1,9 +1,11 @@
 ---
 id: "question-history-15560"
 title: "spring cloud alibaba 2023版本跟dubbo3集成样例有吗"
-date: "2024-06-17"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据已有的知识信息，直接提供关于Spring Cloud Alibaba 2023版本与Dubbo3集成的具体样例可能不够充分，但可以提供一些指导方向。首先，让我们确认几个关键点以更好地帮助您：1. **您希望了解的是Spring Cloud Alibaba哪个具体版本（如2023.0.1.0）与D"
+tags: ["sca","spring","cloud","alibaba","2023","版本","dubbo3"]
+keywords: ["sca","spring","cloud","alibaba","2023","版本","dubbo3"]
 ---
 
 ## 用户问题 ： 
@@ -36,7 +38,7 @@ description: "根据已有的知识信息，直接提供关于Spring Cloud Aliba
 - 查阅Dubbo3的官方文档（https://dubbo.apache.org/en-us/docs/3.0/user/quick-start.html）和Spring Cloud Alibaba文档（https://github.com/alibaba/spring-cloud-alibaba/blob/master/README.md）获取详细配置和特性说明。
 - 集成过程中可能会遇到的问题，比如版本冲突、配置不当等，应当对照官方文档调整。
 
-如果您能提供更多具体信息或直接上述前置问题，我将能提供更加针对性的指导和帮助。
+如果您能提供更多具体信息或直接回答上述前置问题，我将能提供更加针对性的指导和帮助。
 
 
 <font color="#949494">---------------</font> 
@@ -55,7 +57,12 @@ description: "根据已有的知识信息，直接提供关于Spring Cloud Aliba
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15585)给我们反馈。

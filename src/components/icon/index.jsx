@@ -1,4 +1,7 @@
 import Adaptive from "./Adaptive.astro";
+import Aibox from "./Aibox.astro";
+import Aicen from "./Aicen.astro";
+import Aibook from "./Aibook.astro";
 import Easy from "./Easy.astro";
 import Fork from "./Fork.astro";
 import Github from "./Github.astro";
@@ -14,6 +17,9 @@ import Arrow from './Arrow.astro'
 
 export {
 	Adaptive,
+	Aibox,
+	Aibook,
+	Aicen,
 	Easy,
 	Fork,
 	Github,

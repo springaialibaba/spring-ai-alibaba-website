@@ -49,20 +49,22 @@ if (pageList && pageList.length) {
                     </div>
                 ) : null
             }
-            <div class="text-[16px] text-gray-14 user-config-h-list">
+            <ul class="text-[16px] text-gray-14 user-config-h-list">
                 {
                     pageList.map((post) => {
                         return (
-                            <a
-                                class="no-underline font-normal block mb-[24px] pagelist-a hover:font-bold duration-100 break-all"
-                                href={`#${post.slug}`}
-                            >
-                                {post.data.title}
-                            </a>
+                            <li>
+                                <a
+                                    class="no-underline font-normal block mb-[24px] pagelist-a hover:font-bold duration-100 text-left break-words"
+                                    href={`#${post.slug}`}
+                                >
+                                    {post.data.title}
+                                </a>
+                            </li>
                         );
                     })
                 }
-            </div>
+            </ul>
         </div>
     </div>
 
@@ -71,12 +73,14 @@ if (pageList && pageList.length) {
     >
         {
             pageList.map((post) => (
-                <SimpleCard
-                    post={post as Post}
-                    source={source}
-                    useAnchor={true}
-                    class="bg-secondary"
-                />
+                <li>
+                    <SimpleCard
+                        post={post as Post}
+                        source={source}
+                        useAnchor={true}
+                        class="bg-secondary"
+                    />
+                </li>
             ))
         }
     </ul>
@@ -93,21 +97,17 @@ if (pageList && pageList.length) {
         ul {
             display: flex;
             flex-wrap: wrap;
-            gap: 2rem;
             list-style-type: none;
             padding: 0;
-        }
-        ul li {
-            width: calc(50% - 1rem);
         }
         ul li * {
             text-decoration: none;
             transition: 0.2s ease;
         }
-        ul li:first-child {
+        ul li{
             width: 100%;
-            margin-bottom: 1rem;
-            text-align: center;
+            /* margin-bottom: 1rem; */
+            /* text-align: center; */
         }
         ul li:first-child img {
             width: 100%;
@@ -149,12 +149,12 @@ if (pageList && pageList.length) {
                 width: 100%;
                 text-align: center;
             }
-            ul li:first-child {
+            /* ul li:first-child {
                 margin-bottom: 0;
-            }
-            ul li:first-child .title {
+            } */
+            /* ul li:first-child .title {
                 font-size: 1.563em;
-            }
+            } */
         }
         .user-config-h-list {
             max-height: calc(100vh - 180px);

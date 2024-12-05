@@ -1,9 +1,11 @@
 ---
 id: "question-history-15672"
 title: "spring-ai-openai-spring-boot-starter"
-date: "2024-06-18"
+date: "2024-09-26"
 category: "expertConsultation"
 description: "根据您的问题，您似乎在询问有关`spring-ai-openai-spring-boot-starter`的信息，但提供的知识内容并未直接提及这个特定的starter。不过，我可以尝试根据现有信息为您提供一些指导。### 分析问题原因您提到的`spring-ai-openai-spring-boot"
+tags: ["sca","spring","cloud","alibaba","openai","spring-boot","starter"]
+keywords: ["sca","spring","cloud","alibaba","openai","spring-boot","starter"]
 ---
 
 ## 用户问题 ： 
@@ -40,7 +42,7 @@ description: "根据您的问题，您似乎在询问有关`spring-ai-openai-spr
 
 ### 结论
 
-我目前了解到的信息可能不足以支持直接您的问题细节，特别是关于`spring-ai-openai-spring-boot-starter`的具体存在性与用法。建议您先按照上述步骤进行调研或考虑自定义实现。如果您有更具体的需求或者在调研过程中遇到问题，欢迎再次提问。
+我目前了解到的信息可能不足以支持直接回答您的问题细节，特别是关于`spring-ai-openai-spring-boot-starter`的具体存在性与用法。建议您先按照上述步骤进行调研或考虑自定义实现。如果您有更具体的需求或者在调研过程中遇到问题，欢迎再次提问。
 
 
 <font color="#949494">---------------</font> 
@@ -61,7 +63,12 @@ description: "根据您的问题，您似乎在询问有关`spring-ai-openai-spr
 
 ## <font color="#FF0000">答疑服务说明：</font> 
 
-本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>，在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。您也可以访问 : [全局专家答疑](https://answer.opensource.alibaba.com/docs/intro) 。 咨询其他产品的的问题
+本内容经由技术专家审阅的用户问答的镜像生成，我们提供了<font color="#FF0000">专家智能答疑服务</font>,使用方法：
+用法1： 在<font color="#FF0000">页面的右下的浮窗”专家答疑“</font>。
+用法2： 点击[专家答疑页](https://answer.opensource.alibaba.com/docs/intro)（针对部分网站不支持插件嵌入的情况）
+### 另：
 
+
+有其他开源产品的使用问题？[点击访问阿里AI专家答疑服务](https://answer.opensource.alibaba.com/docs/intro)。
 ### 反馈
 如问答有错漏，欢迎点：[差评](https://ai.nacos.io/user/feedbackByEnhancerGradePOJOID?enhancerGradePOJOId=15723)给我们反馈。
