@@ -1,12 +1,10 @@
 ---
 import { useTranslations } from "@i18n/util";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import HomeIntroduce from '@components/home/HomeIntroduce.astro';
-import ChooseReason from '@components/home/ChooseReason.astro';
-import CompaniesFeedback from '@components/home/CompaniesFeedback.astro';
-import OverviewImage from '@components/home/OverViewImage/index.astro';
-import HomeSolutionsCard from '@components/home/HomeSolutionsCard.astro';
-import HomeFooter from '@components/common/Footer.astro';
+import HomeIntroduce from '@components/ai/HomeIntroduce.astro';
+import ChooseReason from '@/components/ai/CoreFeature.astro';
+import ArchitectureDiagram from '@components/ai/ArchitectureDiagram.astro';
+import HomeFooter from '@components/ai/Footer.astro';
 
 const t = useTranslations(Astro);
 
@@ -18,9 +16,6 @@ const t = useTranslations(Astro);
 >
     <HomeIntroduce/>
     <ChooseReason />
-    <CompaniesFeedback />
-    <OverviewImage />
-    <HomeFooter>
-        <HomeSolutionsCard slot="after-footer" />
-    </HomeFooter>
+	<ArchitectureDiagram />
+    <HomeFooter/>
 </BaseLayout>

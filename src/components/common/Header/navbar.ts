@@ -16,14 +16,33 @@ export default [
     activePath: ["/docs"],
   },
   {
-    label: "企业版 SCA",
+    label: "博客",
     translations: {
-      en: "SCA CLOUD",
+      en: "BLOG",
+    },
+    trigger: "click",
+    target: "_self",
+    route: "/blog/",
+  },
+  {
+    label: "插件生态",
+    translations: {
+      en: "Tools",
     },
     trigger: "click",
     target: "_self",
     route: "/cloud/",
     activePath: ["/cloud"],
+  },
+  {
+    label: "脚手架",
+    translations: {
+      en: "Initializer",
+    },
+    trigger: "click",
+    target: "_self",
+    route: "/ai/",
+    activePath: ["/ai/"],
   },
   {
     label: "社区",
@@ -35,35 +54,5 @@ export default [
     slot: CommunityMenu,
     position:"absolute",
     activePath: ["/news", "/activity", "/blog", "/docs/ebook/", "/download"],
-  },
-  {
-    label: "博客",
-    translations: {
-      en: "BLOG",
-    },
-    trigger: "click",
-    target: "_self",
-    route: "/blog/",
-  },
-  {
-    label: "学习",
-    translations: {
-      en: "LEARN",
-    },
-    trigger: "hover",
-    slot: LearnMenu,
-    position: "absolute",
-    relativePosition: 'page',
-    activePath: ["/learn"],
-  },
-  {
-    label: "Spring AI Alibaba",
-    translations: {
-      en: "Spring AI Alibaba",
-    },
-    trigger: "click",
-    target: "_self",
-    route: "/ai/",
-    activePath: ["/ai/"],
   },
 ];

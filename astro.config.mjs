@@ -110,6 +110,6 @@ export default defineConfig({
 		'/zh-cn/': '/',
 		'/en-us/': '/en/',
 		'/[...slug].html': '/[...slug]',
-		'/docs/': '/docs/2023/overview/what-is-sca/',
+		'/docs/': '/docs/dev/overview/',
 	}
 });

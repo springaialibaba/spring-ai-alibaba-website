@@ -1,8 +1,7 @@
 ---
 title: 文档编写指南
-keywords: [Spring Cloud Alibaba, Docs]
-description: 这篇向导旨在给正在准备向 Spring Cloud Alibaba 文档项目提交贡献的新手提供指导。
-custom_edit_url: https://github.com/spring-cloud-alibaba-group/spring-cloud-alibaba-group.github.io/blob/main/i18n/zh-cn/docusaurus-plugin-content-docs/current/developers/contributor-guide/file-write-guide_dev.md
+keywords: [Spring Ai Alibaba, Docs]
+description: 这篇向导旨在给正在准备向 Spring Ai Alibaba 文档项目提交贡献的新手提供指导。
 ---
 
 1. 正式书面文档不要用我们，xxx等人称：
@@ -14,7 +13,7 @@ custom_edit_url: https://github.com/spring-cloud-alibaba-group/spring-cloud-alib
 ![image.png](/img/community/developer/image1.png)
 ![image.png](/img/community/developer/image2.png)
 
-3. 注意专有名词，spring cloud->Spring Cloud、feign->Feign、nacos->Nacos等等，不知道专有名词请拿相关关键字在搜索引擎中检索，看一般这个单词的大小写形式如何。有些单词需要分开写DestinationRule->Destination Rule。另外英文需要注意词性，标题不要使用动词，一般为名词。
+3. 注意专有名词，spring ai->Spring Ai、openai->OpenAi 等等，不知道专有名词请拿相关关键字在搜索引擎中检索，看一般这个单词的大小写形式如何。另外英文需要注意词性，标题不要使用动词，一般为名词。
 
 ![image.png](/img/community/developer/image3.png)
 ![image.png](/img/community/developer/image4.png)
@@ -29,7 +28,7 @@ custom_edit_url: https://github.com/spring-cloud-alibaba-group/spring-cloud-alib
 ![image.png](/img/community/developer/image7.png)
 ![image.png](/img/community/developer/image8.png)
 
-6. 缩略词还是尽量使用前先声明，比如Spring Cloud Alibaba（后文简称SCA）,不要什么都不说就直接用一些外人不太熟悉的缩略词：
+6. 缩略词还是尽量使用前先声明，比如Spring Ai Alibaba（后文简称SAA）,不要什么都不说就直接用一些外人不太熟悉的缩略词：
 
 ![image.png](/img/community/developer/image9.png)
 

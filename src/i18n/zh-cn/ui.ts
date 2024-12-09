@@ -54,9 +54,9 @@ export default {
 	'commmon.base.page.nextLink':'下一篇',
 	
 	'commmon.footer.title': '愿景',
-	'commmon.footer.description':'Spring Cloud Alibaba 为分布式应用开发提供一站式解决方案。它包含开发分布式应用程序所需的所有组件，使您可以轻松地使用 Spring Cloud 微服务框架开发应用程序。',
+	'commmon.footer.description':'Spring AI Alibaba 开源项目基于 Spring AI 构建，是阿里云通义系列模型及服务在 Java AI 应用开发领域的最佳实践，提供高层次的 AI API 抽象与云原生基础设施集成方案，帮助开发者快速构建 AI 应用。',
 	'commmon.footer.ai.description': 'Spring AI Alibaba 开源项目基于 Spring AI 构建，是阿里云通义系列模型及服务在 Java AI 应用开发领域的最佳实践，提供高层次的 AI API 抽象与云原生基础设施集成方案，帮助开发者快速构建 AI 应用。',
-	'commmon.footer.subscribe': '提供易于使用的服务基础设施，如动态服务发现、服务配置、服务共享和管理等等。',
+	'commmon.footer.subscribe': '转为 Java 开发者而生的 AI 开发框架。',
 	'commmon.footer.email.placeholder': '请输入电子邮件地址...',
 	'commmon.footer.actions.subscribe': '订阅',
 	'commmon.footer.docs': '文档',
@@ -72,10 +72,10 @@ export default {
 	'commmon.actions.download': '下载',
 
 	'home.title': 'Spring Cloud Alibaba官网_基于Springboot的微服务教程-阿里云',
-	'home.description': 'Spring Cloud Alibaba 为分布式应用开发提供一站式解决方案。它包含开发分布式应用程序所需的所有组件，使您可以轻松地使用 Spring Cloud 微服务框架开发应用程序。',
+	'home.description': 'Spring AI Alibaba 开源项目基于 Spring AI 构建，是阿里云通义系列模型及服务在 Java AI 应用开发领域的最佳实践，提供高层次的 AI API 抽象与云原生基础设施集成方案，帮助开发者快速构建 AI 应用。',
 	
 	'home.introduce.about': `关于 ${SITE.name}`,
-	'home.introduce.title': ' 致力于提供微服务开发的一站式解决方案!',
+	'home.introduce.title': ' 为您的 Java 应用快速接入 AI 智能服务!',
 	'home.introduce.nacos.code': '前往 GitHub',
 	'home.introduce.nacos.manual': '手册',
 	'home.introduce.nacos.notes': '发布于2023年11月30日',
@@ -107,7 +107,6 @@ export default {
 	'home.website.architecture.diagram.title': '架构图 ',
 	'home.website.architecture.diagram.description': '帮助 Java 开发者步入 AI Native 时代',
 	'home.ebook.resource': '资源',
-	'home.ebook.nacos': 'Nacos 电子书',
 	'home.features.about': '核心功能',
 	'home.features.title': '探索特性',
 	'home.features.1.summary': '动态配置服务',

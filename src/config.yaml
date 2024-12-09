@@ -1,11 +1,11 @@
 site:
-  name: Spring Cloud Alibaba
-  site: 'https://sca.aliyun.com'
+  name: Spring AI Alibaba
+  site: 'https://java2ai.com'
   base: '/'
   trailingSlash: 'always'
-  websiteGithubUrl: 'https://github.com/spring-cloud-alibaba-group/spring-cloud-alibaba-group.github.io/blob/develop-astro-sca'
-  githubUrl: 'https://github.com/alibaba/spring-cloud-alibaba'
-  logoUrl: "https://img.alicdn.com/imgextra/i1/O1CN01hmeX5e1NWlvOeF6OE_!!6000000001578-2-tps-286-36.png"
+  websiteGithubUrl: 'https://github.com/springai/spring-ai-alibaba-website/blob/main'
+  githubUrl: 'https://github.com/springai/spring-ai-alibaba-website'
+  logoUrl: "/saa_logo.png"
   downloadEbooks: "https://developer.aliyun.com/ebook/7565"
 
 analytics:
@@ -13,7 +13,7 @@ analytics:
     googleAnalytics:
       id: G-NP3B57ZGEF # or "G-XXXXXXXXXX"
     baiduAnalytics:
-      id: 8d45b13e5afb579f4083ee89048f70ac
+      id: 0b8bbee27b5404c869dded46a59bdc8d
       verification: code-wzq5sw7io3
     aesAnalytics:
       pid: b3kPns

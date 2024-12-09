@@ -62,8 +62,5 @@ export const collections = {
 		})
 	}),
 	i18n: defineCollection({ type: 'data', schema: i18nSchema() }),
-	blog,
-	download,
-	faq,
-	learn
+	blog
 };

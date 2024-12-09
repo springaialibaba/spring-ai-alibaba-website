@@ -6,8 +6,8 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "云栖回顾 | 2024 云栖大会微服务和网关相关演讲材料",
-    "mobileText": "云栖回顾 | 2024 云栖大会微服务和网关相关演讲材料",
+    "text": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
+    "mobileText": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
     "link": "https://developer.aliyun.com/ebook/8379",
     "target": "_blank",
     "display": true
@@ -30,43 +30,23 @@ export const DOCS_BANNER = {
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
   {
-    key: "2023",
-    label: "2023.0.x",
+    key: "1.0.0-M3.2",
+    label: "1.0.0-M3.2",
     target: "_self",
-    link: "/docs/2023/overview/what-is-sca/",
+    link: "/docs/1.0.0-M3.2/overview/",
     translations: {
-      en: "2023.0.x",
-      link: "/en/docs/2023/overview/what-is-sca/",
+      en: "1.0.0-M3.2",
+      link: "/en/docs/1.0.0-M3.2/overview/",
     }
   },
   {
-    key: "2022",
-    label: "2022.0.x",
+    key: "dev",
+    label: "dev",
     target: "_self",
-    link: "/docs/2022/overview/what-is-sca/",
+    link: "/docs/dev/overview/",
     translations: {
-      en: "2022.0.x",
-      link: "/en/docs/2022/overview/what-is-sca/",
-    }
-  },
-  {
-    key: "2021",
-    label: "2021.0.x",
-    target: "_self",
-    link: "/docs/2021/overview/what-is-sca/",
-    translations: {
-      en: "2021.0.x",
-      link: "/en/docs/2021/overview/what-is-sca/",
-    }
-  },
-  {
-    key: "2.2.x",
-    label: "2.2.x",
-    target: "_self",
-    link: "/docs/2.2.x/overview/what-is-sca/",
-    translations: {
-      en: "2.2.x",
-      link: "/en/docs/2.2.x/overview/what-is-sca/",
+      en: "dev",
+      link: "/en/docs/dev/overview/",
     }
   },
 ];
@@ -364,8 +344,8 @@ export const WUYI_CATEGORY = [
 export const HEADER_ACTIVITY_CARD = [
     {
         "collection": "blog",
-        "slug": "news/ospp-2024",
-        "description": "Spring Cloud Alibaba 编程之夏报名启动！",
+        "slug": "news/spring-ai-alibaba-atom-programming-contest",
+        "description": "Spring AI Alibaba 开放原子基金会编程挑战赛！",
         "imageUrl": "https://img.alicdn.com/imgextra/i2/O1CN01Gh8wq71CApBVywPq3_!!6000000000041-0-tps-800-1000.jpg"
     },
     {
@@ -521,7 +501,7 @@ export const COMMUNITY_MENU_LIST = [
       {
         label: "报告文档问题",
         target: "_blank",
-        link: "https://github.com/spring-cloud-alibaba-group/spring-cloud-alibaba-group.github.io/issues",
+        link: "https://github.com/springai/spring-ai-alibaba-website/issues",
         translations: {
           en: "Report a doc issue",
         },
@@ -529,7 +509,7 @@ export const COMMUNITY_MENU_LIST = [
       {
         label: "贡献社区",
         target: "_blank",
-        link: 'https://github.com/alibaba/spring-cloud-alibaba/pulls',
+        link: 'https://github.com/alibaba/spring-ai-alibaba/pulls',
         translations: {
           en: "Contribute community",
         },
@@ -537,7 +517,7 @@ export const COMMUNITY_MENU_LIST = [
       {
         label: "贡献者",
         target: "_blank",
-        link: 'https://github.com/alibaba/spring-cloud-alibaba/graphs/contributors',
+        link: 'https://github.com/alibaba/spring-ai-alibaba/graphs/contributors',
         translations: {
           en: "Contributors",
         },
@@ -567,11 +547,11 @@ export const COMMUNITY_MENU_LIST = [
         },
       },
       {
-        label: "电子书",
+        label: "电子书（编写中...）",
         target: "_self",
-        link: "/docs/ebook/srekog/",
+        link: "#",
         translations: {
-          en: "E-book",
+          en: "E-book(Coming soon...)",
         },
       },
     ],
