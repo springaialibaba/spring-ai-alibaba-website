@@ -20,7 +20,7 @@ category: article
 <font style="color:rgb(53, 56, 65);"></font>
 
 ## 项目简介
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-1.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-1.png)
 
 Spring AI Alibaba 项目的产生背景是生成式 AI 与大模型在过去一年的快速发展，大家应该有直观的感受，周边所有人都在聊模型服务，但是训练大模型本身是少部分企业和算法工程师的职责，我们作为使用方、开发者，更关注的应该是如何为我们的应用接入生成式AI能力。
 
@@ -32,7 +32,7 @@ Spring AI Alibaba 项目的产生背景是生成式 AI 与大模型在过去一�
 
 阿里巴巴和 Spring 官方一直保持着非常成功的合作，在微服务时代共同合作打造了 SpringCloud Alibaba 微服务框架与整体解决方案，该框架已经是国内使用最广泛的开源微服务框架之一，整体生态 star 数超过 10w。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-2.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-2.png)
 
 
 关于 Spring AI Alibaba，我们期望保持同样的深度合作模式，其中 Spring 社区主要负责绿色部分，即智能体应用开发原子能力与API的抽象，Spring AI Alibaba 社区负责与阿里云通义模型、云原生基础设施的深度集成，同时包括与智能体业务落地更密切的一些核心能力如流程编排、开发工具集、应用评测、可观测、配置管理、流量管控等的抽象和实现。背靠 Spring 与阿里巴巴两大开源社区支撑，相信 Spring AI Alibaba 项目将会长期保持一个持续且健康的发展态势。
@@ -40,7 +40,7 @@ Spring AI Alibaba 项目的产生背景是生成式 AI 与大模型在过去一�
 ## 核心特性
 以下是 Spring AI Alibaba 框架的核心特性，可以帮我们加速和简化 Java 智能体应用的开发。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-3.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-3.png)
 
 
 第一点，Spring AI Alibaba是专门为Spring和Java开发者设计的智能体开发框架，使用它开发应用就如同开发一个普通的Spring Boot应用，理解成本非常低。
@@ -56,7 +56,7 @@ Spring AI Alibaba 项目的产生背景是生成式 AI 与大模型在过去一�
 ### 聊天模型（Chat Model）
 首先，是 SpringAI 对模型基本交互的抽象与适配，其实智能体应用开发本质就是一个与大模型服务不停交互的过程，应用为模型提供语义化的输入，模型推理后反馈给我们输出。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-4.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-4.png)
 
 
 与模型交互的输入输出可以是文本，比如最早期的 ChatGPT，现在我们不止有文本型模型、还有支持图像、视频、语音等的模型，因此输入输出对应的可能是各种类型的。包括一些模型开始支持多模态输入，也就是图形、文本的混合输入。
@@ -68,18 +68,18 @@ Prompt 提示词是与模型交互的一种输入数据组织方式，本质上�
 
 Spring AI 提供了 Prompt Template 提示词模板管理抽象，开发者可以预先定义好模板，并在运行时替换模板中的关键词。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-5.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-5.png)
 
 
 SpringAI 还支持从资源文件中直接加载提示词模板：
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-6.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-6.png)
 
 
 ### 格式化输出（Structured Output）
 大模型返回的数据通常是非格式化的，而应用上下游需要传递格式化的、确定的数据结构。因此 SpringAI 提供了结构化输出转换的能力，它可以自动化的帮我们在 Prompt 中加入数据格式信息，辅助模型理解我们要求的结果数据格式，同时在拿到模型数据后完成到 JavaBean 的转换。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-7.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-7.png)
 
 
 以上图为例，Spring AI 框架帮我们简化了整个格式化输出转换的过程，包括格式信息输入与结果转换。
@@ -87,14 +87,14 @@ SpringAI 还支持从资源文件中直接加载提示词模板：
 ### 函数调用（Function Calling）
 函数调用是AI应用与模型交互中一个非常典型的范式，它可以辅助模型更好的回答用户问题。我们在给模型输入的过程中，附带上可用的函数列表（包含函数名、函数描述等），模型在收到问题和函数列表后，根据对问题的推理在必要的时候发起对函数的调用。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-8.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-8.png)
 
 
 SpringAI 帮我们规范了函数定义、注册等过程，并在发起模型请求之前自动将函数注入到 Prompt 中，而当模型决策在合适的时候去调用某个函数时，Spring AI 完成函数调用动作，最终将函数执行结果与原始问题再一并发送给模型，模型根据新的输入决策下一步动作。这其中涉及与大模型的多次交互过程，一次函数调用就是一次完成的交互过程。
 
 这里是函数调用过程中具体的模型交互过程分析。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-9.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-9.png)
 
 
 以上是没有函数计算时应用和模型的交互过程，应用给模型的输入是求一个数的平方根，模型根据自己的理解算出了一个结果，但并不准确。
@@ -102,19 +102,19 @@ SpringAI 帮我们规范了函数定义、注册等过程，并在发起模型�
 为了解决这个问题，我们定义了一个求平方根的函数，并通过 Spring AI 提供的注解将这个函数注册为一个可与模型交互的特殊函数，如下图代码段所示：
 
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-10.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-10.png)
 
 
 下图是有了函数调用之后应用与模型的交互，可以看到为了得到最终答案，应用总共有两轮与模型的交互过程。第一次是发起求平方根提问，与之前的不同是请求 prompt 中携带了 “tools” 信息（包含我们定义的函数），此时模型返回了 “ToolExecutionRequest” 的特殊结果，要求 Spring AI 通过调用函数来辅助完成求平方根的动作；随后是第二轮模型交互，Spring AI 把原始问题和函数执行结果发送给模型，模型最终生成回答。
 
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-11.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-11.png)
 
 
 ### 检索增强（RAG）
 RAG 是另外一个常用的智能体应用开发范式，它本质上和函数调用类似，也是应用程序辅助模型推理与回答问题的一种方式，只不过在交互流程上和函数调用略有区别。
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-12.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-12.png)
 
 
 如上图所示，总体上 RAG 是分为离线和运行时两部分。离线部分是将一些领域特有数据进行向量化的过程，将向量化的数据存入向量数据库。图中后半部分体现的运行时流程，Spring AI 框架在组装 prompt 时，会额外检索向量数据库，最终生成一个比用户原始问题具有更多辅助上下文的 prompt，然后将这个具备上下文的 prompt 给到模型，模型根据用户问题、上下文以及自己的推理生成响应。
@@ -211,7 +211,7 @@ public class ChatController {
 #### 完整架构图
 <font style="color:#5e5e5e;">基于这样一个</font>智能机票助手目标，我们绘制了一个如下图所示的架构图：
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-13.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-13.png)
 
 
 #### **<font style="color:rgb(0, 0, 0);">使用 ChatClient 完成编码</font>**
@@ -250,7 +250,7 @@ this.chatClient = modelBuilder
 
 
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-14.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-14.png)
 
 <font style="color:#5e5e5e;"></font>
 
@@ -268,7 +268,7 @@ Spring AI Alibaba 的目标是提供 AI 开源框架以及与阿里巴巴整体�
 + AI代理节点开发能力，如绿网、限流、多模型切换等
 + 开发者工具集
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-15.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-15.png)
 
 
 ## 联系社区
@@ -277,6 +277,6 @@ Spring AI Alibaba 的目标是提供 AI 开源框架以及与阿里巴巴整体�
 + 钉钉群：请通过群号 `64485010179` 搜索入群
 + 微信群：请扫描下图加入
 
-![spring-ai-alibaba-introduction](spring-ai-alibaba-introduction-16.png)
+![spring-ai-alibaba-introduction](/img/blog/intro/spring-ai-alibaba-introduction-16.png)
 
 

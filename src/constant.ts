@@ -8,7 +8,7 @@ import { getEntries } from "astro:content";
 export const TOPBAR = {
     "text": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
     "mobileText": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
-    "link": "https://developer.aliyun.com/ebook/8379",
+    "link": "/blog/news/meetup-2024-11-26-shanghai",
     "target": "_blank",
     "display": true
 }
