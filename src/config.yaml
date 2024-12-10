@@ -3,8 +3,8 @@ site:
   site: 'https://java2ai.com'
   base: '/'
   trailingSlash: 'always'
-  websiteGithubUrl: 'https://github.com/springaialibaba//spring-ai-alibaba-website/blob/main'
-  githubUrl: 'https://github.com/springaialibaba//spring-ai-alibaba-website'
+  websiteGithubUrl: 'https://github.com/springaialibaba/spring-ai-alibaba-website/blob/main'
+  githubUrl: 'https://github.com/springaialibaba/spring-ai-alibaba-website'
   logoUrl: "/saa_logo.png"
   downloadEbooks: "https://developer.aliyun.com/ebook/7565"
 
