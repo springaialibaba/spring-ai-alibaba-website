@@ -4,21 +4,21 @@
         "translations": {
             "en": "Introduction"
         },
-        "link": "docs/ai/overview/"
+        "link": "docs/dev/overview/"
     },
     {
         "label": "核心概念",
         "translations": {
             "en": "Concepts"
         },
-        "link": "docs/ai/concepts/"
+        "link": "docs/dev/concepts/"
 	},
     {
         "label": "快速开始",
         "translations": {
             "en": "Quick Start"
         },
-        "link": "docs/ai/get-started/"
+        "link": "docs/dev/get-started/"
 	},
 	{
         "label": "使用教程",

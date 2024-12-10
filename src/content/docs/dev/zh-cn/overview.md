@@ -1,6 +1,6 @@
 ---
 title: Spring AI Alibaba 概述
-keywords: [Spring Cloud Alibaba,Spring AI,Tongyi Qianwen]
+keywords: [Spring Ai Alibaba,Spring AI,Tongyi Qianwen]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 ## 什么是 Spring AI Alibaba？

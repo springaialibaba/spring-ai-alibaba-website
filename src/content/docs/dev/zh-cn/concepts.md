@@ -1,7 +1,7 @@
 ---
 title: 核心概念
-keywords: [Spring Cloud Alibaba核心概念, ]
-description: "Spring Cloud Alibaba核心概念"
+keywords: [Spring Ai Alibaba核心概念]
+description: "Spring Ai Alibaba核心概念"
 ---
 
 # 核心概念
