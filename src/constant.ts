@@ -501,7 +501,7 @@ export const COMMUNITY_MENU_LIST = [
       {
         label: "报告文档问题",
         target: "_blank",
-        link: "https://github.com/springai/spring-ai-alibaba-website/issues",
+        link: "https://github.com/springaialibaba//spring-ai-alibaba-website/issues",
         translations: {
           en: "Report a doc issue",
         },
