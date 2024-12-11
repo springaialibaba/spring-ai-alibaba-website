@@ -7,7 +7,7 @@ import { useTranslations } from '@i18n/util';
 const t = useTranslations(Astro);
 
 const { sidebar } = Astro.props;
-
+console.log('sidebar =====>', sidebar)
 ---
 <blog-theme >
   <SidebarSublist sublist={sidebar} />
