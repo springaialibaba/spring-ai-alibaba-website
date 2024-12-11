@@ -21,6 +21,10 @@ const { locale, toc, editUrl, entry } = Astro.props;
 						{t("rightSidebar.onThisPage")}
 					</h2>
 					<TableOfContentsList toc={toc.items} />
+					<ContributeMenu
+						editHref={editUrl.href}
+						title={entry?.data?.title}
+					/>
 					<CommunityMenu />
 				</div>
 			</nav>
