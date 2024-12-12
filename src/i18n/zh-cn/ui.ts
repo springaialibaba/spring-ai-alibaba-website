@@ -49,7 +49,7 @@ export default {
 	'commmon.ebook.complete.get':'获取完整版电子书',
 	'commmon.ebook.enjoy.read':'尽享阅读体验',
 	'commmon.markdown.subheading.page':'本页',
-	'commmon.base.layout.keywords':'Spring Cloud Alibaba官网,Spring AI + 阿里通义组件,Springboot,微服务实践教程,动态服务发现,配置管理,服务管理',
+	'commmon.base.layout.keywords':'Spring AI Alibaba 官网,Spring AI,JAVA AI,通义千问,AI Agent,RAG,大模型',
 	'commmon.base.page.previousLink':'上一篇',
 	'commmon.base.page.nextLink':'下一篇',
 	
@@ -71,7 +71,7 @@ export default {
 	'commmon.footer.actions.edas': '云服务 EDAS',
 	'commmon.actions.download': '下载',
 
-	'home.title': 'Spring Cloud Alibaba官网_基于Springboot的微服务教程-阿里云',
+	'home.title': 'Spring AI Alibaba 官网_快速构建 JAVA AI 应用',
 	'home.description': 'Spring AI Alibaba 开源项目基于 Spring AI 构建，是阿里云通义系列模型及服务在 Java AI 应用开发领域的最佳实践，提供高层次的 AI API 抽象与云原生基础设施集成方案，帮助开发者快速构建 AI 应用。',
 	
 	'home.introduce.about': `关于 ${SITE.name}`,
@@ -152,22 +152,6 @@ export default {
 	'home.contributors.learn.more': '更多',
 	'home.overviewcard.about': '全景概览',
 	'home.overviewcard.title': '微服务全景图',
-	'home.product.introduce.title':'Spring Cloud Alibaba 提供的微服务解决方案',
-
-	'home.introduction.detailTitle.1':'Nacos',
-	'home.introduction.detail.1':'Spring Cloud Alibaba Nacos，为 Spring Cloud 微服务提供服务注册发现、配置管理等能力。',
-	'home.introduction.detailTitle.2':'Sentinel',
-	'home.introduction.detail.2':'Spring Cloud Alibaba Sentinel，从流量控制、熔断降级、系统负载保护等多个维度保护服务的稳定性。',
-	'home.introduction.detailTitle.3':'Seata',
-	'home.introduction.detail.3':'Spring Cloud Alibaba Seata，保证分布式系统中的数据一致性。',
-	'home.introduction.detailTitle.4':'RocketMQ',
-	'home.introduction.detail.4':'Spring Cloud Alibaba RocketMQ，为应用提供低延时、高可靠的消息发布与订阅服务，构建基于消息的微服务体系。',
-	'home.introduction.detailTitle.5':'AI',
-	'home.introduction.detail.5':'Spring Cloud Alibaba AI，通过适配阿里通义系列 AI 服务，加速 AI 应用开发。',
-	'home.introduction.detailTitle.6':'Spring',
-	'home.introduction.detail.6':'Spring 中文站点，跟随教程学习从入门到开发生产级应用。',
-	'home.introduction.detailTitle.7':'Spring Boot',
-	'home.introduction.detail.7':'Spring Boot 中文站点，跟随教程学习从入门到开发生产级应用。',
 
 	'home.introduction.card.Boot.des':'加速 Spring 应用开发、打包与部署',
 	'home.introduction.card.Cloud.des':'微服务应用开发与治理一站式解决方案',
