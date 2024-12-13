@@ -143,9 +143,10 @@ const replaceSlugs = async () => {
 		`export function slugToPathname(slug: string, id: string): string {
 			// 2.2.x/zh-cn/overview/version-explain.md
 			let param = slugToParam(slug);
-			const regex = /2.2.x|developer|ebook/;
+			const regex = /developer|ebook|1.0.0-M3.2|dev/;
 			const [curVersion,lang, ...rest] = id.split('/');
 			const match = regex.exec(curVersion);
+			console.log('match', match)
 			if (match) {
 				rest[rest.length-1] = rest[rest.length-1].replace(/.(md|mdx)$/, "")
 				param = "docs/" + curVersion + "/" + rest.join("/")
