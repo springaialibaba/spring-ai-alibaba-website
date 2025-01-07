@@ -10,7 +10,7 @@ export const TOPBAR = {
     "mobileText": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
     "link": "/blog/news/meetup-2024-11-26-shanghai",
     "target": "_blank",
-    "display": true
+    "display": false
 }
 // TODO: 配置algolia
 export const ALGOLIA = {
