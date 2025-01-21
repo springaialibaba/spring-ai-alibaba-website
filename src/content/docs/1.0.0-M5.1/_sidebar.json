@@ -1,0 +1,44 @@
+[
+	{
+        "label": "概览",
+        "translations": {
+            "en": "Introduction"
+        },
+        "link": "docs/1.0.0-M5.1/overview/"
+    },
+    {
+        "label": "核心概念",
+        "translations": {
+            "en": "Concepts"
+        },
+        "link": "docs/1.0.0-M5.1/concepts/"
+	},
+    {
+        "label": "快速开始",
+        "translations": {
+            "en": "Quick Start"
+        },
+        "link": "docs/1.0.0-M5.1/get-started/"
+	},
+	{
+        "label": "使用教程",
+        "translations": {
+            "en": "Tutorials"
+        },
+        "autogenerate": {
+            "directory": "tutorials"
+        },
+        "items": []
+	},
+	{
+        "label": "最佳实践",
+        "translations": {
+            "en": "practices"
+        },
+        "autogenerate": {
+            "directory": "practices"
+        },
+        "items": []
+	}
+
+]
