@@ -88,14 +88,15 @@ Spring AI Alibaba已经集成了`阿里云百炼平台`，接下来介绍基于�
 Spring AI 为 VectorStore 提供了 Spring Boot 的自动配置。要启用此功能，请将以下依赖项添加到您项目的 Maven`pom.xml`文件中：
 ```xml
 <dependency>
-    <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-dashscope-spring-boot-starter</artifactId>
+    <groupId>com.alibaba.cloud.ai</groupId>
+    <artifactId>spring-ai-alibaba-starter</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'org.springframework.ai:spring-ai-dashscope-spring-boot-starter'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-starter'
 }
 ```
 
@@ -146,15 +147,15 @@ public class StoreController {
 如果您不希望使用 Spring Boot 的 Auto-configuration，可以在应用程序中手动配置`DashScopeCloudStore`。为此，请将`spring.ai.dashscope`依赖项添加到您项目的 Maven`pom.xml`文件中：
 ```xml
 <dependency>
-    <groupId>org.springframework.ai</groupId>
-    <artifactId>spring-ai-dashscope</artifactId>
+    <groupId>com.alibaba.cloud.ai</groupId>
+    <artifactId>spring-ai-alibaba-core</artifactId>
 </dependency>
 ```
 
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'org.springframework.ai:spring-ai-dashscope'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-core'
 }
 ```
 ```note
