@@ -4,39 +4,65 @@
         "translations": {
             "en": "Introduction"
         },
-        "link": "docs/dev/overview/"
+        "link": "docs/1.0.0-M5.1/overview/"
     },
-    {
-        "label": "核心概念",
-        "translations": {
-            "en": "Concepts"
-        },
-        "link": "docs/dev/concepts/"
-	},
     {
         "label": "快速开始",
         "translations": {
             "en": "Quick Start"
         },
-        "link": "docs/dev/get-started/"
+        "autogenerate": {
+			"directory": "get-started"
+		},
+		"items": []
 	},
 	{
         "label": "使用教程",
         "translations": {
             "en": "Tutorials"
         },
-        "autogenerate": {
-            "directory": "tutorials"
-        },
-        "items": []
+        "items": [{
+					  "label": "基础框架",
+					  "translations": {
+						  "en": "Framework Basics"
+					  },
+				      "collapsed": true,
+					  "autogenerate": {
+						  "directory": "tutorials/basics"
+					  },
+					  "items": []
+				},{
+					  "label": "智能体与工作流",
+					  "translations": {
+						  "en": "Agent & Workflow"
+					  },
+				      "collapsed": true,
+					  "autogenerate": {
+						  "directory": "tutorials/graph"
+					  },
+					  "items": []
+				}
+			]
 	},
 	{
         "label": "最佳实践",
         "translations": {
             "en": "practices"
         },
+	    "collapsed": true,
         "autogenerate": {
             "directory": "practices"
+        },
+        "items": []
+	},
+	{
+        "label": "生态集成",
+        "translations": {
+            "en": "Integrations"
+        },
+	    "collapsed": true,
+        "autogenerate": {
+            "directory": "integration"
         },
         "items": []
 	}

@@ -11,7 +11,6 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 > 注意：因为 Spring AI Alibaba 基于 Spring Boot 3.x 开发，因此本地 JDK 版本要求为 17 及以上。
 
 1. 下载项目
-
 	运行以下命令下载源码，进入 helloworld 示例目录：
 
 	```shell
@@ -20,7 +19,6 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	```
 
 2. 运行项目
-
 	首先，需要获取一个合法的 API-KEY 并设置 `AI_DASHSCOPE_API_KEY` 环境变量，可跳转 <a target="_blank" href="https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key">阿里云百炼平台</a> 了解如何获取 API-KEY。
 
 	```shell
