@@ -60,11 +60,29 @@
         "translations": {
             "en": "Integrations"
         },
-	    "collapsed": true,
-        "autogenerate": {
-            "directory": "integration"
-        },
-        "items": []
+	    "collapsed": false,
+        "items": [{
+					  "label": "DocumentReader",
+					  "translations": {
+						  "en": "DocumentReader"
+					  },
+				      "collapsed": true,
+					  "autogenerate": {
+						  "directory": "integration/documentreader"
+					  },
+					  "items": []
+				},{
+					  "label": "functioncalling",
+					  "translations": {
+						  "en": "FunctionCalling"
+					  },
+				      "collapsed": true,
+					  "autogenerate": {
+						  "directory": "integration/functioncalling"
+					  },
+					  "items": []
+				}
+			]
 	}
 
 ]

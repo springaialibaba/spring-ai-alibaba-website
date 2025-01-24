@@ -14,8 +14,8 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	运行以下命令下载源码，进入 helloworld 示例目录：
 
 	```shell
-	git clone --depth=1 https://github.com/alibaba/spring-ai-alibaba.git
-	cd spring-ai-alibaba/spring-ai-alibaba-examples/helloworld-example
+	git clone --depth=1 https://github.com/springaialibaba/spring-ai-alibaba-examples.git
+	cd spring-ai-alibaba-examples/spring-ai-alibaba-helloworld
 	```
 
 2. 运行项目
@@ -28,10 +28,10 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	启动示例应用：
 
 	```shell
-	./mvnw compile exec:java -Dexec.mainClass="com.alibaba.cloud.ai.example.helloworld.HelloWorldExampleApplication"
+	./mvnw compile exec:java -Dexec.mainClass="com.alibaba.cloud.ai.example.helloworld.HelloworldApplication"
 	```
 
-	访问 `http://localhost:8080/ai/chat?input=给我讲一个笑话吧`，向通义模型提问并得到回答。
+	访问 `http://localhost:18080/helloworld/simple/chat?query=给我讲一个笑话吧`，向通义模型提问并得到回答。
 
 ## 示例开发指南
 以上示例本质上就是一个普通的 Spring Boot 应用，我们来通过源码解析看一下具体的开发流程。
@@ -44,7 +44,7 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	<dependency>	
 		<groupId>com.alibaba.cloud.ai</groupId>
 		<artifactId>spring-ai-alibaba-starter</artifactId>
-		<version>1.0.0-M2.1</version>
+		<version>1.0.0-M5.1</version>
 	</dependency>
 	```
 
@@ -69,26 +69,41 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 
 	```java
 	@RestController
-    @RequestMapping("/ai")
-	public class ChatController {
-	
-		private final ChatClient chatClient;
-	
-		public ChatController(ChatClient.Builder builder) {
-			this.chatClient = builder.build();
+	@RequestMapping("/helloworld")
+	public class HelloworldController {
+		private static final String DEFAULT_PROMPT = "你是一个博学的智能聊天助手，请根据用户提问回答！";
+
+		private final ChatClient dashScopeChatClient;
+
+		public HelloworldController(ChatClient.Builder chatClientBuilder) {
+			this.dashScopeChatClient = chatClientBuilder
+					.defaultSystem(DEFAULT_PROMPT)
+					 // 实现 Chat Memory 的 Advisor
+					 // 在使用 Chat Memory 时，需要指定对话 ID，以便 Spring AI 处理上下文。
+					 .defaultAdvisors(
+							 new MessageChatMemoryAdvisor(new InMemoryChatMemory())
+					 )
+					 // 实现 Logger 的 Advisor
+					 .defaultAdvisors(
+							 new SimpleLoggerAdvisor()
+					 )
+					 // 设置 ChatClient 中 ChatModel 的 Options 参数
+					 .defaultOptions(
+							 DashScopeChatOptions.builder()
+									 .withTopP(0.7)
+									 .build()
+					 )
+					 .build();
+		 }
+
+	    @GetMapping("/simple/chat")
+		public String simpleChat(String query) {
+			return dashScopeChatClient.prompt(query).call().content();
 		}
-	
-		@GetMapping("/chat")
-		public String chat(String input) {
-			return this.chatClient.prompt()
-					.user(input)
-					.call()
-					.content();
-		}
-	}
+	 }
 	```
 
-	以上示例中，ChatClient 调用大模型使用的是默认参数，Spring AI Alibaba 还支持通过 `DashScopeChatOptions` 调整与模型对话时的参数，`DashScopeChatOptions` 支持两种不同维度的配置方式：
+	以上示例中，ChatClient 使用默认参数调用大模型，Spring AI Alibaba 还支持通过 `DashScopeChatOptions` 调整与模型对话时的参数，`DashScopeChatOptions` 支持两种不同维度的配置方式：
 
 	1. 全局默认值，即 `ChatClient` 实例初始化参数
 
@@ -97,14 +112,11 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	2. 每次 Prompt 调用前动态指定
 
 		```java
-		ChatResponse response = chatModel.call(
-			new Prompt(
-				"Generate the names of 5 famous pirates.",
-				DashScopeChatOptions.builder()
-					.withModel("qwen-plus")
-					.withTemperature(0.4F)
-				.build()
-			));
+		String result = dashScopeChatClient
+			.prompt(query)
+			.options(DashScopeChatOptions.builder().withTopP(0.8).build())
+			.call()
+			.content();
 		```
 
 	关于 `DashScopeChatOptions` 配置项的详细说明，请查看参考手册。
@@ -118,4 +130,3 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 ### 高级示例
 * [使用 RAG 开发 Q&A 答疑助手](./practices/rag)
 * [具备连续对话能力的聊天机器人](./practices/memory)
-*

@@ -96,7 +96,7 @@ Spring AI 为 VectorStore 提供了 Spring Boot 的自动配置。要启用此�
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-starter'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-starter:${version}'
 }
 ```
 
@@ -149,13 +149,14 @@ public class StoreController {
 <dependency>
     <groupId>com.alibaba.cloud.ai</groupId>
     <artifactId>spring-ai-alibaba-core</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-core'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-core:${version}'
 }
 ```
 ```note

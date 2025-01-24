@@ -3,7 +3,7 @@ title: 智能机票助手
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
-> 本示例项目的源码请参 Github 仓库 [spring-ai-alibaba-examples](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-examples/playground-flight-booking)。
+> 本示例项目的源码请参 Github 仓库 [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-agent-example/playground-flight-booking)。
 
 接下来，我们通过一个更贴近实际使用场景的示例，来展示 Spring AI Alibaba 在构建智能体应用方面的强大能力。
 
@@ -17,9 +17,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 #### 完整架构图
 <font style="color:#5e5e5e;">基于这样一个</font>智能机票助手目标，我们绘制了一个如下图所示的架构图：
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1726885568393-66764b19-a8cb-4788-bb98-c301fce7c8e4.png)
-
-
+![](/img/user/ai/practices/flight-booking/architecture.png)
 
 <font style="color:#5e5e5e;">接下来，我们结合架构图对示例进行详细分析。
 </font>
@@ -29,7 +27,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 
 <font style="color:#5e5e5e;"></font>
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1726912043221-e23df6ca-dddc-46b9-b7f2-02d791d150fa.png)
+![](/img/user/ai/practices/flight-booking/step1-llm.png)
 
 <font style="color:#5e5e5e;"></font>
 
@@ -39,8 +37,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 <font style="color:#5e5e5e;">很显然，单纯依赖 AI 模型本身并不能替我们完成上面的要求，这个时候就要用到 RAG（检索增强）模式了。通过 RAG 我们可以把机票退改签相关的领域知识输入给应用和 AI 模型，让 AI 结合这些规则与要求辅助决策，增加 RAG 后的架构如下图所示：</font>
 
 
-
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1727063147426-6df413c8-bcd2-4966-b0c0-178279ab2752.png)
+![](/img/user/ai/practices/flight-booking/step2-rag.png)
 
 <font style="color:#5e5e5e;"></font>
 
@@ -55,8 +52,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 
 <font style="color:#5e5e5e;"></font>
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1726913577931-fdcd7e06-90ec-4dad-9547-bc63016e0bf2.png)
-
+![](/img/user/ai/practices/flight-booking/step3-tool.png)
 
 
 #### <font style="color:#5e5e5e;">使用 Chat Memory 增加多轮对话能力</font>
@@ -70,7 +66,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 4. <font style="color:#5e5e5e;">RAG、Vector Store，机票预定、改签、退票等相关规则</font>
 
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1726914000870-648040e8-d109-4f08-ab27-ebfcef0079f9.png)
+![](/img/user/ai/practices/flight-booking/step4-memory.png)
 
 
 #### 使用 ChatClient 完成编码
@@ -105,5 +101,5 @@ this.chatClient = modelBuilder
 
 最终，我们开发的示例运行效果如下所示：
 
-![](https://intranetproxy.alipay.com/skylark/lark/0/2024/png/54037/1726916955378-bd0b89ff-6d2e-4cda-a0b7-7cf22c680fb9.png)
+![](/img/user/ai/practices/flight-booking/demo.png)
 

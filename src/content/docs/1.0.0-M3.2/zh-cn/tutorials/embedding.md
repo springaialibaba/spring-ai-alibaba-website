@@ -125,12 +125,13 @@ Spring AI 为 DashScope Embedding Model提供了 Spring Boot 的自动配置。�
 <dependency>
     <groupId>com.alibaba.cloud.ai</groupId>
     <artifactId>spring-ai-alibaba-starter</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-starter'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-starter:${version}'
 }
 ```
 #### Embedding Properties
@@ -190,13 +191,14 @@ public class EmbeddingController {
 <dependency>
     <groupId>com.alibaba.cloud.ai</groupId>
     <artifactId>spring-ai-alibaba-core</artifactId>
+    <version>${version}</version>
 </dependency>
 ```
 
 或者添加到您的Gradle`build.gradle`文件中：
 ```gradle
 dependencies {
-    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-core'
+    implementation 'com.alibaba.cloud.ai:spring-ai-alibaba-core:${version}'
 }
 ```
 

@@ -14,7 +14,7 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	运行以下命令下载源码，进入 helloworld 示例目录：
 
 	```shell
-	git clone --depth=1 https://github.com/alibaba/spring-ai-alibaba.git
+	git clone --depth=1 https://github.com/alibaba/spring-ai-alibaba.git -b v1.0.0-M3.2
 	cd spring-ai-alibaba/spring-ai-alibaba-examples/helloworld-example
 	```
 
