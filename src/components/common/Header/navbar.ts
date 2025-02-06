@@ -41,8 +41,8 @@ export default [
     },
     trigger: "click",
     target: "_self",
-    route: "/ai/",
-    activePath: ["/ai/"],
+    route: "/initializer/",
+    activePath: ["/initializer"],
   },
   {
     label: "社区",
