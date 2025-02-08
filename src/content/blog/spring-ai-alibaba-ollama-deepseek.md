@@ -73,7 +73,22 @@ ollama run deepseek-r1:1.5b
 
 > 本示例完整源码可参考：[https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-chat-example/ollama-deepseek-chat](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-chat-example/ollama-deepseek-chat)
 
+#### 快速运行示例
 
+下载示例源码：
+
+```shell
+git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
+cd spring-ai-alibaba-examples/spring-ai-alibaba-chat-example/ollama-deepseek-chat/ollama-deepseek-chat-client
+```
+
+```shell
+./mvnw compile exec:java -Dexec.mainClass="com.alibaba.cloud.ai.example.chat.deepseek.OllamaChatClientApplication"
+```
+
+打开浏览器，访问 `http://localhost:10006/ollama/chat-client/simple/chat`，这时应用访问的就是本地部署的 deepseek 模型服务。
+
+#### 源码分析
 使用 Spring AI Alibaba 开发应用与使用普通 Spring Boot 没有什么区别，只需要增加 `spring-ai-alibaba-starter` 依赖，将`ChatClient` Bean 注入就可以实现与模型聊天了。</font>
 
 在项目中加入 `spring-ai-alibaba-starter` 依赖，由于咱们的模型是通过 ollama 运行的，这里我们也加入 `spring-ai-ollama-spring-boot-starter` 依赖。
@@ -85,23 +100,6 @@ ollama run deepseek-r1:1.5b
   <version>1.0.0-M5</version>
 </dependency>
 ```
-
-
-> 注意：由于 spring-ai 相关依赖包还没有发布到中央仓库，如出现 spring-ai-core 等相关依赖解析问题，请在您项目的 pom.xml 依赖中加入如下仓库配置。
->
-
->```xml
-><repositories>
->	<repository>
->		<id>spring-milestones</id>
->		<name>Spring Milestones</name>
->		<url>https://repo.spring.io/milestone</url>
->		<snapshots>
->			<enabled>false</enabled>
->		</snapshots>
->	</repository>
-><repositories>
->```
 
 配置模型地址，在 application.properties 中配置模型的 baseUrl 与 model 名称。
 
