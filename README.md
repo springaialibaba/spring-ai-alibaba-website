@@ -1,10 +1,4 @@
-# Starlight Starter Kit: Basics
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/starlight/tree/main/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/starlight/tree/main/examples/basics)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwithastro%2Fstarlight%2Ftree%2Fmain%2Fexamples%2Fbasics&project-name=my-starlight-docs&repository-name=my-starlight-docs)
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+# Spring AI Alibaba Website
 
 ## 🚀 Project Structure
 
@@ -29,6 +23,24 @@ Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. 
 Images can be added to `src/assets/` and embedded in Markdown with a relative link.
 
 Static assets, like favicons, can be placed in the `public/` directory.
+
+## Local Development
+
+Clone source code:
+
+```shell
+git clone https://github.com/springaialibaba/spring-ai-alibaba-website.git
+cd spring-ai-alibaba-website
+```
+
+Run the following command to start server locally:
+
+```shell
+npm install
+npm run dev
+```
+
+Open browser, visit `http://localhost:4321`.
 
 ## 🧞 Commands
 
