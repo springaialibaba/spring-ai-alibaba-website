@@ -8,7 +8,7 @@ import { getEntries } from "astro:content";
 export const TOPBAR = {
     "text": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
     "mobileText": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
-    "link": "/blog/spring-ai-alibaba-plugin",
+    "link": "/blog/spring-ai-alibaba-plugin/",
     "target": "_blank",
     "display": true
 }
