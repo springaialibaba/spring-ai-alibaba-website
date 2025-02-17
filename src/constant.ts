@@ -6,11 +6,11 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
-    "mobileText": "AI 原生实战营，为您带来最全面的 AI 应用开发经验分享 | 2024年12月26日上海",
-    "link": "/blog/news/meetup-2024-11-26-shanghai",
+    "text": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
+    "mobileText": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
+    "link": "/blog/spring-ai-alibaba-plugin/",
     "target": "_blank",
-    "display": false
+    "display": true
 }
 // TODO: 配置algolia
 export const ALGOLIA = {
