@@ -82,7 +82,7 @@ Spring AI 使这一过程变得简单，只需定义一个返回 `java.util.Func
 
 我们的函数调用某个基于 SaaS 的天气服务 API，并将天气响应返回给模型以完成对话。在这个示例中，我们将使用一个名为 MockWeatherService 的简单实现，它为不同位置硬编码了温度。
 
-> 示例源码请参见 [function-calling-example](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-examples/function-calling-example)
+> 示例源码请参见 [function-calling-example](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-function-calling-example)
 
 以下是代表天气服务 API 的 MockWeatherService.java：
 
