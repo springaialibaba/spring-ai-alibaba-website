@@ -43,17 +43,58 @@ public class ChatModelController {
 
 使用 Prompt 作为输入：
 ```java
-
+@RequestMapping("/chatWithPrompt")
+public String chatWithPrompt(String input) {
+    Prompt prompt = new Prompt(input);
+    ChatResponse response = chatModel.call(prompt);
+    return response.getResult().getOutput().getContent();
+}
 ```
 
 Streaming 示例：
 ```java
+@RequestMapping("/streamChat")
+public void streamChat(String input, HttpServletResponse response) throws IOException {
+    response.setContentType("text/event-stream");
+    response.setCharacterEncoding("UTF-8");
 
+    Prompt prompt = new Prompt(input);
+    chatModel.stream(prompt, new StreamHandler() {
+        @Override
+        public void onMessage(ChatMessage message) {
+            try {
+                response.getWriter().write("data: " + message.getContent() + "\n\n");
+                response.getWriter().flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onComplete() {
+            try {
+                response.getWriter().write("event: complete\n\n");
+                response.getWriter().flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    });
+}
 ```
 
 通过 ChatOptions 在每次调用中调整模型参数：
 ```java
-
+@RequestMapping("/chatWithOptions")
+public String chatWithOptions(String input) {
+    ChatOptions options = ChatOptions.builder()
+            .withTemperature(0.7)
+            .withMaxTokens(150)
+            .build();
+    Prompt prompt = new Prompt(input, options);
+    ChatResponse response = chatModel.call(prompt);
+    return response.getResult().getOutput().getContent();
+}
 ```
 
 ## Image Model
@@ -89,7 +130,19 @@ public class ImageModelController {
 
 通过 ImageOptions 在每次调用中调整模型参数：
 ```java
+@RequestMapping("/imageWithOptions")
+public String imageWithOptions(String input) {
+    ImageOptions options = ImageOptionsBuilder.builder()
+            .withModel("dall-e-3")
+            .withResolution("1024x1024")
+            .build();
 
+    ImagePrompt imagePrompt = new ImagePrompt(input, options);
+    ImageResponse response = imageModel.call(imagePrompt);
+    String imageUrl = response.getResult().getOutput().getUrl();
+
+    return "redirect:" + imageUrl;
+}
 ```
 
 ## Audio Model
