@@ -4,7 +4,7 @@ keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 
-Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来，我们将学习如何使用 spring ai alibaba 开发一个基于通义模型服务的智能聊天应用。
+Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来，我们将学习如何使用 Spring AI Alibaba 开发一个基于通义模型服务的智能聊天应用。
 
 ## 快速体验示例
 
@@ -36,6 +36,7 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	访问 `http://localhost:18080/helloworld/simple/chat?query=给我讲一个笑话吧`，向通义模型提问并得到回答。
 
 ## 示例开发指南
+
 以上示例本质上就是一个普通的 Spring Boot 应用，我们来通过源码解析看一下具体的开发流程。
 
 1. 添加依赖
@@ -50,24 +51,24 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	</dependency>
 	```
 
-    > 注意：由于 spring-ai 相关依赖包还没有发布到中央仓库，如出现 spring-ai-core 等相关依赖解析问题，请在您项目的 pom.xml 依赖中加入如下仓库配置。
-    >
-    > ```xml
-    > <repositories>
-    > 	<repository>
-    > 		<id>spring-milestones</id>
-    > 		<name>Spring Milestones</name>
-    > 		<url>https://repo.spring.io/milestone</url>
-    > 		<snapshots>
-    > 			<enabled>false</enabled>
-    > 		</snapshots>
-    > 	</repository>
-    > </repositories>
-    > ```
+	> 注意：由于 spring-ai 相关依赖包还没有发布到中央仓库，如出现 spring-ai-core 等相关依赖解析问题，请在您项目的 pom.xml 依赖中加入如下仓库配置。
+	>
+	> ```xml
+	> <repositories>
+	> 	<repository>
+	> 		<id>spring-milestones</id>
+	> 		<name>Spring Milestones</name>
+	> 		<url>https://repo.spring.io/milestone</url>
+	> 		<snapshots>
+	> 			<enabled>false</enabled>
+	> 		</snapshots>
+	> 	</repository>
+	> </repositories>
+	> ```
 
 2. 注入 ChatClient
 
-	接下来，在普通 Controller Bean 中注入 `ChatClient` 实例，这样你的 Bean 就具备与 AI 大模型智能对话的能力了。
+	接下来，在普通 Controller Bean 中注入 `ChatClient` 实例，这样您的 Bean 就具备与 AI 大模型智能对话的能力了。
 
 	```java
 	@RestController
@@ -98,7 +99,7 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 					 .build();
 		 }
 
-	    @GetMapping("/simple/chat")
+		@GetMapping("/simple/chat")
 		public String simpleChat(String query) {
 			return dashScopeChatClient.prompt(query).call().content();
 		}
@@ -124,11 +125,14 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	关于 `DashScopeChatOptions` 配置项的详细说明，请查看参考手册。
 
 ## 更多资料
+
 ### 基础示例与API使用
+
 * [ChatClient 详细说明](./tutorials/chat-client/)
 * [Prompt Template 提示词模板](./tutorials/prompt/)
 * [Function Calling](./tutorials/function-calling/)
 
 ### 高级示例
+
 * [使用 RAG 开发 Q&A 答疑助手](./practices/rag)
 * [具备连续对话能力的聊天机器人](./practices/memory)
