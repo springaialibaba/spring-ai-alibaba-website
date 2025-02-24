@@ -1,10 +1,8 @@
 ---
-title: 阿里云 DashScope 模型接入
+title: DashScope
 keywords: [Spring AI,通义千问,百炼,DashScope]
 description: "Spring AI Alibaba 接入 DashScope 模型"
 ---
-
-# 阿里云 DashScope 模型接入
 
 在本章节中，我们将学习如何使用 Spring AI Alibaba 接入阿里云 DashScope 系列模型。在开始学习之前，请确保您已经了解相关概念。
 

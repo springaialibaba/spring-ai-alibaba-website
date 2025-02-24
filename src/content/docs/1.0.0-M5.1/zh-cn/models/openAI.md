@@ -1,8 +1,9 @@
 ---
-title: OpenAI 模型接入
+title: OpenAI
 keywords: [Spring AI,OpenAI,Spring AI Alibaba]
 description: "Spring AI 接入 OpenAI 模型"
 ---
+
 在本章节中，我们将学习如何使用 Spring AI Alibaba 接入OpenAI 系列模型。在开始学习之前，请确保您已经了解相关概念。
 
 1. [Chat Client](../tutorials/basics/chat-client.md)；

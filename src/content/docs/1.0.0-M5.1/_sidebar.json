@@ -20,6 +20,16 @@
         },
         "link": "docs/1.0.0-M5.1/get-started/"
 	},
+    {
+        "label": "模型",
+        "translations": {
+            "en": "Models"
+        },
+        "autogenerate": {
+            "directory": "models"
+        },
+        "items": []
+	},
 	{
         "label": "使用教程",
         "translations": {
