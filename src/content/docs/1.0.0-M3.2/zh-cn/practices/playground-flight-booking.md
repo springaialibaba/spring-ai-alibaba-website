@@ -3,7 +3,7 @@ title: 智能机票助手
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
-> 本示例项目的源码请参 Github 仓库 [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-agent-example/playground-flight-booking)。
+> 本示例项目的源码请查看 Github 仓库 [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-agent-example/playground-flight-booking)。
 
 接下来，我们通过一个更贴近实际使用场景的示例，来展示 Spring AI Alibaba 在构建智能体应用方面的强大能力。
 
