@@ -45,10 +45,28 @@
         "translations": {
             "en": "practices"
         },
-        "autogenerate": {
-            "directory": "practices"
-        },
-        "items": []
+        "items": [{
+					  "label": "阿里云百炼",
+					  "translations": {
+						  "en": "Bailian"
+					  },
+				      "collapsed": false,
+					  "autogenerate": {
+						  "directory": "practices/bailian"
+					  },
+					  "items": []
+				},{
+					  "label": "场景示例",
+					  "translations": {
+						  "en": "Use Cases"
+					  },
+				      "collapsed": false,
+					  "autogenerate": {
+						  "directory": "practices/usecase"
+					  },
+					  "items": []
+				}
+			]
 	}
 
 ]
