@@ -12,6 +12,6 @@ description: "Spring Ai Alibaba插件与工具生态，本文档主要涵盖向�
 
 | 名称（代码引用名） | application.yml 配置 | Maven 依赖 | 说明 |
 | --- | --- | --- | --- |
-| <font style="color:#080808;background-color:#ffffff;">Aliyun OpenSearch</font> | ```yaml spring:  ai:   vectorstore:     aliyun-opensearch:      index-name: spring-ai-document-index ```  | ```xml <dependency>   <groupId>com.alibaba.cloud.ai</groupId>   <artifactId>spring-ai-alibaba-analyticdb-store</artifactId>   <version>${spring.ai.alibaba.version}</version> </dependency> ```  | 阿里云OpenSearch向量检索版适配。<br/><br/>示例地址（如有） |
+| Aliyun OpenSearch | ```yaml spring:  ai:   vectorstore:     aliyun-opensearch:      index-name: spring-ai-document-index ```  | ```xml <dependency>   <groupId>com.alibaba.cloud.ai</groupId>   <artifactId>spring-ai-alibaba-analyticdb-store</artifactId>   <version>${spring.ai.alibaba.version}</version> </dependency> ```  | 阿里云OpenSearch向量检索版适配。<br/><br/>示例地址（如有） |
 | Aliyun AnalyticDB | | | |
 | Aliyun Tair | | | |

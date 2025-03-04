@@ -44,9 +44,8 @@ ChatClient.builder(chatModel).defaultFunctions("baiduTranslateFunction").build()
 
 | 名称（代码引用名） | application.properties 配置 | Maven 依赖 | 说明 |
 | --- | --- | --- | --- |
-| <font style="color:#080808;background-color:#ffffff;">baiduTranslateFunction</font> | spring.ai.alibaba.toolcalling.baidutranslate.enable=true<br/>spring.ai.alibaba.toolcalling.baidutranslate.appId=xxx（可选）<br/>spring.ai.alibaba.toolcalling.baidutranslate.<font style="color:#080808;background-color:#ffffff;">secretKey</font>=xxx（可选） | ```xml <dependency>   <groupId>com.alibaba.cloud.ai</groupId>   <artifactId>spring-ai-alibaba-starter-tool-calling-baidutranslate</artifactId>   <version>${spring.ai.alibaba.version}</version> </dependency> ```  | 百度翻译工具，可用于如中文到英文翻译等场景。示例地址（如有） |
+| baiduTranslateFunction | spring.ai.alibaba.toolcalling.baidutranslate.enable=true<br/>spring.ai.alibaba.toolcalling.baidutranslate.appId=xxx（可选）<br/>spring.ai.alibaba.toolcalling.baidutranslate.secretKey=xxx（可选） | ```xml <dependency>   <groupId>com.alibaba.cloud.ai</groupId>   <artifactId>spring-ai-alibaba-starter-tool-calling-baidutranslate</artifactId>   <version>${spring.ai.alibaba.version}</version> </dependency> ```  | 百度翻译工具，可用于如中文到英文翻译等场景。示例地址（如有） |
 | | | | |
-
 
 
 
