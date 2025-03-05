@@ -32,7 +32,7 @@ Do not include any explanations, only provide a RFC8259 compliant JSON response 
 
 ## 使用示例
 
-格式化输出工具的使用非常简单，以下是 `ChatClient` 和 `ChatModel` 两种使用示例。完整是示例源码请参见 [https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-structured-example)
+格式化输出工具的使用非常简单，以下是 `ChatClient` 和 `ChatModel` 两种使用示例。完整是示例源码请参见 [structured-output-example](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-structured-example)
 
 假设我们期望将模型输出转换为以下结构体：
 ```java
