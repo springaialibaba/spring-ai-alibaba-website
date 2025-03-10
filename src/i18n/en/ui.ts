@@ -342,4 +342,6 @@ export default {
 	"page.team.introduction.3.collect.btn": 'Fill in and submit',
 	"page.team.introduction.3.enroll.text": 'Activity registration',
 	"page.team.introduction.3.enroll.btn": 'Sign up',
+
+	'plugin.introduction.des':'Powerful Wasm plugin system, supporting multiple languages, with independent version upgrades, zero-downtime updates, and sandbox isolation for memory safety. Build more flexible and secure application networks!',
 };
