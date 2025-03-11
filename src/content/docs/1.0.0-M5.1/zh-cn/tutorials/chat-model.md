@@ -20,7 +20,7 @@ ChatModel API 让应用开发者可以非常方便的与 AI 模型进行文本�
 ![chat-model](https://img.alicdn.com/imgextra/i2/O1CN01wyTDFO1kR2BJOn3fe_!!6000000004679-0-tps-2555-1565.jpg)
 
 ### 使用示例
-开发完整的 ChatModel 示例应用，您需要添加 `spring-ai-alibaba-starter` 依赖，请参考快速开始中的项目配置说明了解详情，您还可以访问 [chatmodel-example](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-examples/chatmodel-example) 查看本示例完整源码。
+开发完整的 ChatModel 示例应用，您需要添加 `spring-ai-alibaba-starter` 依赖，请参考快速开始中的项目配置说明了解详情，您还可以访问 [chatmodel-example](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-chat-example/dashscope-chat/dashscope-chat-model) 查看本示例完整源码。
 
 以下是 ChatModel 基本使用示例，它可以接收 String 字符串作为输入：
 

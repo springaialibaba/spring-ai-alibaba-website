@@ -26,7 +26,7 @@ Spring AI MCP 采用模块化架构，包括以下组件：
 ## 通过一个示例快速体验 Spring AI MCP
 这里我们提供一个示例智能体应用，这个智能体可以通过 MCP 查询或更新本地文件系统，并以文件系统中的数据作为上下文与模型交互。次示例演示如何使用模型上下文协议（MCP）将 Spring AI 与本地文件系统进行集成。
 
-> 可在此查看 [示例完整源码](https://github.com/springaialibaba/spring-ai-alibaba-examples/spring-ai-alibaba-mcp-example)。
+> 可在此查看 [示例完整源码](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example)。
 
 ### 运行示例
 #### 前提条件
