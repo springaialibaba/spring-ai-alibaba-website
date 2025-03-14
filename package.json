@@ -30,6 +30,7 @@
     "lodash.merge": "^4.6.2",
     "qs": "^6.12.0",
     "react": "npm:@preact/compat",
+    "react-ace": "^14.0.1",
     "react-dom": "npm:@preact/compat",
     "rehype-external-links": "^3.0.0",
     "sharp": "^0.33.5",

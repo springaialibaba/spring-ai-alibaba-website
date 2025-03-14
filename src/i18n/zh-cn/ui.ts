@@ -330,4 +330,6 @@ export default {
 	"page.team.introduction.3.collect.btn": '去填报',
 	"page.team.introduction.3.enroll.text": '活动报名',
 	"page.team.introduction.3.enroll.btn": '去报名',
+
+	'plugin.introduction.des': '一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字（文案占位）',
 };

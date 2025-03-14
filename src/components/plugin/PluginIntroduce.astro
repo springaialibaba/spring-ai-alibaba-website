@@ -1,0 +1,43 @@
+---
+import { useTranslations } from "@i18n/util";
+const t = useTranslations(Astro);
+---
+
+<plugin-introduce class="introduce flex flex-col justify-center items-center">
+  <div class="plugin-container flex flex-col">
+    <div
+      class="text-[56px] leading-[56px] font-bold text-[#4A5F5D] mb-7 mt-[68px]"
+    >
+      插件生态
+    </div>
+    <div
+      class="mb-[126px] text-[#4A5F5D] text-[18px] leading-[18px] font-medium"
+    >
+      {t("plugin.introduction.des")}
+    </div>
+  </div>
+</plugin-introduce>
+<style>
+  plugin-introduce {
+    background-image: url('https://img.alicdn.com/imgextra/i1/O1CN01zNzh821iF0bGTvXOx_!!6000000004382-55-tps-1440-360.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-size: cover;
+
+    .plugin-container {
+      width: 85.125rem;
+      overflow: hidden;
+    }
+
+    @media (min-width: 50rem) and (max-width: 86rem) {
+      .plugin-container {
+        width: 100%;
+      }
+    }
+    @media (max-width: 50rem) {
+      .plugin-container {
+        width: 100%;
+      }
+    }
+  }
+</style>
