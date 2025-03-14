@@ -35,7 +35,7 @@ DeepSeek是一家创新型科技公司，成立于2023年7月17日，使用数�
     <dependency>
         <groupId>com.alibaba.cloud.ai</groupId>
         <artifactId>spring-ai-alibaba-starter</artifactId>
-        <version>1.0.0-M6</version>
+        <version>1.0.0-M5.1</version>
     </dependency>
     ```
 
