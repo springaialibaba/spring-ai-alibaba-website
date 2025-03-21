@@ -30,6 +30,16 @@ export const DOCS_BANNER = {
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
   {
+    key: "1.0.0-M6.1",
+    label: "1.0.0-M6.1",
+    target: "_self",
+    link: "/docs/1.0.0-M6.1/overview/",
+    translations: {
+      en: "1.0.0-M6.1",
+      link: "/en/docs/1.0.0-M6.1/overview/",
+    }
+  },
+  {
     key: "1.0.0-M5.1",
     label: "1.0.0-M5.1",
     target: "_self",
