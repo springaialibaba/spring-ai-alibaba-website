@@ -31,7 +31,7 @@ const PluginCardList = (props) => {
               <div class="flex flex-row justify-between items-center">
                 <img
                   class="logo w-12 h-12 rounded-lg"
-                  src="https://img.alicdn.com/imgextra/i1/O1CN01C4NLUr1qSJ1GED2kW_!!6000000005494-55-tps-48-48.svg"
+                  src={item.img}
                   alt="start"
                 />
               </div>

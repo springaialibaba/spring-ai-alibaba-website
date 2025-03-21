@@ -28,6 +28,7 @@
         "autogenerate": {
             "directory": "models"
         },
+		"collapsed": true,
         "items": []
 	},
 	{
@@ -38,7 +39,7 @@
         "autogenerate": {
             "directory": "tutorials"
         },
-	    "collapsed": true,
+	    "collapsed": false,
         "items": []
 	},
 	{
@@ -46,6 +47,7 @@
         "translations": {
             "en": "practices"
         },
+	    "collapsed": true,
         "items": [{
 					  "label": "阿里云百炼",
 					  "translations": {
@@ -74,6 +76,7 @@
         "translations": {
             "en": "integrations"
         },
+	    "collapsed": true,
         "items": [{
 					  "label": "Tool Calling",
 					  "translations": {

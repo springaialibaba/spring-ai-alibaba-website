@@ -331,5 +331,5 @@ export default {
 	"page.team.introduction.3.enroll.text": '活动报名',
 	"page.team.introduction.3.enroll.btn": '去报名',
 
-	'plugin.introduction.des': '一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字一串说明文字（文案占位）',
+	'plugin.introduction.des': '这里包含 Spring AI Alibaba 开源生态中的大量扩展与使用示例，您可以了解模型、插件、工具、向量库等的使用方法。',
 };

@@ -1,5 +1,16 @@
 export const pluginEmums = [
   {
+    img: "https://img.alicdn.com/imgextra/i1/O1CN01C4NLUr1qSJ1GED2kW_!!6000000005494-55-tps-48-48.svg",
+    class: "Example",
+    childrenClass: "Playground",
+    title: "Spring AI Alibaba Playground",
+    desc: "一个包含互动对话 UI 的综合示例，体验对话记忆、工具调用、图片生成等。",
+    link: "https://github.com/alibaba/spring-ai-alibaba/tree/main/community/tool-calls/spring-ai-alibaba-starter-tool-calling-baidusearch",
+    example: "https://github.com/alibaba/spring-ai-alibaba/tree/main/community/tool-calls/spring-ai-alibaba-starter-tool-calling-baidusearch",
+    rely: "none",
+  },
+  {
+    img: "https://img.alicdn.com/imgextra/i1/O1CN01C4NLUr1qSJ1GED2kW_!!6000000005494-55-tps-48-48.svg",
     class: "Tool Calling",
     childrenClass: "搜索",
     title: "百度搜索",
