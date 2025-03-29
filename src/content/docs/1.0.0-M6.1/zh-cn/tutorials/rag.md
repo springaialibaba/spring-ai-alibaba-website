@@ -380,16 +380,15 @@ Advisor advisor = RetrievalAugmentationAdvisor.builder()
         // 配置查询增强器
         .queryAugmenter(ContextualQueryAugmenter.builder()
                 .allowEmptyContext(true)        // 允许空上下文查询
-                .maxTokens(300)                 // 限制查询长度
-                .temperature(0.7)               // 控制查询扩展的创造性
                 .build())
         // 配置文档检索器
         .documentRetriever(VectorStoreDocumentRetriever.builder()
                 .vectorStore(vectorStore)
                 .similarityThreshold(0.5)       // 相似度阈值
                 .topK(3)                        // 返回文档数量
-                .minScore(0.1)                  // 最小匹配分数
-                .maxDistance(0.8)               // 最大向量距离
+                .filterExpression(new FilterExpressionBuilder()
+                                  .eq("genre", "fairytale")
+                                  .build())     // 文档过滤表达式
                 .build())
         .build();
 ```
