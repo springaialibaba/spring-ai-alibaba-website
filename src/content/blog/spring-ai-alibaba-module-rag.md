@@ -1,15 +1,18 @@
 ---
-title: 构建智能 Web Search 应用：结合 Module RAG 和 IQS 赋能大模型
+title: 构建智能 Web Search 应用：使用 Spring AI Alibaba 构建大模型联网搜索应用
 keywords: [Spring AI, Spring AI Alibaba, RAG, Web Search, DeepSeek, Module RAG]
 description: "通过集成 IQS 服务作为数据源，运用 Spring AI 和 Spring AI Alibaba 的模块化 RAG 技术，打造高效智能的 Web Search 应用，为大模型提供强大支持。"
 author: "牧生"
-date: "2025-03-11"
+date: "2025-03-21"
 category: article
 ---
 
 # 使用 Spring AI Alibaba 构建大模型联网搜索应用
 
 Spring AI 实现了模块化 RAG 架构，架构的灵感来自于论文“[模块化 RAG：将 RAG 系统转变为类似乐高的可重构框架](https://arxiv.org/abs/2407.21059)”中详述的模块化概念。
+
+本文介绍如何使用 Spring AI Alibaba 构建大模型联网搜索应用结合模块化 RAG（Module RAG）和信息检索服务（IQS）赋能大模型。
+
 
 ## Spring AI 模块化 RAG 体系
 

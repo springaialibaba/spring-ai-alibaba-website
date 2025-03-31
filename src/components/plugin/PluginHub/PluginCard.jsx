@@ -31,7 +31,7 @@ const PluginCardList = (props) => {
               <div class="flex flex-row justify-between items-center">
                 <img
                   class="logo w-12 h-12 rounded-lg"
-                  src="https://img.alicdn.com/imgextra/i1/O1CN01C4NLUr1qSJ1GED2kW_!!6000000005494-55-tps-48-48.svg"
+                  src={item.img}
                   alt="start"
                 />
               </div>
@@ -42,22 +42,27 @@ const PluginCardList = (props) => {
                 {item.desc}
               </p>
               <p class="mt-[12px] flex justify-between items-center">
-                <Button
-                  class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
-                  visibility={false}
-                  href={item.link}
-                  target="_blank"
-                >
-                  源码
-                </Button>
-                <Button
-                  class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
-                  visibility={false}
-                  href={item.link}
-                  target="_blank"
-                >
-                  示例
-                </Button>
+                {item.link && (
+                  <Button
+                    class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
+                    visibility={false}
+                    href={item.link}
+                    target="_blank"
+                  >
+                    源码
+                  </Button>
+                )}
+                {item.example && (
+                  <Button
+                    class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
+                    visibility={false}
+                    href={item.example}
+                    target="_blank"
+                  >
+                    示例
+                  </Button>
+                )}
+                {item.rely && (
                 <Tooltip
                   children={
                     <Button
@@ -113,6 +118,7 @@ const PluginCardList = (props) => {
                     />
                   }
                 />
+              )}  
               </p>
             </div>
           </a>
