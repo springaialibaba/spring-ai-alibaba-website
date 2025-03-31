@@ -24,16 +24,16 @@ export default [
     target: "_self",
     route: "/blog/",
   },
-  // {
-  //   label: "示例与插件",
-  //   translations: {
-  //     en: "Tools",
-  //   },
-  //   trigger: "click",
-  //   target: "_self",
-  //   route: "/cloud/",
-  //   activePath: ["/cloud"],
-  // },
+  {
+    label: "示例与插件",
+    translations: {
+      en: "Tools",
+    },
+    trigger: "click",
+    target: "_self",
+    route: "/cloud/",
+    activePath: ["/cloud"],
+  },
   {
     label: "社区",
     translations: {

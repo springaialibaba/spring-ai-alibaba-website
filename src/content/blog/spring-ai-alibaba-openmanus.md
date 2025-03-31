@@ -1,13 +1,13 @@
 ---
 title: Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现
-keywords: [Spring AI Alibaba, Manus, OpenManus, openmanus4j]
+keywords: [Spring AI Alibaba, Manus, OpenManus, openmanus4j, java]
 description: "此次官方发布的 Spring AI Alibaba OpenManus 实现，首款 OpenManus Java 版本完整实现，包含完整的多智能体任务规划、思考与执行流程，可以让开发者体验 Java 版本的多智能体效果。它能够根据用户的问题进行分析，操作浏览器，执行代码等来完成复杂任务等。"
-author: "牧生"
+author: "刘军"
 date: "2025-03-22"
 category: article
 ---
 
-此次官方发布的 Spring AI Alibaba OpenManus 实现，包含完整的多智能体任务规划、思考与执行流程，可以让开发者体验 Java 版本的多智能体效果。它<font style="color:rgb(0, 0, 0);">能够根据用户的问题进行分析，操作浏览器，执行代码等来完成复杂任务等。</font>
+此次官方发布的 [Spring AI Alibaba OpenManus](https://github.com/alibaba/spring-ai-alibaba/tree/main/community/openmanus) 实现，包含完整的多智能体任务规划、思考与执行流程，可以让开发者体验 Java 版本的多智能体效果。它<font style="color:rgb(0, 0, 0);">能够根据用户的问题进行分析，操作浏览器，执行代码等来完成复杂任务等。</font>
 
 **项目源码及体验地址：**[**spring-ai-alibaba-openmanus**](https://github.com/alibaba/spring-ai-alibaba/tree/main/community/openmanus)
 

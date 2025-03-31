@@ -5,8 +5,9 @@ import cloneDeep from "lodash.clonedeep";
 
 const componentList = [
   "全部",
+  "Example",
   "Tool Calling",
-  "Vectore Store",
+  "Vector Store",
   "Document Reader",
   "LLM",
   "Embedding",
@@ -15,8 +16,12 @@ const componentList = [
 
 const scenarioObj = {
   "Tool Calling": ["全部", "搜索", "生产效率", "网页浏览", "生活服务", "其他"],
-  "Vectore Store": ["全部"],
+  "Example": ["全部", "Playground", "MCP", "文生文聊天", "文生图", "多模态", "ToolCalling", "RAG", "可观测"],
+  "Vector Store": ["全部"],
   "Document Reader": ["全部"],
+  "LLM": ["全部", "ChatModel", "ImageModel", "AudioModel"],
+  "Embedding": ["全部"],
+  "Memory": ["全部"],
 };
 
 const PluginHub = (props) => {
