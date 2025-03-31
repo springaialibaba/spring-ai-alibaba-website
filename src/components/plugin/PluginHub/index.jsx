@@ -18,8 +18,8 @@ const scenarioObj = {
   "Tool Calling": ["全部", "搜索", "生产效率", "网页浏览", "生活服务", "其他"],
   "Example": ["全部", "Playground", "MCP", "文生文聊天", "文生图", "多模态", "ToolCalling", "RAG", "可观测"],
   "Vector Store": ["全部"],
-  "Document Reader": ["全部"],
-  "LLM": ["全部", "ChatModel", "ImageModel", "AudioModel"],
+  "Document Reader": ["全部", "数据格式", "数据来源"],
+  "LLM": ["全部", "ChatClient", "ImageModel", "AudioModel"],
   "Embedding": ["全部"],
   "Memory": ["全部"],
 };

@@ -42,22 +42,27 @@ const PluginCardList = (props) => {
                 {item.desc}
               </p>
               <p class="mt-[12px] flex justify-between items-center">
-                <Button
-                  class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
-                  visibility={false}
-                  href={item.link}
-                  target="_blank"
-                >
-                  源码
-                </Button>
-                <Button
-                  class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
-                  visibility={false}
-                  href={item.link}
-                  target="_blank"
-                >
-                  示例
-                </Button>
+                {item.link && (
+                  <Button
+                    class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
+                    visibility={false}
+                    href={item.link}
+                    target="_blank"
+                  >
+                    源码
+                  </Button>
+                )}
+                {item.example && (
+                  <Button
+                    class="btn btn-secondary cursor-pointer rounded-3xl min-h-2 h-8 flex-1 w-28"
+                    visibility={false}
+                    href={item.example}
+                    target="_blank"
+                  >
+                    示例
+                  </Button>
+                )}
+                {item.rely && (
                 <Tooltip
                   children={
                     <Button
@@ -113,6 +118,7 @@ const PluginCardList = (props) => {
                     />
                   }
                 />
+              )}  
               </p>
             </div>
           </a>
