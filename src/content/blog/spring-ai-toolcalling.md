@@ -1,5 +1,5 @@
 ---
-title: ToolCalling最新源码级链路调用流程及示例
+title: Spring AI 源码解析：Tool Calling链路调用流程及示例
 keywords: [Spring AI, Spring AI Alibaba, Tool Calling, Remote API]
 description: "Tool工具允许模型与一组API或工具进行交互，增强模型功能，主要用于信息检索、采取特定操作等"
 author: "影子"
