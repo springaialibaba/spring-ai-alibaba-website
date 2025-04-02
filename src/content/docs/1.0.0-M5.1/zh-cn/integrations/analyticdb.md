@@ -1,3 +1,8 @@
+---
+title: Spring AI Alibaba AnalyticDB 集成指南
+description: 本文介绍了如何在 Spring AI Alibaba 项目中集成和使用 AnalyticDB 向量数据库
+---
+
 ## spring-ai-alibaba-analyticdb-store 使用方法
 
 ### 1. 添加Maven依赖
