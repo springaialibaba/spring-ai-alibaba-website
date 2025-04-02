@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
-    "mobileText": "Spring AI Alibaba 发布 40+ 官方插件实现，涵盖 DocumentReader & FunctionCalling 等，让私域数据集成更简单。",
-    "link": "/blog/spring-ai-alibaba-plugin/",
+    "text": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现！",
+    "mobileText": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现。",
+    "link": "/blog/spring-ai-alibaba-openmanus/",
     "target": "_blank",
     "display": true
 }
@@ -29,6 +29,16 @@ export const DOCS_BANNER = {
 
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
+  {
+    key: "1.0.0-M6.1",
+    label: "1.0.0-M6.1",
+    target: "_self",
+    link: "/docs/1.0.0-M6.1/overview/",
+    translations: {
+      en: "1.0.0-M6.1",
+      link: "/en/docs/1.0.0-M6.1/overview/",
+    }
+  },
   {
     key: "1.0.0-M5.1",
     label: "1.0.0-M5.1",
