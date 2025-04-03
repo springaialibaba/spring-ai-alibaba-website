@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现！",
-    "mobileText": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现。",
-    "link": "/blog/spring-ai-alibaba-openmanus/",
+    "text": "Java 开发玩转 MCP：从服务发布、调用到 Claude 集成，原理讲解+示例！",
+    "mobileText": "Java 开发玩转 MCP：从服务发布、调用到 Claude 集成，原理讲解+示例！",
+    "link": "/blog/spring-ai-alibaba-mcp/",
     "target": "_blank",
     "display": true
 }

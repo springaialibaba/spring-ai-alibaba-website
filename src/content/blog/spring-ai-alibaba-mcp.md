@@ -1,6 +1,6 @@
 ---
-title: 玩转 MCP 协议：从 Claude 自动化到 Spring AI Alibaba 生态整合
-keywords: [Model Context Protocol, MCP, Spring Ai, OpenManus]
+title: Java开发基于Spring AI Alibaba玩转 MCP：从发布、调用到 Claude 集成
+keywords: [Model Context Protocol, MCP, Spring Ai, Claude, OpenManus]
 description: 本文讨论了 2024 年 11 月 Anthropic 公司推出的 MCP 协议，介绍了其在 Claude 自动化到 Spring AI Alibaba 生态整合中的应用，包括架构、搭建方法及测试过程等。
 author: 夏冬
 date: "2025-04-02"
