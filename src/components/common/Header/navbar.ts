@@ -35,6 +35,16 @@ export default [
     activePath: ["/cloud"],
   },
   {
+    label: "MCP市场",
+    translations: {
+      en: "MCP Market",
+    },
+    trigger: "click",
+    target: "_self",
+    route: "/mcp/",
+    activePath: ["/mcp"],
+  },
+  {
     label: "社区",
     translations: {
       en: "COMMUNITY",

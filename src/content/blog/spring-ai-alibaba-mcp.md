@@ -1,5 +1,5 @@
 ---
-title: Java开发基于Spring AI Alibaba玩转 MCP：从发布、调用到 Claude 集成
+title: Java开发基于Spring AI Alibaba玩转MCP：从发布、调用到 Claude 集成
 keywords: [Model Context Protocol, MCP, Spring Ai, Claude, OpenManus]
 description: 本文讨论了 2024 年 11 月 Anthropic 公司推出的 MCP 协议，介绍了其在 Claude 自动化到 Spring AI Alibaba 生态整合中的应用，包括架构、搭建方法及测试过程等。
 author: 夏冬
@@ -10,6 +10,20 @@ category: article
 <font style="color:rgb(53, 56, 65);">本文作者：夏冬，Spring AI Alibaba Contributor。</font>
 
 <font style="color:rgb(53, 56, 65);"></font>
+
+# 0、文章摘要
+
+1. MCP 基础与快速体验（熟悉的读者可以跳过此部分）
+2. 如何将自己开发的 Spring 应用发布为 MCP Server，验证使用 Claude 或 Spring 应用作为客户端接入自己发布的 Java MCP Server。
+	* 发布 stdio 模式的 MCP Server
+	* 发布 SSE 模式的 MCP Server
+	* 开发另一个 Spring 应用作为 MCP Client 调用 MCP Server 服务
+	* 使用 Claude 桌面应用接入我们的 Java MCP Server
+3. 如何使用自己开发的 Spring 应用调用 MCP Server，包括调用自己发布的 Java MCP Server，也包括市面上其他通用 MCP Server。
+	* 配置并调用 stdio 模式的 MCP Server
+	* 配置并调用 SSE 模式的 MCP Server
+4. 如何在 Spring AI Alibaba OpemManus 实现中使用 MCP 服务。
+
 
 # 1、模型上下文协议（Model Context Protocol）入门
 
