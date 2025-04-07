@@ -35,9 +35,9 @@ export default [
     activePath: ["/cloud"],
   },
   {
-    label: "MCP市场",
+    label: "MCP 市场",
     translations: {
-      en: "MCP Market",
+      en: "MCP Marketplace",
     },
     trigger: "click",
     target: "_self",

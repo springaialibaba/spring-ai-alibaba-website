@@ -44,7 +44,8 @@ const PluginHub = (props) => {
     const thirdData = [];
     if (filterText) {
       copyData.forEach((item) => {
-        if (item?.title?.includes(filterText)) {
+        if (item?.title?.toLowerCase().includes(filterText.toLowerCase()) ||
+            item?.desc?.toLowerCase().includes(filterText.toLowerCase())) {
           firstData.push(item);
         }
       });

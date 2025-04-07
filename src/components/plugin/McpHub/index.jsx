@@ -5,6 +5,8 @@ import cloneDeep from "lodash.clonedeep";
 
 const componentList = [
     "全部",
+    "官方实现",
+    "社区版实现",
     "浏览器自动化",
     "艺术与文化",
     "云平台",
@@ -31,6 +33,8 @@ const componentList = [
 ];
 
 const scenarioObj = {
+  "官网实现": ["全部"],
+  "社区版实现": ["全部"],
   "浏览器自动化": ["全部"],
   "艺术与文化": ["全部"],
   "云平台": ["全部"],
@@ -76,7 +80,8 @@ const McpHub = (props) => {
     const thirdData = [];
     if (filterText) {
       copyData.forEach((item) => {
-        if (item?.title?.includes(filterText)) {
+        if (item?.title?.toLowerCase().includes(filterText.toLowerCase()) || 
+            item?.desc?.toLowerCase().includes(filterText.toLowerCase())) {
           firstData.push(item);
         }
       });
