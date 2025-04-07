@@ -4,6 +4,7 @@ import { pluginEmums } from "./PluginEnum";
 import cloneDeep from "lodash.clonedeep";
 
 const componentList = [
+    "全部",
     "浏览器自动化",
     "艺术与文化",
     "云平台",
