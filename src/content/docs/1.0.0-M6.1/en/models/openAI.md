@@ -44,10 +44,10 @@ OpenAI，是一个美国人工智能研究实验室，由非营利组织 OpenAI 
 3. 注入 ChatModel
 
     ```java
-    private final ChatModel deepSeekChatModel;
+    private final ChatModel openAIChatModel;
 
-    public DeepSeekChatModelController (ChatModel chatModel) {
-        this.deepSeekChatModel = chatModel;
+    public OpenAiChatModelController (ChatModel chatModel) {
+        this.openAIChatModel = chatModel;
     }
     ```
 
@@ -55,8 +55,8 @@ OpenAI，是一个美国人工智能研究实验室，由非营利组织 OpenAI 
 
     ```java
     @GetMapping("/simple/chat")
-    public String simpleChat () {
-
-        return deepSeekChatModel.call(new Prompt(prompt)).getResult().getOutput().getContent();
+    public String simpleChat(@RequestParam String prompt) {
+        
+        return openAIChatModel.call(new Prompt(prompt)).getResult().getOutput().getText();
     }
     ```

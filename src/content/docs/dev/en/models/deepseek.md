@@ -146,8 +146,8 @@ DeepSeek 模型提供了兼容 OpenAI API 的 API 接口实现，因此我们可
 
     ```java
     @GetMapping("/simple/chat")
-    public String deepSeek(@RequestParam String prompt) {
-        
+    public String simpleChat(@RequestParam String prompt) {
+
         return deepseekChatModel.call(new Prompt(prompt)).getResult().getOutput().getText();
     }
     ```

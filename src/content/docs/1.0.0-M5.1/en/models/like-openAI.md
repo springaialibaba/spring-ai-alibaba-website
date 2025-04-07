@@ -50,10 +50,10 @@ description: "Spring AI 接入类 OpenAI API 系列模型"
 3. 注入 ChatModel
 
     ```java
-    private final ChatModel deepSeekChatModel;
+    private final ChatModel likeOpenAIChatModel;
 
-    public DeepSeekChatModelController (ChatModel chatModel) {
-        this.deepSeekChatModel = chatModel;
+    public likeOpenAIChatModelController (ChatModel chatModel) {
+        this.likeOpenAIChatModel = chatModel;
     }
     ```
 
@@ -61,8 +61,8 @@ description: "Spring AI 接入类 OpenAI API 系列模型"
 
     ```java
     @GetMapping("/simple/chat")
-    public String simpleChat () {
+    public String simpleChat(@RequestParam String prompt) {
 
-        return deepSeekChatModel.call(new Prompt(prompt)).getResult().getOutput().getContent();
+        return likeOpenAIChatModel.call(new Prompt(prompt)).getResult().getOutput().getText();
     }
     ```
