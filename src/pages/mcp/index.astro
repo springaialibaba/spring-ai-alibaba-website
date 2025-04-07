@@ -55,7 +55,7 @@ const dataSource = posts.map((item) => {
 });
 ---
 
-<BaseLayout title={t("cloud.title")} description={t("cloud.description")}>
+<BaseLayout title={t("mcp.title")} description={t("mcp.description")}>
   <McpIntroduce />
   <McpHub client:load dataSource={dataSource} />
   <HomeFooter />

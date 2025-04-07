@@ -14,9 +14,9 @@ Spring AI Alibaba 正式上线 MCP 市场：[**https://java2ai.com/mcp/**](https
 ![](/img/blog/mcp-marketplace/marketplace-screenshot.png)
 
 ## MCP 市场是做什么的？
-Spring AI Alibaba MCP 当前主要提供 MCP Server 的查看与浏览能力，帮您省去了到处搜集 MCP 实现的负担。由于 MCP 正处于快速发展阶段，我们将尽量保持 MCP 市场展示最新的数据。
+Spring AI Alibaba MCP 当前主要提供 MCP Server 的查看与浏览能力，帮您省去了到处搜集 MCP 实现的负担，后续可通过接入 Higress 等 AI 网关体验在线接入。。
 
-欢迎社区贡献者一起参与贡献，我们共同维护 MCP 市场更新，欢迎在这里 [修改源码](https://github.com/springaialibaba/spring-ai-alibaba-website/blob/main/src/components/plugin/McpHub/PluginEnum.js) 文件并提交 PR。
+由于 MCP 正处于快速发展阶段，我们将尽量保持 MCP 市场展示最新的数据。欢迎社区贡献者一起参与贡献，我们共同维护 MCP 市场更新，欢迎在这里 [修改源码](https://github.com/springaialibaba/spring-ai-alibaba-website/blob/main/src/components/plugin/McpHub/PluginEnum.js) 并提交 PR。
 
 ## 什么是 MCP？
 模型上下文协议（MCP）是一种开放协议，旨在实现 LLM 应用程序与外部数据源和工具之间的无缝集成。它作为一种标准化的方式，将 LLM 与其所需的上下文联系起来。
