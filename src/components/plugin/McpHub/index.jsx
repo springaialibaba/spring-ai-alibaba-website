@@ -4,7 +4,7 @@ import { pluginEmums } from "./PluginEnum";
 import cloneDeep from "lodash.clonedeep";
 
 const componentList = [
-  "浏览器自动化",
+    "浏览器自动化",
     "艺术与文化",
     "云平台",
     "命令行",
@@ -135,7 +135,7 @@ const McpHub = (props) => {
           />
         </label>
         <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2">
-          <div className="inline-block ml-5 mr-5">按组件</div>
+          {/*<div className="inline-block ml-5 mr-5">按组件</div>*/}
           {componentList?.map((item, index) => (
             <button
               key={`${item}${index}`}
@@ -150,7 +150,7 @@ const McpHub = (props) => {
           ))}
         </div>
         {currentComponent !== "全部" && (
-          <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2">
+          <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2" style="display:none;">
             <div className="inline-block ml-5 mr-5">按场景</div>
             {currentScenarioList?.map((item, index) => (
               <button

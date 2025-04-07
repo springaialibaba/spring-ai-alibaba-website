@@ -332,5 +332,5 @@ export default {
 	"page.team.introduction.3.enroll.btn": '去报名',
 
 	'plugin.introduction.des': '这里包含 Spring AI Alibaba 开源生态中的大量扩展与使用示例，您可以了解模型、插件、工具、向量库等的使用方法。',
-	'mcp.introduction.des': 'Spring AI Alibaba 支持 MCP 协议接入，在这里您可以找到市面上常用的 MCP Server，了解 MCP Server 能力、接入方式与使用示例。',
+	'mcp.introduction.des': 'Spring AI Alibaba 支持 MCP 协议接入，在此了解市面上可用的 MCP Server 能力、接入方式与使用示例。',
 };
