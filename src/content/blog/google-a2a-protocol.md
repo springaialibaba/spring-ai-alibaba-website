@@ -4,7 +4,7 @@ keywords: [Spring AI, A2A, Agent2Agent, MCP]
 description: 谷歌开源首个标准智能体交互协议 Agent2Agent Protocol（简称A2A），本文介绍什么是A2A协议，A2A协议核心内容以及其在企业应用中具有哪些应用场景。
 date: "2025-04-10"
 author: 刘军
-category: news
+category: article
 ---
 
 昨晚，谷歌在Google Cloud Next 25大会上，开源了首个标准智能体交互协议——Agent2Agent Protocol（简称A2A）。
