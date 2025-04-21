@@ -6,8 +6,8 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Java 开发玩转 MCP：从服务发布、调用到 Claude 集成，原理讲解+示例！",
-    "mobileText": "Java 开发玩转 MCP：从服务发布、调用到 Claude 集成，原理讲解+示例！",
+    "text": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
+    "mobileText": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
     "link": "/blog/spring-ai-alibaba-mcp/",
     "target": "_blank",
     "display": true

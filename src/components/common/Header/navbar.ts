@@ -35,7 +35,7 @@ export default [
     activePath: ["/cloud"],
   },
   {
-    label: "MCP 市场",
+    label: "MCP Directory",
     translations: {
       en: "MCP Marketplace",
     },
