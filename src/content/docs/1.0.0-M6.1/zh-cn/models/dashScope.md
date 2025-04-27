@@ -88,7 +88,7 @@ Spring AI Alibaba 的运行时 Options 同 Spring AI。分为 Runtime Options �
 
 优先级顺序为：`Runtime Options` > `Default Options`。
 
-既您可以在模型运行时，动态设置模型参数，包括本次请求使用的模型等参数信息。
+即您可以在模型运行时，动态设置模型参数，包括本次请求使用的模型等参数信息。
 
 ```java
 @GetMapping("/custom/chat")
