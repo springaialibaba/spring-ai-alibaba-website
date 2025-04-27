@@ -1,6 +1,6 @@
 ---
 title: 工具(Function Calling)
-keywords: [Spring AI,通义千问,百炼,智能体应用]
+keywords: [Spring AI, 通义千问, 百炼, 智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 
@@ -59,6 +59,7 @@ Response 2:
 ```
 
 其中，函数定义如下：
+
 ```java
 @Bean
 @Description("Get the weather in location") // function description
@@ -73,16 +74,17 @@ public Function<MockWeatherService.Request, MockWeatherService.Response> weather
 
 通常，自定义函数需要提供一个 `name`、`description` 和 `function call signature`，以便模型知道函数能做什么、期望的输入参数。
 
-Spring AI 使这一过程变得简单，只需定义一个返回 `java.util.Function` 的 @Bean 定义，并在调用 ChatModel 时将 bean 名称作为选项进行注册。在底层，Spring 会用适当的适配器代码包装你的 POJO（即函数），以便与 AI 模型进行交互，免去了编写繁琐的样板代码。`FunctionCallback.java`  接口和配套的 `FunctionCallbackWrapper.java` 工具类包含了底层实现代码，它们是简化 Java 回调函数的实现和注册的关键。
+Spring AI 使这一过程变得简单，只需定义一个返回 `java.util.Function` 的 @Bean 定义，并在调用 ChatModel 时将 bean 名称作为选项进行注册。在底层，Spring 会用适当的适配器代码包装你的 POJO（即函数），以便与 AI 模型进行交互，免去了编写繁琐的样板代码。`FunctionCallback.java` 接口和配套的 `FunctionCallbackWrapper.java` 工具类包含了底层实现代码，它们是简化 Java 回调函数的实现和注册的关键。
 
 ![function calling flow](https://img.alicdn.com/imgextra/i1/O1CN01CfzrO11PzHs9GTPKG_!!6000000001911-0-tps-2372-1685.jpg)
 
 ## 使用示例
+
 在以下示例中，我们将创建一个聊天机器人，通过调用我们自己的函数来回答问题。为了支持聊天机器人的响应，我们将注册一个自己的函数，该函数接受一个位置并返回该位置的当前天气。当模型需要回答诸如 “What’s the weather like in Boston?” 这样的问题时，AI 模型将调用客户端，将位置值作为参数传递给函数。这种类似 RPC 的数据将以 JSON 格式传递。
 
 我们的函数调用某个基于 SaaS 的天气服务 API，并将天气响应返回给模型以完成对话。在这个示例中，我们将使用一个名为 MockWeatherService 的简单实现，它为不同位置硬编码了温度。
 
-> 示例源码请参见 [function-calling-example](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-function-calling-example)
+> 示例源码请参见 [function-calling-example](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-tool-calling-example)
 
 以下是代表天气服务 API 的 MockWeatherService.java：
 
@@ -136,7 +138,8 @@ public record Request(String location, Unit unit) {}
 
 最佳做法是使用信息注释请求对象，以便该函数生成的 JSON 模式尽可能具有描述性，以帮助 AI 模型选择要调用的正确函数。
 
-如果已经有定义的@Service，那么可以通过以下方式来通过function call来调用已有的service的方法。
+如果已经有定义的@Service，那么可以通过以下方式来通过 function call 来调用已有的 service 的方法。
+
 ```java
 // 1. 已存在的MockOrderService
 @Service
@@ -199,6 +202,7 @@ logger.info("content: {}", content);
 > 还有一种函数注册方式是使用 `FunctionCallbackWrapper`，具体请查看示例仓库中的源码。
 
 ### 为 Prompt 指定函数
+
 为了让模型知道并调用您的 CurrentWeather 函数，您需要在 Prompt 请求中启用它。
 
 #### ChatClient

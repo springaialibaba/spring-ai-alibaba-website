@@ -4,27 +4,63 @@ import { pluginEmums } from "./PluginEnum";
 import cloneDeep from "lodash.clonedeep";
 
 const componentList = [
-  "全部",
-  "Example",
-  "Tool Calling",
-  "Vector Store",
-  "Document Reader",
-  "LLM",
-  "Embedding",
-  "Memory",
+    "全部",
+    "官方实现",
+    "社区版实现",
+    "浏览器自动化",
+    "艺术与文化",
+    "云平台",
+    "命令行",
+    "社交",
+    "客户数据平台",
+    "数据库",
+    "开发者工具",
+    "数据科学工具",
+    "文件系统",
+    "金融与金融科技",
+    "游戏",
+    "知识与记忆",
+    "位置服务",
+    "营销",
+    "监测",
+    "搜索",
+    "安全",
+    "体育",
+    "翻译服务",
+    "旅行与交通",
+    "版本控制",
+    "其他工具和集成",
 ];
 
 const scenarioObj = {
-  "Tool Calling": ["全部", "搜索", "生产效率", "网页浏览", "生活服务", "其他"],
-  "Example": ["全部", "Playground", "MCP", "文生文聊天", "文生图", "多模态", "ToolCalling", "RAG", "可观测"],
-  "Vector Store": ["全部"],
-  "Document Reader": ["全部", "数据格式", "数据来源"],
-  "LLM": ["全部", "ChatClient", "ImageModel", "AudioModel"],
-  "Embedding": ["全部"],
-  "Memory": ["全部"],
+  "官网实现": ["全部"],
+  "社区版实现": ["全部"],
+  "浏览器自动化": ["全部"],
+  "艺术与文化": ["全部"],
+  "云平台": ["全部"],
+  "命令行": ["全部"],
+  "社交": ["全部"],
+  "客户数据平台": ["全部"],
+  "数据库": ["全部"],
+  "开发者工具": ["全部"],
+  "数据科学工具": ["全部"],
+  "文件系统": ["全部"],
+  "金融与金融科技": ["全部"],
+  "游戏": ["全部"],
+  "知识与记忆": ["全部"],
+  "位置服务": ["全部"],
+  "营销": ["全部"],
+  "监测": ["全部"],
+  "搜索": ["全部"],
+  "安全": ["全部"],
+  "体育": ["全部"],
+  "翻译服务": ["全部"],
+  "旅行与交通": ["全部"],
+  "版本控制": ["全部"],
+  "其他工具和集成": ["全部"],
 };
 
-const PluginHub = (props) => {
+const McpHub = (props) => {
   const [cardData, setCardData] = useState(pluginEmums);
   const [filterText, setFilterText] = useState("");
   const [currentComponent, setCurrentComponent] = useState("全部");
@@ -44,7 +80,7 @@ const PluginHub = (props) => {
     const thirdData = [];
     if (filterText) {
       copyData.forEach((item) => {
-        if (item?.title?.toLowerCase().includes(filterText.toLowerCase()) ||
+        if (item?.title?.toLowerCase().includes(filterText.toLowerCase()) || 
             item?.desc?.toLowerCase().includes(filterText.toLowerCase())) {
           firstData.push(item);
         }
@@ -105,7 +141,7 @@ const PluginHub = (props) => {
           />
         </label>
         <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2">
-          <div className="inline-block ml-5 mr-5">按组件</div>
+          {/*<div className="inline-block ml-5 mr-5">按组件</div>*/}
           {componentList?.map((item, index) => (
             <button
               key={`${item}${index}`}
@@ -120,7 +156,7 @@ const PluginHub = (props) => {
           ))}
         </div>
         {currentComponent !== "全部" && (
-          <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2">
+          <div className="rounded-3xl mt-5 bg-[#EBEFEF] leading-10 pb-2 pt-2" style="display:none;">
             <div className="inline-block ml-5 mr-5">按场景</div>
             {currentScenarioList?.map((item, index) => (
               <button
@@ -144,4 +180,4 @@ const PluginHub = (props) => {
   );
 };
 
-export default PluginHub;
+export default McpHub;

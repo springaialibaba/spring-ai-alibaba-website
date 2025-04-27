@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现！",
-    "mobileText": "Java 版 Manus 实现来了，Spring AI Alibaba 发布开源 OpenManus 实现。",
-    "link": "/blog/spring-ai-alibaba-openmanus/",
+    "text": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
+    "mobileText": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
+    "link": "/blog/spring-ai-alibaba-mcp/",
     "target": "_blank",
     "display": true
 }

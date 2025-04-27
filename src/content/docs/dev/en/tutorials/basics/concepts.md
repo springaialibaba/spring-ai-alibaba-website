@@ -16,7 +16,7 @@ AI 模型有很多种，每种都适用于特定的用例。虽然 ChatGPT 及�
 
 ![spring-ai-concepts-model-types](https://img.alicdn.com/imgextra/i2/O1CN01otCVsl22MbQzFKYzJ_!!6000000007106-0-tps-2472-1618.jpg)
 
-Sprig AI 目前支持以语言、图像和音频形式处理输入和输出的模型。上表中的最后一行接受文本作为输入并输出数字，通常称为嵌入文本（Embedding Text），用来表示 AI 模型中使用的内部数据结构。Sprig AI 提供了对 Embedding 的支持以支持开发更高级的应用场景。
+Spring AI 目前支持以语言、图像和音频形式处理输入和输出的模型。上表中的最后一行接受文本作为输入并输出数字，通常称为嵌入文本（Embedding Text），用来表示 AI 模型中使用的内部数据结构。Spring AI 提供了对 Embedding 的支持以支持开发更高级的应用场景。
 
 GPT 等模型的独特之处在于其预训练特性，正如 GPT 中的“P”所示——Chat Generative Pre-trained Transformer。这种预训练功能将 AI 转变为通用的开发工具，开发者使用这种工具不再需要广泛的机器学习或模型训练背景。
 

@@ -180,11 +180,14 @@ export default {
 	'home.introduction.card.schedulerx.des':'Distributed Scheduling tasks',
 
 
-	'cloud.title': 'Spring Cloud Alibaba',
-	'cloud.description': 'Spring Cloud Alibaba is specifically designed for cloud-native applications, providing powerful features for service discovery, dynamic configuration management, and service management. It supports efficient application development and operations.',
-	'cloud.introduce.about': 'About Nacos',
-	'cloud.introduce.title': 'Spring Cloud Alibaba',
-	'cloud.introduce.invite': 'One click to start your Spring Cloud Alibaba journey！',
+	'plugin.title': 'Spring AI Alibaba',
+	'plugin.description': 'This page contains a large number of extensions and usage examples from the Spring AI Alibaba open source ecosystem, where you can learn how to use models, plugins, tools, vector libraries, and more.',
+	'mcp.title': 'Spring AI Alibaba',
+	'mcp.description': 'Spring AI Alibaba supports exposing application as an MCP server and integrating with other MCP servers. The Marketplace shows all the available MCP Servers, their features, descriptions, and usage examples.',
+
+	'cloud.introduce.about': 'About Spring AI Alibaba',
+	'cloud.introduce.title': 'Spring AI Alibaba',
+	'cloud.introduce.invite': 'One click to start your Spring AI Alibaba journey！',
 	'cloud.introduce.free.pkg': 'Freetier',
 	'cloud.introduce.free.desc': '',
 	'cloud.introduce.free.price': 'Free',
@@ -221,7 +224,6 @@ export default {
 	'cloud.introduce.company.discount.3':'2. Resource package renewal, saving 50 yuan compared to post payment',
 	'cloud.introduce.price.des':'*Equivalent to 7200 instances ✖️  Starting from hour',
 
-
 	'cloud.feedback.about': 'OUR CUSTOMERS',
 	'cloud.feedback.title': "Join the customers who've already used Spring Cloud Alibaba to improve efficiency",
 	'cloud.feedback.soul.name': 'Soul',
@@ -242,7 +244,6 @@ export default {
 	'cloud.feedback.zhijin.description': "We have seamlessly integrated all the capabilities of MSE's microservice governance without modifying any code. With the ability to isolate development environments, the construction time of testing environments has been reduced from days to minutes. This has shortened the implementation cycle of microservices by 30%, accelerating the development of a vertically integrated, data-driven comprehensive service platform for the textile and clothing industry.",
 	'cloud.feedback.helian.name': '禾连健康',
 	'cloud.feedback.helian.description': 'Compared to self-built solutions, MSE Registry Configuration Center has helped us achieve a 50% performance improvement and address scalability issues during rapid business growth. It ensures the stability of the service experience for over 200 cities and 2,000 hospitals nationwide, with a reliability exceeding 99.99%.',
-
 
 	// Right Sidebar
 	'rightSidebar.a11yTitle': 'Secondary',
