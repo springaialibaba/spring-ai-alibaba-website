@@ -97,7 +97,7 @@ this.chatClient = modelBuilder
 				.build();
 ```
 
-<font style="color:#5e5e5e;">这样，</font>`<font style="color:#5e5e5e;">ChatClient</font>`<font style="color:#5e5e5e;">就为我们屏蔽了所有与大模型交互的细节，只需要把 </font>`<font style="color:#5e5e5e;">ChatClient</font>`<font style="color:#5e5e5e;">注入常规的 Spring Bean 就可以为我们的机票应用加入智能化能力了。</font>
+<font style="color:#5e5e5e;">这样，</font><font style="color:#5e5e5e;">ChatClient</font><font style="color:#5e5e5e;">就为我们屏蔽了所有与大模型交互的细节，只需要把 </font><font style="color:#5e5e5e;">ChatClient</font><font style="color:#5e5e5e;">注入常规的 Spring Bean 就可以为我们的机票应用加入智能化能力了。</font>
 
 最终，我们开发的示例运行效果如下所示：
 
