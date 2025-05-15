@@ -1,12 +1,12 @@
-# 提示
+# Prompts
 
-提示是引导 AI 模型生成特定输出的输入。这些提示的设计和措辞会显著影响模型的响应。
+Prompts  是引导 AI 模型生成特定输出的输入。这些  prompts 的设计和措辞会显著影响模型的响应。
 
-在 Spring AI 中与 AI 模型交互的最低级别，处理 Spring AI 中的提示有点类似于管理 Spring MVC 中的“视图”。这涉及创建包含动态内容占位符的大量文本。然后，这些占位符会根据用户请求或应用程序中的其他代码进行替换。另一个类比是包含特定表达式占位符的 SQL 语句。
+在 Spring AI 中与 AI 模型交互的最低级别，处理 Spring AI 中的  prompts 有点类似于管理 Spring MVC 中的“视图”。这涉及创建包含动态内容占位符的大量文本。然后，这些占位符会根据用户请求或应用程序中的其他代码进行替换。另一个类比是包含特定表达式占位符的 SQL 语句。
 
-随着 Spring AI 的发展，它将引入更高级别的抽象，以便与 AI 模型进行交互。本节中描述的基础类在角色和功能方面可以类比为 JDBC。`ChatModel`例如， 类类似于 JDK 中的核心 JDBC 库。 类`ChatClient`可以类比为`JdbcClient`，它构建于 之上，`ChatModel`并通过 提供更高级的构造，`Advisor` 以考虑过去与模型的交互，使用额外的上下文文档来扩充提示，并引入代理行为。
+随着 Spring AI 的发展，它将引入更高级别的抽象，以便与 AI 模型进行交互。本节中描述的基础类在角色和功能方面可以类比为 JDBC。`ChatModel`例如， 类类似于 JDK 中的核心 JDBC 库。 类`ChatClient`可以类比为`JdbcClient`，它构建于 之上，`ChatModel`并通过 提供更高级的构造，`Advisor` 以考虑过去与模型的交互，使用额外的上下文文档来扩充  prompts ，并引入代理行为。
 
-在人工智能领域，提示符的结构一直在不断发展。最初，提示符只是简单的字符串。随着时间的推移，它们逐渐包含特定输入的占位符，例如“USER:”，而人工智能模型可以识别这些占位符。OpenAI 通过在人工智能模型处理多个消息字符串之前，将它们分类到不同的角色中，为提示符引入了更丰富的结构。
+在人工智能领域，  prompts 符的结构一直在不断发展。最初，  prompts 符只是简单的字符串。随着时间的推移，它们逐渐包含特定输入的占位符，例如“USER:”，而人工智能模型可以识别这些占位符。OpenAI 通过在人工智能模型处理多个消息字符串之前，将它们分类到不同的角色中，为  prompts 符引入了更丰富的结构。
 
 ## API 概述
 
@@ -14,7 +14,7 @@
 
 通常使用接受实例并返回的`call()`方法。`ChatModel``Prompt``ChatResponse`
 
-该类`Prompt`充当一系列有序`Message`对象和一个请求的容器`ChatOptions`。每个对象`Message`在提示中都体现出一个独特的角色，其内容和意图各不相同。这些角色可以涵盖各种元素，从用户查询到AI生成的响应，再到相关的背景信息。这种安排使得与AI模型进行复杂而细致的交互成为可能，因为提示由多条消息构成，每条消息在对话中都被赋予了特定的角色。
+该类`Prompt`充当一系列有序`Message`对象和一个请求的容器`ChatOptions`。每个对象`Message`在  prompts 中都体现出一个独特的角色，其内容和意图各不相同。这些角色可以涵盖各种元素，从用户查询到AI生成的响应，再到相关的背景信息。这种安排使得与AI模型进行复杂而细致的交互成为可能，因为  prompts 由多条消息构成，每条消息在对话中都被赋予了特定的角色。
 
 下面是 Prompt 类的截断版本，为了简洁起见省略了构造函数和实用方法：
 
@@ -64,7 +64,7 @@ public interface MediaContent extends Content {
 
 #### 角色
 
-每条消息都被赋予了特定的角色。这些角色对消息进行分类，为AI模型明确提示中每个部分的上下文和目的。这种结构化方法增强了与AI沟通的细微差别和有效性，因为提示的每个部分在交互中都扮演着独特而明确的角色。
+每条消息都被赋予了特定的角色。这些角色对消息进行分类，为AI模型明确  prompts 中每个部分的上下文和目的。这种结构化方法增强了与AI沟通的细微差别和有效性，因为  prompts 的每个部分在交互中都扮演着独特而明确的角色。
 
 主要角色是：
 
@@ -90,9 +90,9 @@ public enum MessageType {
 }
 ```
 
-### 提示模板
+### Prompts 模板
 
-Spring AI 中提示模板的一个关键组件是`PromptTemplate`类，旨在促进结构化提示的创建，然后将其发送到 AI 模型进行处理
+Spring AI 中  prompts 模板的一个关键组件是`PromptTemplate`类，旨在促进结构化  prompts 的创建，然后将其发送到 AI 模型进行处理
 
 ```java
 public class PromptTemplate implements PromptTemplateActions, PromptTemplateMessageActions {
@@ -127,15 +127,15 @@ PromptTemplate promptTemplate = PromptTemplate.builder()
 String prompt = promptTemplate.render(Map.of("composer", "John Williams"));
 ```
 
-此类实现的接口支持提示创建的不同方面：
+此类实现的接口支持  prompts 创建的不同方面：
 
-`PromptTemplateStringActions`专注于创建和渲染提示字符串，代表提示生成的最基本形式。
+`PromptTemplateStringActions`专注于创建和渲染  prompts 字符串，代表  prompts 生成的最基本形式。
 
 `PromptTemplateMessageActions`适用于通过生成和操作`Message`对象进行快速创作。
 
 `PromptTemplateActions`旨在返回`Prompt`对象，可以将其传递`ChatModel`给生成响应。
 
-虽然这些界面可能在许多项目中没有被广泛使用，但它们展示了提示创建的不同方法。
+虽然这些界面可能在许多项目中没有被广泛使用，但它们展示了  prompts 创建的不同方法。
 
 实现的接口有
 
@@ -149,9 +149,9 @@ public interface PromptTemplateStringActions {
 }
 ```
 
-方法`String render()`：将提示模板渲染为最终的字符串格式，无需外部输入，适用于没有占位符或动态内容的模板。
+方法`String render()`：将  prompts 模板渲染为最终的字符串格式，无需外部输入，适用于没有占位符或动态内容的模板。
 
-该方法`String render(Map<String, Object> model)`：增强渲染功能以包含动态内容。它使用一个`Map<String, Object>`映射，其中键是提示模板中的占位符名称，值是要插入的动态内容。
+该方法`String render(Map<String, Object> model)`：增强渲染功能以包含动态内容。它使用一个`Map<String, Object>`映射，其中键是  prompts 模板中的占位符名称，值是要插入的动态内容。
 
 ```java
 public interface PromptTemplateMessageActions {
@@ -185,13 +185,13 @@ public interface PromptTemplateActions extends PromptTemplateStringActions {
 }
 ```
 
-方法`Prompt create()`：`Prompt`无需外部数据输入即可生成对象，非常适合静态或预定义提示。
+方法`Prompt create()`：`Prompt`无需外部数据输入即可生成对象，非常适合静态或预定义  prompts 。
 
 方法`Prompt create(ChatOptions modelOptions)`：生成一个`Prompt`没有外部数据输入但带有聊天请求特定选项的对象。
 
-方法`Prompt create(Map<String, Object> model)`：扩展提示创建功能以包含动态内容，其中`Map<String, Object>`每个映射条目都是提示模板中的占位符及其关联的动态值。
+方法`Prompt create(Map<String, Object> model)`：扩展  prompts 创建功能以包含动态内容，其中`Map<String, Object>`每个映射条目都是  prompts 模板中的占位符及其关联的动态值。
 
-方法`Prompt create(Map<String, Object> model, ChatOptions modelOptions)`：扩展提示创建功能以包含动态内容，其中`Map<String, Object>`每个映射条目都是提示模板中的占位符及其关联的动态值，以及聊天请求的特定选项。
+方法`Prompt create(Map<String, Object> model, ChatOptions modelOptions)`：扩展  prompts 创建功能以包含动态内容，其中`Map<String, Object>`每个映射条目都是  prompts 模板中的占位符及其关联的动态值，以及聊天请求的特定选项。
 
 ## 示例用法
 
@@ -229,13 +229,13 @@ Prompt prompt = new Prompt(List.of(userMessage, systemMessage));
 List<Generation> response = chatModel.call(prompt).getResults();
 ```
 
-这展示了如何`Prompt`使用`SystemPromptTemplate`创建一个`Message`带有系统角色的实例，并传入占位符值。然后将带有角色的消息`user`与角色本身的消息组合起来`system`形成提示。之后，该提示会被传递给 ChatModel 以获得生成的响应。
+这展示了如何`Prompt`使用`SystemPromptTemplate`创建一个`Message`带有系统角色的实例，并传入占位符值。然后将带有角色的消息`user`与角色本身的消息组合起来`system`形成  prompts 。之后，该  prompts 会被传递给 ChatModel 以获得生成的响应。
 
 ### 使用自定义模板渲染器
 
 `TemplateRenderer`您可以通过实现接口并将其传递给构造函数来使用自定义模板渲染器`PromptTemplate`。您也可以继续使用默认的渲染器`StTemplateRenderer`，但使用自定义配置。
 
-默认情况下，模板变量由语法标识`{}`。如果您计划在提示中包含 JSON，则可能需要使用其他语法来避免与 JSON 语法冲突。例如，您可以使用`<`和`>`分隔符。
+默认情况下，模板变量由语法标识`{}`。如果您计划在  prompts 中包含 JSON，则可能需要使用其他语法来避免与 JSON 语法冲突。例如，您可以使用`<`和`>`分隔符。
 
 ```java
 PromptTemplate promptTemplate = PromptTemplate.builder()
@@ -250,7 +250,7 @@ String prompt = promptTemplate.render(Map.of("composer", "John Williams"));
 
 ### 使用资源而不是原始字符串
 
-Spring AI 支持`org.springframework.core.io.Resource`抽象，因此您可以将提示数据放入可直接在 中使用的文件中`PromptTemplate`。例如，您可以在 Spring 管理的组件中定义一个字段来检索`Resource`。
+Spring AI 支持`org.springframework.core.io.Resource`抽象，因此您可以将  prompts 数据放入可直接在 中使用的文件中`PromptTemplate`。例如，您可以在 Spring 管理的组件中定义一个字段来检索`Resource`。
 
 ```java
 @Value("classpath:/prompts/system-message.st")
@@ -265,24 +265,24 @@ SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResou
 
 ## 快速工程
 
-在生成式人工智能中，创建提示对于开发人员来说是一项至关重要的任务。这些提示的质量和结构会显著影响人工智能输出的有效性。投入时间和精力设计周到的提示可以显著提升人工智能的成果。
+在生成式人工智能中，创建  prompts 对于开发人员来说是一项至关重要的任务。这些  prompts 的质量和结构会显著影响人工智能输出的有效性。投入时间和精力设计周到的  prompts 可以显著提升人工智能的成果。
 
-分享和讨论提示是人工智能社区的常见做法。这种协作方式不仅营造了共享的学习环境，还能帮助人们识别和使用高效的提示。
+分享和讨论  prompts 是人工智能社区的常见做法。这种协作方式不仅营造了共享的学习环境，还能帮助人们识别和使用高效的  prompts 。
 
-该领域的研究通常涉及分析和比较不同的提示，以评估它们在不同情况下的有效性。例如，一项重要的研究表明，以“深呼吸，一步一步解决这个问题”作为提示开头，可以显著提高解决问题的效率。这凸显了精心选择的语言对生成式人工智能系统性能的影响。
+该领域的研究通常涉及分析和比较不同的  prompts ，以评估它们在不同情况下的有效性。例如，一项重要的研究表明，以“深呼吸，一步一步解决这个问题”作为  prompts 开头，可以显著提高解决问题的效率。这凸显了精心选择的语言对生成式人工智能系统性能的影响。
 
-掌握最有效的提示使用方法，尤其是在人工智能技术飞速发展的今天，是一项持续的挑战。您应该认识到提示工程的重要性，并考虑借鉴社区和研究的洞见来改进提示创建策略。
+掌握最有效的  prompts 使用方法，尤其是在人工智能技术飞速发展的今天，是一项持续的挑战。您应该认识到  prompts 工程的重要性，并考虑借鉴社区和研究的洞见来改进  prompts 创建策略。
 
-### 创建有效的提示
+### 创建有效的  prompts 
 
-在制定提示时，整合几个关键组件以确保清晰度和有效性非常重要：
+在制定  prompts 时，整合几个关键组件以确保清晰度和有效性非常重要：
 
 - **指示**：向AI提供清晰直接的指令，类似于与人沟通的方式。这种清晰的指令对于帮助AI“理解”预期至关重要。
-- **外部背景**：在必要时，包含相关的背景信息或AI响应的具体指导。这种“外部背景”构成了提示的框架，并帮助AI掌握整体场景。
-- **用户输入**：这是最直接的部分——用户的直接请求或问题构成提示的核心。
+- **外部背景**：在必要时，包含相关的背景信息或AI响应的具体指导。这种“外部背景”构成了  prompts 的框架，并帮助AI掌握整体场景。
+- **用户输入**：这是最直接的部分——用户的直接请求或问题构成  prompts 的核心。
 - **输出指示符**：这方面可能比较棘手。它需要指定 AI 响应所需的格式，例如 JSON。但请注意，AI 可能并不总是严格遵循此格式。例如，它可能会将“这是你的 JSON”之类的短语添加到实际 JSON 数据之前，或者有时会生成不准确的类似 JSON 的结构。
 
-在设计提示时，为 AI 提供预期问答格式的示例非常有益。这种做法有助于 AI“理解”查询的结构和意图，从而提供更精确、更相关的响应。虽然本文档并未深入探讨这些技术，但它们为进一步探索 AI 提示工程提供了一个起点。
+在设计  prompts 时，为 AI 提供预期问答格式的示例非常有益。这种做法有助于 AI“理解”查询的结构和意图，从而提供更精确、更相关的响应。虽然本文档并未深入探讨这些技术，但它们为进一步探索 AI   prompts 工程提供了一个起点。
 
 以下是需要进一步调查的资源列表。
 
@@ -310,14 +310,14 @@ SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResou
 
 #### Microsoft 指导
 
-- **[提示创建和优化框架](https://github.com/microsoft/guidance)**：
-  微软提供了一种结构化的方法来开发和完善提示。该框架指导用户创建有效的提示，以便从 AI 模型中获取所需的响应，并优化交互以提高清晰度和效率。
+- **[  prompts 创建和优化框架](https://github.com/microsoft/guidance)**：
+  微软提供了一种结构化的方法来开发和完善  prompts 。该框架指导用户创建有效的  prompts ，以便从 AI 模型中获取所需的响应，并优化交互以提高清晰度和效率。
 
 ## 代币
 
 标记在 AI 模型处理文本的过程中至关重要，它充当着将我们理解的单词转换为 AI 模型能够处理的格式的桥梁。这种转换分为两个阶段：输入时将单词转换为标记，然后在输出时将这些标记转换回单词。
 
-标记化是将文本分解成标记的过程，它是 AI 模型理解和处理语言的基础。AI 模型运用这种标记化格式来理解并响应提示。
+标记化是将文本分解成标记的过程，它是 AI 模型理解和处理语言的基础。AI 模型运用这种标记化格式来理解并响应  prompts 。
 
 为了更好地理解标记，可以将它们视为单词的一部分。通常，一个标记代表一个单词的四分之三左右。例如，莎士比亚全集共约 90 万字，翻译过来大约需要 120 万个标记。
 
@@ -325,7 +325,7 @@ SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemResou
 
 代币除了在人工智能处理中的技术作用外，还具有实际意义，特别是在计费和模型功能方面：
 
-- 计费：AI 模型服务通常根据令牌使用情况计费。输入（提示）和输出（响应）都会计入令牌总数，因此较短的提示更具成本效益。
+- 计费：AI 模型服务通常根据令牌使用情况计费。输入（  prompts ）和输出（响应）都会计入令牌总数，因此较短的  prompts 更具成本效益。
 - 模型限制：不同的 AI 模型具有不同的令牌限制，这定义了它们的“上下文窗口”——即它们一次可以处理的最大信息量。例如，GPT-3 的限制为 4000 个令牌，而 Claude 2 和 Meta Llama 2 等其他模型的限制为 10 万个令牌，一些研究模型最多可以处理 100 万个令牌。
 - 上下文窗口：模型的令牌限制决定了其上下文窗口。超过此限制的输入不会被模型处理。务必仅发送最少的有效信息集进行处理。例如，在查询《哈姆雷特》时，无需包含莎士比亚所有其他作品的令牌。
 - 响应元数据：来自 AI 模型的响应的元数据包括使用的令牌数量，这是管理使用情况和成本的重要信息。
