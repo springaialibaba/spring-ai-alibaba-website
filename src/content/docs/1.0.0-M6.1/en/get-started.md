@@ -44,7 +44,7 @@ Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来�
 	<dependency>	
 		<groupId>com.alibaba.cloud.ai</groupId>
 		<artifactId>spring-ai-alibaba-starter</artifactId>
-		<version>1.0.0-M5.1</version>
+		<version>1.0.0-M6.1</version>
 	</dependency>
 	```
 
