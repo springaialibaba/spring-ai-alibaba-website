@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
-    "mobileText": "Spring AI Alibaba Graph 预览版来了，快速开发 Dify 工作流、OpenManus 等智能体应用！",
-    "link": "/blog/spring-ai-alibaba-mcp/",
+    "text": "Spring AI 1.0 GA 正式发布，快速了解所有核心功能！Spring AI Alibaba 正式版也马上来了！",
+    "mobileText": "Spring AI 1.0 GA 正式发布，快速了解所有核心功能！Spring AI Alibaba 正式版也马上来了",
+    "link": "/blog/spring-ai-100-ga-released/",
     "target": "_blank",
     "display": true
 }
