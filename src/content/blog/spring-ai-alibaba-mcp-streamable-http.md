@@ -8,7 +8,7 @@ category: article
 ---
 
 ## 文章摘要
-MCP 官方引入了全新的 `[**Streamable HTTP**](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http)` 传输层，对原有 HTTP+SSE 传输机制有重大改进。
+MCP 官方引入了全新的 [**`Streamable HTTP`**](https://modelcontextprotocol.io/specification/2025-03-26/basic/transports#streamable-http) 传输层，对原有 HTTP+SSE 传输机制有重大改进。
 
 本文将：
 1. 详细解析这个协议的设计思想、技术细节以及实际应用。
