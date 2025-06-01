@@ -38,3 +38,22 @@ description: Spring Ai Alibaba 开源贡献代码风格指南
 在单元测试中，建议使用 spring-boot-test/junit5 等。如果出现某些需要 ak 才能测试的服务或者插件，可以使用 Junit 的 `@EnabledIfEnvironmentVariable` 来标记。
 
 我们希望在您提交的代码中，编写了足量的单元测试。
+
+## PR 报错处理
+
+> Tips: 因为 pre-commit 在本地提交执行时，过于费时间，因此没有设置 git pre commit.
+
+### Yaml 格式报错
+
+在 SAA 中，添加了 yaml 格式的检测，用来确保项目中的 yaml 格式一致。如果在您的 PR 出现 Yaml 格式问题，您可以参考 [Yamllint Rules](https://yamllint.readthedocs.io/en/stable/rules.html) 解决。
+
+### PR Title 报错
+
+在 SAA 中，添加了 PR Title 的检测，确保 commit 和 pr title 的规范性，如果报错，您可以参考下面的例子
+
+- infra(ci): add xxx ci bot;
+- docs(api): fix typo;
+- feat: Add support for Node.js 18;
+- feat(ui): Add Button component
+
+或者参考[这里](https://github.com/amannn/action-semantic-pull-request?tab=readme-ov-file#examples)来解决 
