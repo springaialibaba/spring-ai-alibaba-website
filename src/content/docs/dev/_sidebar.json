@@ -82,13 +82,13 @@
 					  },
 					  "items": []
 				},{
-					  "label": "functioncalling",
+					  "label": "工具调用（Tool Calling）",
 					  "translations": {
-						  "en": "FunctionCalling"
+						  "en": "Tool Calling"
 					  },
 				      "collapsed": true,
 					  "autogenerate": {
-						  "directory": "integration/functioncalling"
+						  "directory": "integration/tool-calling"
 					  },
 					  "items": []
 				}
