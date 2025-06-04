@@ -63,7 +63,7 @@ String response = chatClient.prompt("你是一个翻译助手。")
 
 ## 社区实现列表
 
-以下是版本为 `1.0.0.2` 可用的 Tool Calling 列表，可根据业务需要使用：
+以下是版本为 `1.0.0.2` 可用的 Tool Calling 列表（**未来的版本更新可能会有变动，请以对应的版本代码为准。**），可根据业务需要使用：
 
 - 阿里云机器翻译
     - **工具名称（Tool Name）**：`aliTranslateService`
