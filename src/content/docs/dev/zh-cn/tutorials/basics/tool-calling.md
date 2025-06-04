@@ -172,6 +172,8 @@ String response = chatClient.prompt("获取北京时间")
 
 开发者可以把任意实现 `Function` 接口的对象，定义为 `Bean` ，并通过 `.toolNames()` 或 `.defaultToolNames()` 传递给 ChatClient 对象。
 
+<span id="time-function"></span>
+
 例如有这么一个实现了`Function` 接口的类：
 
 ```java
@@ -239,4 +241,75 @@ String response = chatClient.prompt("获取北京时间")
 - 集合类型（`List`、`Map`、`Array`、`Set`）
 - 异步类型（`CompletableFuture`、`Future`）
 - 响应式类型（`Flow`、`Mono`、`Flux`）
+
+## 返回值转换
+
+Spring AI 框架中，工具调用的结果会通过 `ToolCallResultConverter` 进行处理，然后回传给 AI 模型。`ToolCallResultConverter` 接口提供了将工具调用结果转换为字符串对象的方法。Spring AI 默认使用 `DefaultToolCallResultConverter`，将返回结果对象使用 Jackson 库转化为 JSON 字符串。`ToolCallResultConverter` 接口的定义为：
+
+```java
+@FunctionalInterface
+public interface ToolCallResultConverter {
+	/**
+	 * Given an Object returned by a tool, convert it to a String compatible with the
+	 * given class type.
+	 */
+	String convert(@Nullable Object result, @Nullable Type returnType);
+}
+```
+
+定义方法工具时，可以通过 `@Tool` 注解的 `resultConverter` 参数提供 `ToolCallResultConverter` 的实现类；定义方法工具和函数工具时可以通过 `MethodToolCallBack.Builder` 和 `FunctionToolCallBack.Builder` 的 `resultConverter()` 方法设置`ToolCallResultConverter` 的实现类。
+
+## 工具上下文
+
+Spring AI 支持通过 `ToolContext API` 向工具传递额外的上下文信息。该特性允许提供补充数据，比如用户身份信息。这些数据将与 AI 模型传递的工具参数结合使用。
+
+例如：
+
+```java
+public class UserInfoTools {
+    @Tool(description = "get current user name")
+    public String getUserName(ToolContext context) {
+        String userId = context.getContext().get("userId").toString();
+        if (!StringUtils.hasText(userId)) {
+            return "null";
+        }
+        // 模拟数据
+        return userId + "user";
+    }
+}
+```
+
+在调用 ChatClient 时，通过 `.toolContext()` 方法传递工具上下文：
+
+```java
+String response = chatClient.prompt("获取我的用户名")
+    .tools(new UserInfoTools())
+    .toolContext(Map.of("userId", "12345"))
+    .call()
+    .content();
+```
+
+## 工具调用直接返回
+
+默认情况下，工具调用的返回值会再次回传到 AI 模型进一步处理。但在一些场景中需要将结果直接返回给调用方而非模型，比如数据搜索。
+
+定义方法工具时，可以通过 `@Tool` 注解的 `returnDirect` 参数置 `true` 来启动直接返回；定义方法工具和函数工具时需要通过 `ToolMetadata` 对象传递到 `MethodToolCallBack.Builder` 和 `FunctionToolCallBack.Builder`中。
+
+以工具调用定义中的 [TimeFunction](#time-function) 为例，演示代码：
+
+```java
+String response = chatClient.prompt("获取北京时间")
+    .toolCallbacks(FunctionToolCallback
+        .builder("getTimeByZoneId", new TimeFunction())
+        .toolMetadata(ToolMetadata.builder()
+            .returnDirect(true)
+            .build())
+        .description("Get time by zone id")
+        .inputType(TimeFunction.Request.class)
+        .build())
+    .call()
+    .content();
+```
+
+调用这段代码将直接返回 TimeFunction 返回的JSON对象，而不再经过大模型加工处理。。
 
