@@ -32,7 +32,7 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 <font style="color:#5e5e5e;"></font>
 
 #### <font style="color:#5e5e5e;">使用 RAG 增加机票退改签规则</font>
-<font style="color:#5e5e5e;">基于以上架构图，应用是由 AI 模型理解用户问题，决策下一步动作、驱动业务流程。但任何一个通用的大模型都能帮我们解决机票相关的问题吗？依赖模型的决策是可靠的吗？比如有用户提出了机票改签的诉求，模型一定是能够很好的理解用户的意图的，这点没有疑问。但它怎么知道当前用户符不符合退票规则那？要知道每个航空公司的改签规则可能都是不一样的；它怎么知道改签手续费的规定那？在这样一个可能带来经济纠纷、法律风险的应用场景下，AI模型必须要知道改签规则的所有细节，并逐条确认用户信息符合规则后，才能最终作出是否改签的决策。</font>
+<font style="color:#5e5e5e;">基于以上架构图，应用是由 AI 模型理解用户问题，决策下一步动作、驱动业务流程。但任何一个通用的大模型都能帮我们解决机票相关的问题吗？依赖模型的决策是可靠的吗？比如有用户提出了机票改签的诉求，模型一定是能够很好的理解用户的意图的，这点没有疑问。但它怎么知道当前用户符不符合退票规则呢？要知道每个航空公司的改签规则可能都是不一样的；它怎么知道改签手续费的规定那？在这样一个可能带来经济纠纷、法律风险的应用场景下，AI模型必须要知道改签规则的所有细节，并逐条确认用户信息符合规则后，才能最终作出是否改签的决策。</font>
 
 <font style="color:#5e5e5e;">很显然，单纯依赖 AI 模型本身并不能替我们完成上面的要求，这个时候就要用到 RAG（检索增强）模式了。通过 RAG 我们可以把机票退改签相关的领域知识输入给应用和 AI 模型，让 AI 结合这些规则与要求辅助决策，增加 RAG 后的架构如下图所示：</font>
 
@@ -97,7 +97,7 @@ this.chatClient = modelBuilder
 				.build();
 ```
 
-<font style="color:#5e5e5e;">这样，</font>`<font style="color:#5e5e5e;">ChatClient</font>`<font style="color:#5e5e5e;">就为我们屏蔽了所有与大模型交互的细节，只需要把 </font>`<font style="color:#5e5e5e;">ChatClient</font>`<font style="color:#5e5e5e;">注入常规的 Spring Bean 就可以为我们的机票应用加入智能化能力了。</font>
+<font style="color:#5e5e5e;">这样，</font><font style="color:#5e5e5e;">ChatClient</font><font style="color:#5e5e5e;">就为我们屏蔽了所有与大模型交互的细节，只需要把 </font><font style="color:#5e5e5e;">ChatClient</font><font style="color:#5e5e5e;">注入常规的 Spring Bean 就可以为我们的机票应用加入智能化能力了。</font>
 
 最终，我们开发的示例运行效果如下所示：
 
