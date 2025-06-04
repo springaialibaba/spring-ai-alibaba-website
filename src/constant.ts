@@ -529,11 +529,11 @@ export const COMMUNITY_MENU_LIST = [
     },
     children: [
       {
-        label: "报告文档问题",
+        label: "贡献者",
         target: "_blank",
-        link: "https://github.com/springaialibaba/spring-ai-alibaba-website/issues",
+        link: 'https://github.com/alibaba/spring-ai-alibaba/graphs/contributors',
         translations: {
-          en: "Report a doc issue",
+          en: "Contributors",
         },
       },
       {
@@ -545,14 +545,6 @@ export const COMMUNITY_MENU_LIST = [
         },
       },
       {
-        label: "贡献者",
-        target: "_blank",
-        link: 'https://github.com/alibaba/spring-ai-alibaba/graphs/contributors',
-        translations: {
-          en: "Contributors",
-        },
-      },
-      {
         label: '贡献者指南',
         target: "_blank",
         link: '/docs/developer/contributor-guide/new-contributor-guide_dev/',
@@ -560,6 +552,22 @@ export const COMMUNITY_MENU_LIST = [
           en: "Contributor Guides",
         },
       },
+      {
+        label: "代码风格指南",
+        target: "_blank",
+        link: '/docs/developer/contributor-guide/code-style-guide_dev/',
+        translations: {
+          en: "Contributors",
+        },
+      },
+      {
+        label: "报告文档问题",
+        target: "_blank",
+        link: "https://github.com/springaialibaba/spring-ai-alibaba-website/issues",
+        translations: {
+          en: "Report a doc issue",
+        },
+      }
     ],
   },
   {
