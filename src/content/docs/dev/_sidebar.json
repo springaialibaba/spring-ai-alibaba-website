@@ -70,29 +70,11 @@
         "translations": {
             "en": "Integrations"
         },
-	    "collapsed": false,
-        "items": [{
-					  "label": "DocumentReader",
-					  "translations": {
-						  "en": "DocumentReader"
-					  },
-				      "collapsed": true,
-					  "autogenerate": {
-						  "directory": "integration/documentreader"
-					  },
-					  "items": []
-				},{
-					  "label": "工具调用（Tool Calling）",
-					  "translations": {
-						  "en": "Tool Calling"
-					  },
-				      "collapsed": true,
-					  "autogenerate": {
-						  "directory": "integration/tool-calling"
-					  },
-					  "items": []
-				}
-			]
+	    "collapsed": true,
+		"autogenerate": {
+			"directory": "integrations"
+		},
+        "items": []
 	}
 
 ]
