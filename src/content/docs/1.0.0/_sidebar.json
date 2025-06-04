@@ -39,8 +39,19 @@
         "autogenerate": {
             "directory": "tutorials"
         },
-	    "collapsed": false,
-        "items": []
+	    "collapsed": true,
+		"items": [{
+			"label": "模型上下文协议（Model Context Protocol）",
+			"translations": {
+				"en": "Model Context Protocol"
+			},
+			"collapsed": true,
+			"autogenerate": {
+				"directory": "practices/mcp"
+			},
+			"items": []
+		}
+		]
 	},
 	{
         "label": "最佳实践",
