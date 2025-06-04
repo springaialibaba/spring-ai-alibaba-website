@@ -271,7 +271,7 @@ public class ChatModelController {
 }
 ```
 
-当在请求 chat 接口时，会执行 custon handler 中的代码语句：
+当在请求 chat 接口时，会执行 custom handler 中的代码语句：
 
 ```text
 exec CustomerObservationHandler onStart function! ChatModelObservationContext: name='gen_ai.client.operation', contextualName='null', error='null', lowCardinalityKeyValues=[gen_ai.operation.name='chat', gen_ai.request.model='qwen-plus', gen_ai.response.model='none', gen_ai.system='dashscope'], highCardinalityKeyValues=[gen_ai.request.temperature='0.7'], map=[], parentObservation=null
