@@ -1,5 +1,5 @@
 ---
-title: Spring AI Alibaba 动态 Prompt 最佳实践
+title: 动态 Prompt 最佳实践
 keywords:  [Spring AI Alibaba, Nacos, Dunamic Prompt]
 description: "Spring AI Alibaba 动态 Prompt 最佳实践"
 ---

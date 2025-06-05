@@ -1,5 +1,5 @@
 ---
-title: Spring AI Alibaba 可观测性最佳实践
+title: 可观测最佳实践
 keywords: [Spring AI Alibaba, Observability]
 description: "Spring AI Alibaba 可观测性最佳实践"
 ---
