@@ -25,7 +25,7 @@ category: article
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-bom</artifactId>
-			<version>1.0.0</version>0
+			<version>1.0.0</version>
 			<type>pom</type>
 			<scope>import</scope>
 		</dependency>
@@ -71,7 +71,7 @@ Spring AI ChatClient 的一个关键特性是 Advisor API。这是一个拦截�
 
 使用这些数据库的一个常见挑战是，每个数据库都有自己独特的元数据过滤查询语言。Spring AI 使用一种可移植的过滤器表达式语言解决了这个问题，该语言使用熟悉的类似 SQL 的语法。如果您达到了这种抽象的极限，可以回退到原生查询。
 
-Spring AI 包含一个轻量级、可配置的**ETL（提取、转换、加载）框架，**可简化将数据导入向量存储的过程。它通过可插拔组件支持各种输入源`DocumentReader`，包括**本地文件系统**、**网页**、**GitHub 存储库**、**AWS S3**、**Azure Blob 存储**、**Google Cloud Storage**、**Kafka**、**MongoDB**和**兼容 JDBC 的数据库。这让您可以轻松地将几乎任何地方的内容引入 RAG 管道，并内置了对分块、元数据丰富和嵌入生成的支持。
+Spring AI 包含一个轻量级、可配置的**ETL（提取、转换、加载）框架**，可简化将数据导入向量存储的过程。它通过可插拔组件支持各种输入源`DocumentReader`，包括**本地文件系统**、**网页**、**GitHub 存储库**、**AWS S3**、**Azure Blob 存储**、**Google Cloud Storage**、**Kafka**、**MongoDB**和**兼容 JDBC 的数据库**。这让您可以轻松地将几乎任何地方的内容引入 RAG 管道，并内置了对分块、元数据丰富和嵌入生成的支持。
 
 Spring AI 还支持检索增强生成 (RAG) 模式，该模式使 AI 模型能够根据您传入的数据生成响应。您可以先使用简单的方法`QuestionAnswerAdvisor` 将相关上下文注入提示中，也可以使用 扩展至更复杂、更模块化的 RAG 管道，以满足您的应用需求`RetrievalAugmentationAdvisor`。
 
@@ -102,7 +102,7 @@ Spring AI 可以轻松检查 AI 生成内容的准确性和相关性。它配备
 *   **FactCheckingEvaluator** – 根据提供的上下文验证 AI 的响应是否符合事实。它的工作原理是要求模型判断某个语句是否在逻辑上得到文档的支持。您可以使用 Bespoke 的 Minicheck（通过 Ollama）等小型模型来运行此模型，这比每次检查都使用 GPT-4 之类的工具要便宜得多。
 
 
-然而，这并非灵丹妙药。Hugging Face “LLM as judges” 排行榜的首席维护者[Clémentine Fourrier警告说，](https://clefourrier.github.io/) **“LLM as judges” 并非灵丹妙药**。在接受[Latent Space Podcast](https://deepcast.fm/episode/benchmarks-201-why-leaderboards-arenas-llm-as-judge)采访时，她概述了几个关键问题：
+然而，这并非灵丹妙药。Hugging Face “LLM as judges” 排行榜的首席维护者[Clémentine Fourrier](https://clefourrier.github.io/) 警告说，**“LLM as judges” 并非灵丹妙药**。在接受[Latent Space Podcast](https://deepcast.fm/episode/benchmarks-201-why-leaderboards-arenas-llm-as-judge)采访时，她概述了几个关键问题：
 
 *   **模式崩溃和位置偏差**：法学硕士评委通常青睐来自同一系列模型的答案或显示的第一个答案。
 *   **冗长偏见**：​​无论准确性如何，模型对较长的答案的评价更为有利。
@@ -201,4 +201,4 @@ Spring AI 还支持通过模型上下文协议 (MCP) 开发自主代理。正在
 
 Spring AI 是一款非常优秀的 AI 应用开发框架，它专为 Java 开发者而设计，帮助 Java 开发者快速构建具备智能化的应用，很高兴看到 Spring AI 在今天达成正式 GA 版本。
 
-Spring AI Alibaba 1.0 GA 版本相关开发工作也已经基本就绪，包含 Qwen、Dashscope 等基础能力适配，支持从聊天机器人、工作流到多智能体的 AI 应用开发，提供企业级 MCP 分布式部署方案，发布了 JManus、nl2sql、DeepResearch 等通用智能体产品，预计将于本周接下来的几天正式发布，敬请期待。
+Spring AI Alibaba 1.0 GA 版本相关开发工作也已经基本就绪，包含 Qwen、DashScope 等基础能力适配，支持从聊天机器人、工作流到多智能体的 AI 应用开发，提供企业级 MCP 分布式部署方案，发布了 JManus、nl2sql、DeepResearch 等通用智能体产品，预计将于本周接下来的几天正式发布，敬请期待。
