@@ -6,69 +6,7 @@ description: "Spring AI 接入工具。"
 
 ## 概述
 
-“工具调用（Tool Calling）”或“函数调用”允许大型语言模型（LLM）在必要时调用一个或多个可用的工具，这些工具通常由开发者定义。工具可以是任何东西：网页搜索、对外部 API 的调用，或特定代码的执行等。LLM 本身不能实际调用工具；相反，它们会在响应中表达调用特定工具的意图（而不是以纯文本回应）。然后，我们应用程序应该执行这个工具，并报告工具执行的结果给模型。
-
-例如，我们知道 LLM 自身在数学方面不是特别擅长。如果你的用例偶尔涉及数学计算，你可能会想提供给 LLM 一个“数学工具”。通过在请求中声明一个或多个工具，LLM 可以在认为合适时调用其中之一。给定一个数学问题和一组数学工具，LLM 可能会决定为正确回答问题，它应该首先调用其中一个提供的数学工具。
-
-接下来，让我们用一个示例看一下 Tool Calling 的具体工作过程。
-
-以下是没有 Tool Calling 的一个消息交互过程示例，模型给给出的结果非常接近但是并不正确：
-
-```text
-Request:
-- messages:
-    - UserMessage:
-        - text: What is the square root of 475695037565?
-
-Response:
-- AiMessage:
-    - text: The square root of 475695037565 is approximately 689710.
-```
-
-以下是包含了 Tool Calling 的消息交互过程：
-
-```text
-Request 1:
-- messages:
-    - UserMessage:
-        - text: What is the square root of 475695037565?
-- tools:
-    - squareRoot(double x): Returns a square root of a given number
-
-Response 1:
-- AiMessage:
-    - toolExecutionRequests:
-        - squareRoot(475695037565)
-
-
-... here we are executing the squareRoot method with the "475695037565" argument and getting "689706.486532" as a result ...
-
-
-Request 2:
-- messages:
-    - UserMessage:
-        - text: What is the square root of 475695037565?
-    - AiMessage:
-        - toolExecutionRequests:
-            - squareRoot(475695037565)
-    - ToolExecutionResultMessage:
-        - text: 689706.486532
-
-Response 2:
-- AiMessage:
-    - text: The square root of 475695037565 is 689706.486532.
-```
-
-其中，函数定义如下：
-```java
-@Bean
-@Description("Returns a square root of a given number")   // Tool Description
-public Function<Double, Double> squareRoot() {
-    return Math::sqrt;
-}
-```
-
-当 LLM 可以访问工具时，它可以在合适的情况下决定调用其中一个工具，这是一个非常强大的功能。在这个简单的示例中，我们给 LLM 提供了基本的数学工具，但想象一下，如果我们给它提供了，比如说，搜索工具和发送邮件工具，并且有一个查询像是“我的朋友想了解 AI 领域的最新新闻。将简短的总结发送到 friend@email.com”，那么它可以使用搜索工具查找最新新闻，然后总结这些信息并通过发送邮件工具将总结发送到指定的邮箱。
+“工具调用（Tool Calling）”或“函数调用”允许大型语言模型（LLM）在必要时调用一个或多个可用的工具，这些工具通常由开发者定义。工具可以是任何东西：网页搜索、对外部 API 的调用，或特定代码的执行等。LLM 本身不能实际调用工具；相反，它们会在响应中表达调用特定工具的意图（而不是以纯文本回应）。然后，应用程序应该执行这个工具，并报告工具执行的结果给模型。当 LLM 可以访问工具时，它可以在合适的情况下决定调用其中一个工具，这是一个非常强大的功能。
 
 ## 工具调用定义
 
@@ -311,5 +249,4 @@ String response = chatClient.prompt("获取北京时间")
     .content();
 ```
 
-调用这段代码将直接返回 TimeFunction 返回的JSON对象，而不再经过大模型加工处理。。
-
+调用这段代码将直接返回 TimeFunction 返回的JSON对象，而不再经过大模型加工处理。
