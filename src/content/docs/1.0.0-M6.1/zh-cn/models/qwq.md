@@ -45,13 +45,13 @@ description: "Spring AI Alibaba 接入 QWQ 32B 模型"
       application:
         name: spring-ai-alibaba-qwq-chat-client-example
 
-    ai:
-      dashscope:
-        api-key: ${AI_DASHSCOPE_API_KEY}
+      ai:
+        dashscope:
+	  api-key: ${AI_DASHSCOPE_API_KEY}
 
-        chat:
-          options:
-          model: qwq-plus
+	  chat:
+	    options:
+	      model: qwq-plus
     ```
 
 
