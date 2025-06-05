@@ -15,10 +15,10 @@ description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 
 本节介绍DocumentRetriever的接口和类。
 ### DocumentRetriever
 ```java
-public interface DocumentRetriever extends Function<Query, List<Document>> {
-    List<Document> retrieve(Query query);
+public interface DocumentRetriever extends Function<String, List<Document>> {
+    List<Document> retrieve(String query);
 
-    default List<Document> apply(Query query) {
+    default List<Document> apply(String query) {
         return this.retrieve(query);
     }
 }
@@ -118,7 +118,7 @@ public class RetrieverController {
 
     @GetMapping("/ai/retrieve")
     public List<Document> retrieve(@RequestParam(value = "message", defaultValue = "What's spring ai") String message) {
-        return this.documentRetriever.retrieve(new Query(message));
+        return this.documentRetriever.retrieve(message);
     }
 }
 ```
@@ -150,5 +150,5 @@ DocumentRetriever retriever = new DashScopeDocumentRetriever(dashScopeApi,
                 .withIndexName("spring-ai知识库")
                 .build());
 
-List<Document> documentList = retriever.retrieve(new Query("What's spring ai"));
+List<Document> documentList = retriever.retrieve("What's spring ai");
 ```
