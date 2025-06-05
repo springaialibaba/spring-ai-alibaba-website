@@ -57,7 +57,7 @@ public class TimeTools {
 }
 ```
 
-通过 `MethodToolCallBack.builder()` 定义方法工具：
+通过 `MethodToolCallBack.Builder` 定义方法工具：
 
 ```java
 String inputSchema = """

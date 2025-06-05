@@ -96,7 +96,7 @@ String response = chatClient.prompt("你是一个翻译助手。")
     - **配置字段说明**：
         - `enabled`：设置为`true`时启动插件。
 - 百度翻译
-    - **工具名称（Tool Name）**：``
+    - **工具名称（Tool Name）**：`baiduTranslate`
     - **配置文件前缀**：`spring.ai.alibaba.toolcalling.baidu.translate`
     - **Maven 依赖名**：`spring-ai-alibaba-starter-tool-calling-baidutranslate`
     - **配置字段说明**：
@@ -129,12 +129,12 @@ String response = chatClient.prompt("你是一个翻译助手。")
     - **工具名称（Tool Name）**：
         - `getIssue`：获取 GitHub 某个仓库的 Issue 信息
         - `createPullRequest`：在 GitHub 某个仓库创建 PR
-        - `SearchRepository`：查询 Github 某个名称的仓库信息
+        - `SearchRepository`：查询 GitHub 某个名称的仓库信息
     - **配置文件前缀**：`spring.ai.alibaba.toolcalling.githubtoolkit`
     - **Maven 依赖名**：`spring-ai-alibaba-starter-tool-calling-githubtoolkit`
     - **配置字段说明**：
         - `enabled`：设置为`true`时启动插件。
-        - `token`：Github的Token，若不提供则读取系统环境变量`GITHUB_TOKEN`。
+        - `token`：GitHub的Token，若不提供则读取系统环境变量`GITHUB_TOKEN`。
         - `owner`：要查询的仓库所有者，必须设置。
         - `repository`：要查询的仓库名称，必须设置。
 - 谷歌翻译
@@ -218,7 +218,7 @@ String response = chatClient.prompt("你是一个翻译助手。")
     - **Maven 依赖名**：`spring-ai-alibaba-starter-tool-calling-tavilysearch`
     - **配置字段说明**：
         - `enabled`：设置为`true`时启动插件。
-        - `api-key`：Tavily Search 的ApiKey，若不设置则读取系统环境变量`TAVILY_SEARCH_API_KEY`的值。
+        - `api-key`：Tavily Search 的ApiKey，若不提供则读取系统环境变量`TAVILY_SEARCH_API_KEY`的值。
 - 获取某个时区时间
     - **工具名称（Tool Name）**：`getCityTimeFunction`
     - **配置文件前缀**：`spring.ai.alibaba.toolcalling.time`
@@ -237,14 +237,15 @@ String response = chatClient.prompt("你是一个翻译助手。")
     - **Maven 依赖名**：`spring-ai-alibaba-starter-tool-calling-weather`
     - **配置字段说明**：
         - `enabled`：设置为`true`时启动插件。
+        - `api-key`：服务的ApiKey，若不提供则读取系统环境变量`WEATHER_API_KEY`的值。
 - 有道翻译
     - **工具名称（Tool Name）**：`youdaoTranslate`
     - **配置文件前缀**：`spring.ai.alibaba.toolcalling.youdaotranslate`
     - **Maven 依赖名**：`spring-ai-alibaba-starter-tool-calling-youdaotranslate`
     - **配置字段说明**：
         - `enabled`：设置为`true`时启动插件。
-        - `secret-key`：有道翻译的AppSecret，若不设置则读取系统环境变量`YOUDAO_APP_SECRET`的值。
-        - `app-id`：有道翻译的AppId，若不设置则读取系统环境变量`YOUDAO_APP_ID`的值。
+        - `secret-key`：有道翻译的AppSecret，若不提供则读取系统环境变量`YOUDAO_APP_SECRET`的值。
+        - `app-id`：有道翻译的AppId，若不提供则读取系统环境变量`YOUDAO_APP_ID`的值。
 - 语雀
     - **工具名称（Tool Name）**：
         - `createYuqueDoc`：创建语雀文档。
