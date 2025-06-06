@@ -4,7 +4,7 @@ keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 
-Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来，我们将学习如何使用 spring ai alibaba 开发一个基于通义模型服务的智能聊天应用。
+Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来，这篇文档将介绍如何使用 spring ai alibaba 开发一个基于通义模型服务的智能聊天应用。
 
 ## 快速体验示例
 
@@ -37,7 +37,7 @@ export AI_DASHSCOPE_API_KEY=${REPLACE-WITH-VALID-API-KEY}
 
 ## 示例开发指南
 
-以上示例本质上就是一个普通的 Spring Boot 应用，我们来通过源码解析看一下具体的开发流程。
+以上示例本质上就是一个普通的 Spring Boot 应用，接下来这篇文档将通过源码解析简单介绍开发流程。
 
 1. 添加依赖
 
@@ -53,7 +53,7 @@ export AI_DASHSCOPE_API_KEY=${REPLACE-WITH-VALID-API-KEY}
 
 2. 注入 ChatClient
 
-接下来，在普通 Controller Bean 中注入 `ChatClient` 实例，这样你的 Bean 就具备与 AI 大模型智能对话的能力了。
+接下来，在普通 Controller Bean 中注入 `ChatClient` 实例。
 
 ```java
 @RestController
