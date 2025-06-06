@@ -55,13 +55,24 @@
 				"items": []
 			},
 			{
-				"label": "Spring AI Alibaba 可观测",
+				"label": "AI 可观测",
 				"translations": {
 					"en": "Spring AI Alibaba Observability"
 				},
 				"collapsed": false,
 				"autogenerate": {
 					"directory": "practices/observability"
+				},
+				"items": []
+			},
+			{
+				"label": "动态 Prompt",
+				"translations": {
+					"en": "Spring AI Alibaba Dynamic Prompt"
+				},
+				"collapsed": false,
+				"autogenerate": {
+					"directory": "practices/dynamic-prompt"
 				},
 				"items": []
 			},
