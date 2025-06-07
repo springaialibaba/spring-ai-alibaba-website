@@ -1,10 +1,10 @@
 ---
-title: 使用starter简化MCP客户端的使用
+title: 使用Spring AI MCP Client Starter实现MCP客户端
 keywords: [Spring AI, MCP, 模型上下文协议, 智能体应用]
-description: "使用starter简化MCP客户端的使用"
+description: "使用Spring AI MCP Client Starter实现MCP客户端"
 ---
 
-## 案例3：使用starter简化MCP客户端的使用
+## 案例3：使用Spring AI MCP Client Starter实现MCP客户端
 
 在前面的案例中，我们看到了如何手动配置和初始化MCP客户端。Spring AI 提供了更简便的方式来使用MCP，通过starter可以大大简化MCP客户端的配置和使用。Spring AI MCP支持两种不同的传输层实现：基于stdio的实现和基于SSE的实现。
 
