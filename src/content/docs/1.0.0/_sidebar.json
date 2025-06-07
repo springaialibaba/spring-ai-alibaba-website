@@ -66,6 +66,17 @@
 				"items": []
 			},
 			{
+				"label": "Playground",
+				"translations": {
+					"en": "Spring AI Alibaba Playground"
+				},
+				"collapsed": false,
+				"autogenerate": {
+					"directory": "practices/playground"
+				},
+				"items": []
+			},
+			{
 				"label": "动态 Prompt",
 				"translations": {
 					"en": "Spring AI Alibaba Dynamic Prompt"
