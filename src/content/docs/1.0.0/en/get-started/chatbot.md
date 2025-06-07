@@ -41,7 +41,7 @@ The example above is essentially a standard Spring Boot application. Next, the s
 
 1. Add Dependency
 
-First, add the `spring-ai-alibaba-starter` dependency to the project. It will automatically initialize `ChatClient` and `ChatModel` instances for communicating with Qwen LLM through Spring Boot's auto-configuration mechanism.
+First, add the `spring-ai-alibaba-starter` dependency to your project. It will automatically initialize `ChatClient` and `ChatModel` instances for communicating with Qwen LLM through Spring Boot's auto-configuration mechanism.
 
 ```xml
 <dependency>	
@@ -53,7 +53,7 @@ First, add the `spring-ai-alibaba-starter` dependency to the project. It will au
 
 2. Inject the ChatClient
 
-Next, inject the `ChatClient` instance into a standard Controller bean.
+Next, inject the `ChatClient` instance into a standard Controller bean. This will enable your bean to conduct intelligent conversations with the AI model.
 
 ```java
 @RestController
