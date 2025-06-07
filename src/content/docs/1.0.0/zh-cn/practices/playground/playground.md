@@ -1231,7 +1231,7 @@ public class SAAToolsService {
 }
 ```
 
-Fucntion Tools 集成文章参考：https://java2ai.com/blog/spring-ai-toolcalling/?spm=5176.29160081.0.0.2856aa5cenvkmu
+Function Tools 集成文章参考：https://java2ai.com/blog/spring-ai-toolcalling/?spm=5176.29160081.0.0.2856aa5cenvkmu
 
 ## 4. 总结
 
