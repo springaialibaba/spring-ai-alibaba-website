@@ -1,26 +1,22 @@
 name: 👀 Linter
-
 on:
   pull_request:
     branches:
-    - "main"
+      - "main"
   push:
     branches:
-    - "main"
-
+      - "main"
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-
-    lint-check:
-        name: Lint Checks
-        runs-on: ubuntu-latest 
-        steps:
-          - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-          - uses: ./tools/github-actions/setup-deps
-          - name: Checkout LFS objects
-            run: git lfs checkout
-          - name: Checkout LFS objects
-            run: make lint
+  lint-check:
+    name: Lint Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: ./tools/github-actions/setup-deps
+      - name: Checkout LFS objects
+        run: git lfs checkout
+      - name: Lint Checks
+        run: make lint
