@@ -19,4 +19,4 @@ jobs:
       - name: Checkout LFS objects
         run: git lfs checkout
       - name: Lint Checks
-        run: make lint
+        run: make make  && make lint
