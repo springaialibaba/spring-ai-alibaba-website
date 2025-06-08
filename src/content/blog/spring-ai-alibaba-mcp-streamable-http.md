@@ -54,7 +54,7 @@ MCP 官方引入了全新的 [**`Streamable HTTP`**](https://modelcontextprotoco
 ### **<font style="color:rgb(2, 8, 23);">Streamable 关键改进</font>**
 <font style="color:rgb(2, 8, 23);">相比原有 HTTP+SSE 机制，Streamable HTTP 引入了几项关键改进：</font>
 
-1. **<font style="color:rgb(2, 8, 23);">统一 Endoint</font>**<font style="color:rgb(2, 8, 23);">：移除专门的 </font>**<font style="color:rgb(2, 8, 23);background-color:#f7f7f7;">/sse</font>**<font style="color:rgb(2, 8, 23);"> 端点，所有通信通过单一端点（当前官方 sdk 实现为 </font>**<font style="color:rgb(2, 8, 23);background-color:#f7f7f7;">/mcp</font>**<font style="color:rgb(2, 8, 23);">）进行</font>
+1. **<font style="color:rgb(2, 8, 23);">统一 Endpoint</font>**<font style="color:rgb(2, 8, 23);">：移除专门的 </font>**<font style="color:rgb(2, 8, 23);background-color:#f7f7f7;">/sse</font>**<font style="color:rgb(2, 8, 23);"> 端点，所有通信通过单一端点（当前官方 sdk 实现为 </font>**<font style="color:rgb(2, 8, 23);background-color:#f7f7f7;">/mcp</font>**<font style="color:rgb(2, 8, 23);">）进行</font>
 2. **<font style="color:rgb(2, 8, 23);">按需流式传输</font>**<font style="color:rgb(2, 8, 23);">：服务器可灵活选择是返回普通 HTTP 响应还是升级为 SSE 流</font>
 3. **<font style="color:rgb(2, 8, 23);">会话标识</font>**<font style="color:rgb(2, 8, 23);">：引入会话 ID 机制，支持状态管理和恢复</font>
 4. **<font style="color:rgb(2, 8, 23);">灵活初始化</font>**<font style="color:rgb(2, 8, 23);">：客户端可通过空 GET 请求主动初始化 SSE 流</font>
