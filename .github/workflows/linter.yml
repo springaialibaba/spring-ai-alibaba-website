@@ -20,24 +20,7 @@ jobs:
         steps:
           - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
           - uses: ./tools/github-actions/setup-deps
-    
           - name: Checkout LFS objects
             run: git lfs checkout
-    
-          - name: Instll tools
-            run: make install-tools
-    
-          - name: Install dependencies
-            run: pnpm install
-            
-          - name: Run Markdown Lint
-            run: make markdown
-          
-          - name: Run Yaml Lint
-            run: make yamllint
-    
-          - name: Run CodeSpell Lint
-            run: make codespell
-
-          - name: Run Link Check
-            run: make checklinks
+          - name: Checkout LFS objects
+            run: make lint
