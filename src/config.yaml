@@ -7,7 +7,6 @@ site:
   githubUrl: 'https://github.com/springaialibaba/spring-ai-alibaba-website'
   logoUrl: "/saa_logo.png"
   downloadEbooks: "https://developer.aliyun.com/ebook/7565"
-
 analytics:
   vendors:
     googleAnalytics:
@@ -19,14 +18,12 @@ analytics:
       pid: b3kPns
     clarityAlalytics:
       id: l4jzj6wbhh
-
-
 # Default SEO metadata
 metadata:
   title:
     default: AstroWind
     template: '%s — AstroWind'
-  description: "\U0001F680 Suitable for Startups, Small Business, Sass Websites, Professional Portfolios, Marketing Websites, Landing Pages & Blogs."
+  description: "🚀 Suitable for Startups, Small Business, Sass Websites, Professional Portfolios, Marketing Websites, Landing Pages & Blogs."
   robots:
     index: true
     follow: true
@@ -41,8 +38,6 @@ metadata:
     handle: '@onwidget'
     site: '@onwidget'
     cardType: summary_large_image
-
-
 ui:
   colors:
     # 主按钮颜色，一般为主色中间的颜色

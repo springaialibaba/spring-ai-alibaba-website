@@ -39,7 +39,7 @@ Spring AI 实现了模块化 RAG 架构，架构的灵感来自于论文“[模�
 
 > 负责处理检索到的 Document 以获得最佳的输出结果，解决模型中的*中间丢失*和上下文长度限制等。
 
-1. DocumentRanker：根据 Document 和用户 query 的相关性对 Dcoument 进行排序和排名；
+1. DocumentRanker：根据 Document 和用户 query 的相关性对 Document 进行排序和排名；
 2. DocumentSelector：用于从检索到的 Document 列表中删除不相关或冗余文档；
 3. DocumentCompressor：用于压缩每个 Document，减少检索到的信息中的噪音和冗余。
 

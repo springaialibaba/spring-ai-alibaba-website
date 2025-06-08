@@ -573,7 +573,7 @@ public class McpAsyncClient {
     }
 
     // --------------------------
-    // Basic Utilites
+    // Basic Utilities
     // --------------------------
 
     
@@ -1716,7 +1716,7 @@ public class McpAsyncServer {
              }
              else {
                 logger.warn(
-                      "Client requested unsupported protocol version: {}, so the server will sugggest the {} version instead",
+                      "Client requested unsupported protocol version: {}, so the server will suggest the {} version instead",
                       initializeRequest.protocolVersion(), serverProtocolVersion);
              }
 
@@ -4003,7 +4003,7 @@ public class McpClientSession implements McpSession {
              logger.debug("Received Response: {}", response);
              var sink = pendingResponses.remove(response.id());
              if (sink == null) {
-                logger.warn("Unexpected response for unkown id {}", response.id());
+                logger.warn("Unexpected response for unknown id {}", response.id());
              }
              else {
                 sink.success(response);

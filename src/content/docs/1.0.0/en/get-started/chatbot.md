@@ -19,7 +19,7 @@ git clone --depth=1 https://github.com/springaialibaba/spring-ai-alibaba-example
 cd spring-ai-alibaba-examples/spring-ai-alibaba-helloworld
 ```
 
-2. Complie and Run
+2. Compile and Run
 
 First, obtain a valid `API-KEY` and set the `AI_DASHSCOPE_API_KEY` environment variable. For instructions on acquiring this key, visit <a target="_blank" href="https://help.aliyun.com/zh/model-studio/developer-reference/get-api-key">Alibaba Cloud Platform</a> .
 
