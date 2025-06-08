@@ -15,7 +15,6 @@
 #
 
 ---
-
 ignore: |
   # This directory fails checks since many files
   # are templated. Instead, we run the linter
@@ -59,7 +58,7 @@ rules:
     max-spaces-after: 1
   indentation:
     spaces: 2
-    indent-sequences: consistent  # be consistent: don't mix indentation styles in one file.
+    indent-sequences: consistent # be consistent: don't mix indentation styles in one file.
     check-multi-line-strings: false
   key-duplicates: enable
   key-ordering: disable
@@ -68,6 +67,5 @@ rules:
     type: unix
   trailing-spaces: enable
   truthy:
-    check-keys: false   # GitHub Actions uses "on:" as a key
+    check-keys: false # GitHub Actions uses "on:" as a key
     level: warning
-    
