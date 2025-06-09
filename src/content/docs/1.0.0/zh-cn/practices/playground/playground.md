@@ -1233,6 +1233,83 @@ public class SAAToolsService {
 
 Function Tools 集成文章参考：https://java2ai.com/blog/spring-ai-toolcalling/?spm=5176.29160081.0.0.2856aa5cenvkmu
 
+### 3.5 前端页面
+
+Playground 前端页面使用 React 实现，为上述功能提供了一套基本的前端界面，**您可以参考以下关键信息做一些自定义修改**.
+
+#### 3.5.1 数据持久化
+
+部分业务场景需要将数据持久化以便于查询历史记录，生产环境使用时推荐使用服务端存储记录，但 Playground 出于效果演示目的，目前默认将所有历史数据保存到客户端本地，相关实现参考如下代码:
+
+```ts
+/**
+ * 处理消息发送的完整流程
+ * @param text - 消息文本
+ * @param sendRequest - 发送请求的函数
+ * @param createMessage - 创建消息对象的函数
+ */
+const processSendMessage = async <T extends BaseMessage>({
+    text,
+    sendRequest,
+    createMessage,
+}: {
+    text: string;
+    sendRequest: (text: string, timestamp: number, message: T) => Promise<void>;
+    createMessage: (text: string, timestamp: number) => T;
+}) => {
+    if (!text.trim() || !activeConversation) return;
+
+    const userTimestamp = Date.now();
+    const userMessage = createMessage(text, userTimestamp);
+    
+    // 存储用户数据到客户端本地，生产环境可省略该步骤由服务端存储
+    updateActiveConversation({
+        ...activeConversation,
+        messages: [
+        ...activeConversation.messages,
+        userMessage,
+    ] as T[],
+    });
+
+    try {
+        await sendRequest(text, userTimestamp, userMessage);
+    } catch (error) {
+        console.error("error:", error);
+    }
+};
+
+```
+
+#### 3.5.2 消息文本样式自定义渲染
+
+对话气泡组件支持富文本样式渲染，并且具备较好的拓展性，您可以参考如下代码对任意标签做自定义样式拓展：
+
+```tsx
+/**
+ * 获取自定义渲染配置
+ * @param style - css 样式
+ */
+const getMarkdownRenderConfig = (styles: Record<string, string>) => {
+  
+  return {
+    div: ({ children }) => {
+        return <pre className={styles.codeBlock}>{children}</pre>
+    },
+    code: ({ children, className }) => {
+        return <code className={styles.codeInline}>{children}</code>
+    },
+    think: ({ children }) => {
+        return  <div className={styles.thinkTag}>{children}</div>;
+    },
+    tool: ({ children }) => {
+        return <div className={styles.toolTag}>{children}</div>;
+    },
+  };
+};
+```
+
+您也可以通过正则匹配等方式进行语法分析，将特定格式的字符串修改为由自定义标签包裹的形式，再由上述方式设置其渲染样式，实现可交互表单、图表等复杂样式。
+
 ## 4. 总结
 
 Spring AI Alibaba 官方社区开发了一个**包含完整 `前端UI+后端实现` 的智能体 Playground 示例**。未来社区会持续更新维护。以此来演示 Spring AI 和 Spring AI Alibaba 的最新功能。
