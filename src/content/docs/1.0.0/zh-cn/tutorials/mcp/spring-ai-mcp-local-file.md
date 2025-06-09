@@ -17,29 +17,29 @@ description: "Spring AI 智能体通过 MCP 集成本地文件数据"
 1. 安装 npx (Node Package eXecute):
    首先确保本地机器安装了 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)，然后运行如下命令：
 
-```bash
-npm install -g npx
-```
+    ```bash
+    npm install -g npx
+    ```
 
 2. 下载示例源码
 
-```bash
-git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
-cd spring-ai-alibaba-examples/spring-ai-alibaba-mcp-example/spring-ai-alibaba-mcp-manual-example/ai-mcp-fileserver
-```
+    ```bash
+    git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
+    cd spring-ai-alibaba-examples/spring-ai-alibaba-mcp-example/spring-ai-alibaba-mcp-manual-example/ai-mcp-fileserver
+    ```
 
 3. 设置环境变量
 
-```bash
-# 通义大模型 Dashscope API-KEY
-export AI_DASHSCOPE_API_KEY=${your-api-key-here}
-```
+    ```bash
+    # 通义大模型 Dashscope API-KEY
+    export AI_DASHSCOPE_API_KEY=${your-api-key-here}
+    ```
 
 4. 构建示例
 
-```bash
-./mvnw clean install
-```
+    ```bash
+    ./mvnw clean install
+    ```
 
 #### 运行示例应用
 
