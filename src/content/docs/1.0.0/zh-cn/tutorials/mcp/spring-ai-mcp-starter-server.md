@@ -1,20 +1,20 @@
 ---
-title: 使用Spring AI MCP Server Starter实现MCP服务端
+title: 使用 Spring AI MCP Server Starter 实现 MCP 服务端
 keywords: [Spring AI, MCP, 模型上下文协议, 智能体应用]
-description: "使用Spring AI MCP Server Starter实现MCP服务端"
+description: "使用 Spring AI MCP Server Starter 实现 MCP 服务端"
 ---
 
-## 案例4：使用Spring AI MCP Server Starter实现MCP服务端
+## 案例4：使用 Spring AI MCP Server Starter 实现 MCP 服务端
 
 在前面的章节中，我们介绍了如何使用Spring AI MCP Client Starter简化MCP客户端的开发。本节将介绍如何使用Spring AI MCP Server Starter来实现MCP服务端，包括基于stdio的服务端和基于SSE的服务端两种实现方式。
 
-### 4.1 基于stdio的MCP服务端实现
+### 4.1 基于 stdio 的 MCP 服务端实现
 
-基于stdio的MCP服务端通过标准输入输出流与客户端通信，适用于作为子进程被客户端启动和管理的场景，非常适合嵌入式应用。
+基于 stdio 的 MCP 服务端通过标准输入输出流与客户端通信，适用于作为子进程被客户端启动和管理的场景，非常适合嵌入式应用。
 
 #### 添加依赖
 
-首先，在您的项目中添加Spring AI MCP Server Starter依赖：
+首先，在您的项目中添加 Spring AI MCP Server Starter 依赖：
 
 ```xml
 <dependency>
@@ -23,7 +23,7 @@ description: "使用Spring AI MCP Server Starter实现MCP服务端"
 </dependency>
 ```
 
-#### 配置MCP服务端
+#### 配置 MCP 服务端
 
 在`application.yml`中配置MCP服务端：
 
@@ -40,9 +40,9 @@ spring:
         version: 0.0.1         # 服务器版本
 ```
 
-#### 实现MCP工具
+#### 实现 MCP 工具
 
-使用`@Tool`注解标记方法，使其可以被MCP客户端发现和调用：
+使用 `@Tool` 注解标记方法，使其可以被 MCP 客户端发现和调用：
 
 ```java
 @Service
@@ -97,7 +97,7 @@ public class OpenMeteoService {
 }
 ```
 
-#### 注册MCP工具
+#### 注册 MCP 工具
 
 在应用程序入口类中注册工具：
 
@@ -126,7 +126,7 @@ public class McpServerApplication {
 mvn clean package -DskipTests
 ```
 
-### 4.2 基于SSE的MCP服务端实现
+### 4.2 基于 SSE 的 MCP 服务端实现
 
 基于SSE的MCP服务端通过HTTP协议与客户端通信，适用于作为独立服务部署的场景，可以被多个客户端远程调用。
 
@@ -141,7 +141,7 @@ mvn clean package -DskipTests
 </dependency>
 ```
 
-#### 配置MCP服务端
+#### 配置 MCP 服务端
 
 在`application.yml`中配置MCP服务端：
 
@@ -157,7 +157,7 @@ spring:
         version: 0.0.1            # 服务器版本号
 ```
 
-#### 实现MCP工具
+#### 实现 MCP 工具
 
 与基于stdio的实现相同，使用`@Tool`注解标记方法：
 
@@ -213,7 +213,7 @@ public class OpenMeteoService {
 }
 ```
 
-#### 注册MCP工具
+#### 注册 MCP 工具
 
 在应用程序入口类中注册工具：
 
@@ -255,9 +255,9 @@ mvn spring-boot:run
 
 服务端将在 http://localhost:8080 启动，可以通过浏览器访问查看服务状态。
 
-### 4.3 MCP服务端与客户端的交互
+### 4.3 MCP 服务端与客户端的交互
 
-#### 基于stdio的交互
+#### 基于 stdio 的交互
 
 策划一下，客户端通过启动服务端进程并通过标准输入输出流与其通信：
 
@@ -317,7 +317,7 @@ System.out.println(weatherResult.getContent());
 
 这段代码展示了基于SSE的MCP客户端如何与服务端交互。它通过HTTP协议与服务端通信，实现了相同的天气预报功能调用。
 
-### 4.4 MCP服务端开发最佳实践
+### 4.4 MCP 服务端开发最佳实践
 
 1. **工具设计**：
    - 每个工具方法应该有明确的功能和参数
@@ -347,5 +347,5 @@ Spring AI MCP Server Starter提供了两种实现MCP服务端的方式：基于s
 通过使用`@Tool`注解和`@ToolParameter`注解，可以轻松地将普通的Java方法转换为MCP工具，使其可以被MCP客户端发现和调用。Spring Boot的自动配置机制使得MCP服务端的开发变得简单高效。
 
 > 完整示例代码可在以下链接查看：
-> - [基于stdio的实现](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example/starter-example/server/starter-stdio-server)
-> - [基于SSE的实现](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example/starter-example/server/starter-webflux-server)
+> - [基于 stdio 的实现](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example/spring-ai-alibaba-mcp-starter-example/server/mcp-stdio-server-example)
+> - [基于 SSE 的实现](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-mcp-example/spring-ai-alibaba-mcp-starter-example/server/mcp-webflux-server-example)

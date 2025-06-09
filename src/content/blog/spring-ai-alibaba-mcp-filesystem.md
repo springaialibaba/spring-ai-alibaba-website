@@ -33,29 +33,30 @@ Spring AI MCP 采用模块化架构，包括以下组件：
 1. 安装 npx (Node Package eXecute):
 首先确保本地机器安装了 [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)，然后运行如下命令：
 
-```bash
-npm install -g npx
-```
+    ```bash
+    # 安装 npx
+    npm install -g npx
+    ```
 
 2. 下载示例源码
 
-```bash
-git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
-cd spring-ai-alibaba-examples/spring-ai-alibaba-mcp-example/filesystem
-```
+    ```bash
+    git clone https://github.com/springaialibaba/spring-ai-alibaba-examples.git
+    cd spring-ai-alibaba-examples/spring-ai-alibaba-mcp-example/filesystem
+    ```
 
 3. 设置环境变量
 
-```bash
-# 通义大模型 Dashscope API-KEY
-export AI_DASHSCOPE_API_KEY=${your-api-key-here}
-```
+    ```bash
+    # 通义大模型 Dashscope API-KEY
+    export AI_DASHSCOPE_API_KEY=${your-api-key-here}
+    ```
 
 4. 构建示例
 
-```bash
-./mvnw clean install
-```
+    ```bash
+    ./mvnw clean install
+    ```
 
 #### 运行示例应用
 运行示例，智能体将向模型发起提问（源码中包含预置问题，可通过源码查看），可通过控制台查看输出结果。
