@@ -4,7 +4,7 @@ keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 
-Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring AI Alibaba Graph core模块中的方法即可实现自定义Graph。
+Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用`spring-ai-alibaba-graph-core`模块中的方法即可实现自定义Graph。
 
 ## 快速体验示例
 
@@ -19,7 +19,8 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
    ![img.png](img.png)
    
    从上图可以看到，工作流包含四个节点，节点间通过边连接起来。对每个节点的作用进行简要介绍：
-   1. SummarizerNode：将输入的文本进行简明的摘要，输入为文本(String)，输出为摘要(String)。
+
+   1. **SummarizerNode**：将输入的文本进行简明的摘要，输入为文本(String)，输出为摘要(String)。
    
       ```java
       public class SummarizerNode implements NodeAction {
@@ -45,7 +46,8 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
          
       }
       ```
-   2. SummaryFeedbackClassifierNode：根据用户输入的摘要进行分类，输入为摘要(String)，输出为分类结果(Map<String, Object>)。
+      
+   2. **SummaryFeedbackClassifierNode**：根据用户输入的摘要进行分类，输入为摘要(String)，输出为分类结果(Map<String, Object>)。
    
       ```java
       public class SummaryFeedbackClassifierNode implements NodeAction {
@@ -86,7 +88,9 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
          
       }
       ```
-   3. RewordingNode：根据用户输入的摘要进行重写，输入为摘要(String)，输出为重写后的摘要(String)。
+      
+   3. **RewordingNode**：根据用户输入的摘要进行重写，输入为摘要(String)，输出为重写后的摘要(String)。
+   
       ```java
       public class RewordingNode implements NodeAction {
          
@@ -111,44 +115,47 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
          
       }
       ```
-   4. TitleGeneratorNode：根据用户输入的摘要生成标题，输入为摘要(String)，输出为标题(String)。
+      
+   4. **TitleGeneratorNode**：根据用户输入的摘要生成标题，输入为摘要(String)，输出为标题(String)。
    
-   ```java
-   public class TitleGeneratorNode implements NodeAction {
-      
-       private final ChatClient chatClient;
-      
-       public TitleGeneratorNode(ChatClient chatClient) {
-           this.chatClient = chatClient;
-       }
-      
-       @Override
-       public Map<String, Object> apply(OverAllState state) {
-           String content = (String) state.value("reworded").orElse("");
-           String prompt = "请为以下内容生成一个简洁有吸引力的中文标题：\n\n" + content;
-      
-           ChatResponse response = chatClient.prompt(prompt).call().chatResponse();
-           String title = response.getResult().getOutput().getText();
-      
-           Map<String, Object> result = new HashMap<>();
-           result.put("title", title);
-           return result;
-       }
-      
-   }
-   ```
-   再介绍完工作流的节点信息之后，我们继续介绍工作流的执行逻辑：
+      ```java
+         public class TitleGeneratorNode implements NodeAction {
+            
+             private final ChatClient chatClient;
+            
+             public TitleGeneratorNode(ChatClient chatClient) {
+                 this.chatClient = chatClient;
+             }
+            
+             @Override
+             public Map<String, Object> apply(OverAllState state) {
+                 String content = (String) state.value("reworded").orElse("");
+                 String prompt = "请为以下内容生成一个简洁有吸引力的中文标题：\n\n" + content;
+            
+                 ChatResponse response = chatClient.prompt(prompt).call().chatResponse();
+                 String title = response.getResult().getOutput().getText();
+            
+                 Map<String, Object> result = new HashMap<>();
+                 result.put("title", title);
+                 return result;
+             }
+            
+         }
+      ```
+   
+   在介绍完工作流的节点信息之后，我们继续介绍工作流的执行逻辑：
    1. start->SummarizerNode(controller调用时执行)
    2. SummarizerNode->SummaryFeedbackClassifierNode(无条件)
    3. SummaryFeedbackClassifierNode->RewordingNode(分类结果为positive时执行)
    4. SummaryFeedbackClassifierNode->SummarizerNode(分类结果为negative时执行)
    5. RewordingNode->TitleGeneratorNode(无条件)
    6. TitleGeneratorNode->stop(方法结束返回结果)
+
 2. 实现细节讲解：
 
-   1. 实例节点继承NodeAction类，将具体实现过程放在apply方法中。
+   1. 实例节点继承`NodeAction`类，将具体实现过程放在`apply`方法中。
    
-   2. 实例ConditionalEdges继承EdgeAction类，将条件判断逻辑放在apply方法中。
+   2. 实例`ConditionalEdges`继承`EdgeAction`类，将条件判断逻辑放在`apply`方法中。
    
       ```java
       public class FeedbackDispatcher implements EdgeAction {
@@ -164,6 +171,7 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
       
       }
       ```
+      
    3. 全局状态注册和更新策略(目前更新策略原生支持替换策略和追加策略)
    
       ```java
@@ -177,16 +185,17 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
                      return state;
       };
       ```
+      
    4. 工作流打印(目前支持PlantUML语法打印和Mermaid语法打印)
    
       ```java
         // 添加 PlantUML 打印
-        GraphRepresentation representation = graph.getGraph(GraphRepresentation.Type.PLANTUML,
-                "writing assistant flow");
+        GraphRepresentation representation = graph.getGraph(GraphRepresentation.Type.PLANTUML, "writing assistant flow");
         System.out.println("\n=== Writing Assistant UML Flow ===");
         System.out.println(representation.content());
         System.out.println("==================================\n");
       ```
+      
 3. 具体实现流程：
 
    1. 导入如下依赖(百炼模块的依赖和graph模块的依赖)
@@ -211,6 +220,7 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
             </dependency>
           </dependencies>
       ```
+      
    2. 配置api-key
    
       ```yaml
@@ -219,6 +229,7 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
           dashscope:
             api-key: ${AI_DASHSCOPE_API_KEY}
       ```
+      
    3. 按照上面提示创建上述节点和ConditionalEdges。其中node_async()方法用于创建异步节点，addConditionEdges()方法用于创建条件边。
    
       ```java
@@ -235,6 +246,7 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
             .addEdge("reworder", "title_generator")
             .addEdge("title_generator", END);
       ```
+      
    4. 构建工作流，并编译graph
    
       ```java
@@ -246,6 +258,7 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
          this.compiledGraph = writingAssistantGraph.compile();
          }
       ```
+      
    5. 创建controller层
    
       ```java
@@ -258,9 +271,10 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
       ```
 
 ## 上述样例测试流程：
+
 1. 下载项目
 
-   运行以下命令下载源码，进入 graph-example 示例目录：
+   运行以下命令下载源码，进入`spring-ai-alibaba-graph-example`示例目录：
 
    ```shell
    git clone --depth=1 https://github.com/springaialibaba/spring-ai-alibaba-examples.git
@@ -273,10 +287,13 @@ Spring AI Alibaba Graph实现了构建Graph结构的适配，通过调用spring 
    # 启动服务
    mvn spring-boot:run
    ```
+   
 3. 实例接口调用
+
    ```
    GET http://localhost:8080/write?text=今天我学习了spring-ai-alibaba-graph的相关概念，spring-ai-alibaba-graph做的特别好， 感觉特别开心
    ```
    
+
 ### 具体运行步骤查看模块内部的[README.md](https://github.com/springaialibaba/spring-ai-alibaba-examples/blob/main/spring-ai-alibaba-graph-example/README.md)
 
