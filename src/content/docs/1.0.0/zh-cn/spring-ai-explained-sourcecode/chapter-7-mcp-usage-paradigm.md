@@ -1131,7 +1131,7 @@ McpServerTransportProvider 是服务端传输层的核心接口，负责会话�
 <tr>
 <td>notifyClients<br/></td><td>向所有活跃客户端广播JSON-RPC消息<br/></td></tr>
 <tr>
-<td>clsoe<br/></td><td>立即关闭所有传输层连接并释放资源<br/></td></tr>
+<td>close<br/></td><td>立即关闭所有传输层连接并释放资源<br/></td></tr>
 <tr>
 <td>closeGracefully<br/></td><td>优雅地关闭所有活跃会话，清理资源<br/></td></tr>
 </table>
@@ -2685,13 +2685,13 @@ public interface McpClient {
 - Sync：阻塞操作，直接返回响应
 - Async：非阻塞操作，基于 Project Reactor 的 Mono 响应
 
-对外暴露构建 Sync、Aysnc 类，包含如下字段
+对外暴露构建 Sync、Async 类，包含如下字段
 
 <table>
 <tr>
 <td><br/></td><td>字段<br/></td><td>名称<br/></td></tr>
 <tr>
-<td rowspan="8">Sync、Aysnc<br/><br/></td><td>ClientCapabilities capabilities<br/></td><td>客户端能力配置<br/></td></tr>
+<td rowspan="8">Sync、Async<br/><br/></td><td>ClientCapabilities capabilities<br/></td><td>客户端能力配置<br/></td></tr>
 <tr>
 <td>Implementation clientInfo<br/></td><td>客户端实现信息<br/></td></tr>
 <tr>
@@ -3817,13 +3817,13 @@ public interface McpServer {
 - Sync：阻塞操作，直接返回响应
 - Async：非阻塞操作，基于 Project Reactor 的 Mono 响应
 
-对外暴露构建 Sync、Aysnc 类，包含如下字段
+对外暴露构建 Sync、Async 类，包含如下字段
 
 <table>
 <tr>
 <td><br/></td><td>字段<br/></td><td>名称<br/></td></tr>
 <tr>
-<td rowspan="9">Sync、Aysnc<br/><br/></td><td>McpSchema.Implementation serverInfo<br/></td><td>服务器实现信息<br/></td></tr>
+<td rowspan="9">Sync、Async<br/><br/></td><td>McpSchema.Implementation serverInfo<br/></td><td>服务器实现信息<br/></td></tr>
 <tr>
 <td>McpSchema.ServerCapabilities serverCapabilities<br/></td><td>服务器支持的功能<br/></td></tr>
 <tr>

@@ -206,7 +206,7 @@ public class MemoryPromptAdvisorController {
 
 ```xml
 <properties>
-    <sqlite.verson>3.49.1.0</sqlite.verson>
+    <sqlite.version>3.49.1.0</sqlite.version>
     <mysql.version>8.0.32</mysql.version>
     <jedis.version>5.2.0</jedis.version>
 </properties>
@@ -247,7 +247,7 @@ public class MemoryPromptAdvisorController {
     <dependency>
         <groupId>org.xerial</groupId>
         <artifactId>sqlite-jdbc</artifactId>
-        <version>${sqlite.verson}</version>
+        <version>${sqlite.version}</version>
     </dependency>
     
     <dependency>
@@ -302,7 +302,7 @@ spring:
         password:
 ```
 
-### Sqllite
+### Sqlite
 
 #### SqliteMemoryConfig
 
@@ -392,11 +392,11 @@ public class SqliteMemoryController {
 
 ##### 效果
 
-以会话“yingzi”发送消息，此时消息存储至 sqllite
+以会话"yingzi"发送消息，此时消息存储至 sqlite
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/UFJbbMvMbowwHBxYDracNCPcnNb.png)
 
-从 sqllite 获取会话“yingzi”对应的消息
+从 sqlite 获取会话"yingzi"对应的消息
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/HwcbbwbpaoJ2JtxrZyocj1Ytnfe.png)
 
@@ -502,7 +502,7 @@ public class MysqlMemoryController {
 
 ##### 效果
 
-以会话“yingzi”发送消息，此时消息存储至 mysql
+以会话"yingzi"发送消息，此时消息存储至 mysql
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/3da352d7-3fa4-4af3-8b27-d31889a37e1c.png)
 
@@ -510,7 +510,7 @@ public class MysqlMemoryController {
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/IDvDbZlpoov8HGxuxG1c4nu9nMd.png)
 
-从 mysql 获取会话“yingzi”对应的消息
+从 mysql 获取会话"yingzi"对应的消息
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/ZcRIbE9BCoYVlxxr95Zc4bABn8b.png)
 
@@ -612,7 +612,7 @@ public class RedisMemoryController {
 
 ##### 效果
 
-以会话“yingzi”发送消息，此时消息存储至 redis
+以会话"yingzi"发送消息，此时消息存储至 redis
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/VjaTbASptoYByTxbcmQcZ0U0nrh.png)
 
@@ -620,7 +620,7 @@ public class RedisMemoryController {
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/RSnmbujXSomQIyxAeSwcbRsBnHh.png)
 
-从 redis 获取会话“yingzi”对应的消息
+从 redis 获取会话"yingzi"对应的消息
 
 ![](/public/img/user/ai/spring-ai-explained-sourcecode/UNqwb8wy7oOlR9xHoIzcbzfanxh.png)
 
@@ -1733,7 +1733,7 @@ public final class InMemoryChatMemoryRepository implements ChatMemoryRepository 
 
 PromptChatMemoryAdvisor
 
-1. 有些模型可能可能不支持 messag
+1. 有些模型可能可能不支持 message
 
    1. 如本地部署，LLaMA、BLOOM 等 text-in/text-out 模型
 2. 调试时，希望快速看到完整上下文
