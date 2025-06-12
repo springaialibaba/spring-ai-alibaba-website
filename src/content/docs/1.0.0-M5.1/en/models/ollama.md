@@ -58,9 +58,9 @@ Ollama 是一个开源的大型语言模型服务工具，旨在帮助用户快�
 
     ```java
     @GetMapping("/simple/chat")
-    public String simpleChat() {
+    public String simpleChat(@RequestParam String prompt) {
 
-        return ollamaChatModel.call(new Prompt(DEFAULT_PROMPT)).getResult().getOutput().getContent();
+        return ollamaChatModel.call(new Prompt(prompt)).getResult().getOutput().getText();
     }
     ```
 
