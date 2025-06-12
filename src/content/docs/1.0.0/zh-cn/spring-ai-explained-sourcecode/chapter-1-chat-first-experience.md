@@ -94,11 +94,11 @@ public class ChatController {
 
 call 调用
 
-![](static/IEW6bwFVUofWMBxF6nRcIDv6nCb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/IEW6bwFVUofWMBxF6nRcIDv6nCb.png)
 
 stream 调用
 
-![](static/VGlCbtPntodJ08xBChbcsY3gnPd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/VGlCbtPntodJ08xBChbcsY3gnPd.png)
 
 #### ChatOptionController
 
@@ -159,11 +159,11 @@ chatClient 全局配置 temperature=0.9
 
 /call 接口的 temperature=0.9
 
-![](static/QHmfbObZOoSjsxxDzREcVEq0nVd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/QHmfbObZOoSjsxxDzREcVEq0nVd.png)
 
 /call/temperature 接口的 temperature=0.0
 
-![](static/IYlsbQN6LoNL8hxzWz3ceJCFnQf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/IYlsbQN6LoNL8hxzWz3ceJCFnQf.png)
 
 
 
@@ -194,7 +194,7 @@ chatClient 全局配置 temperature=0.9
 
 ## ChatClient 自动注入
 
-![](static/chatClient自动注入.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/chatClient自动注入.png)
 
 
 

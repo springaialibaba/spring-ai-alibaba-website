@@ -113,15 +113,15 @@ public class MemoryMessageAdvisorController {
 
 以会话 Id=“yingzi”，先告知模型我的名字
 
-![](static/ESn9bs6ohodvP9x69nXciSEpnXy.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/ESn9bs6ohodvP9x69nXciSEpnXy.png)
 
 再以同一个会话 Id=“yingzi”，模型能根据以往的消息记住了我的名字
 
-![](static/TZcNb2hCYoe44Sx5EJacJOFNnjh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/TZcNb2hCYoe44Sx5EJacJOFNnjh.png)
 
 获取历史消息记录，我们能得到历史消息记录
 
-![](static/VUPDbcm5eopLoexL6hAcsHHDnuo.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/VUPDbcm5eopLoexL6hAcsHHDnuo.png)
 
 #### MemoryPromptAdvisorController
 
@@ -185,15 +185,15 @@ public class MemoryPromptAdvisorController {
 
 以会话 Id=“yingzi”，先告知模型我的名字
 
-![](static/KBoobHai0oeyr1xUkhGcsnvRnJI.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/KBoobHai0oeyr1xUkhGcsnvRnJI.png)
 
 再以同一个会话 Id=“yingzi”，模型能根据以往的消息记住了我的名字
 
-![](static/MbEgbmWWpoRgCUxGyoVcJJ7SnXg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/MbEgbmWWpoRgCUxGyoVcJJ7SnXg.png)
 
 获取历史消息记录，我们能得到历史消息记录
 
-![](static/SP1hbvmh0oz97hxvEb4ceXddnWg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/SP1hbvmh0oz97hxvEb4ceXddnWg.png)
 
 
 
@@ -394,11 +394,11 @@ public class SqliteMemoryController {
 
 以会话“yingzi”发送消息，此时消息存储至 sqllite
 
-![](static/UFJbbMvMbowwHBxYDracNCPcnNb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/UFJbbMvMbowwHBxYDracNCPcnNb.png)
 
 从 sqllite 获取会话“yingzi”对应的消息
 
-![](static/HwcbbwbpaoJ2JtxrZyocj1Ytnfe.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/HwcbbwbpaoJ2JtxrZyocj1Ytnfe.png)
 
 ### Mysql
 
@@ -504,15 +504,15 @@ public class MysqlMemoryController {
 
 以会话“yingzi”发送消息，此时消息存储至 mysql
 
-![](static/3da352d7-3fa4-4af3-8b27-d31889a37e1c.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/3da352d7-3fa4-4af3-8b27-d31889a37e1c.png)
 
 消息被存储至 mysql 中
 
-![](static/IDvDbZlpoov8HGxuxG1c4nu9nMd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/IDvDbZlpoov8HGxuxG1c4nu9nMd.png)
 
 从 mysql 获取会话“yingzi”对应的消息
 
-![](static/ZcRIbE9BCoYVlxxr95Zc4bABn8b.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/ZcRIbE9BCoYVlxxr95Zc4bABn8b.png)
 
 ### Redis
 
@@ -614,15 +614,15 @@ public class RedisMemoryController {
 
 以会话“yingzi”发送消息，此时消息存储至 redis
 
-![](static/VjaTbASptoYByTxbcmQcZ0U0nrh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/VjaTbASptoYByTxbcmQcZ0U0nrh.png)
 
 消息被存储至 redis 中
 
-![](static/RSnmbujXSomQIyxAeSwcbRsBnHh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/RSnmbujXSomQIyxAeSwcbRsBnHh.png)
 
 从 redis 获取会话“yingzi”对应的消息
 
-![](static/UNqwb8wy7oOlR9xHoIzcbzfanxh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/UNqwb8wy7oOlR9xHoIzcbzfanxh.png)
 
 
 
@@ -632,7 +632,7 @@ public class RedisMemoryController {
 
 ### 架构图
 
-![](static/advisor基础-架构图.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/advisor基础-架构图.png)
 
 ### Advisor
 

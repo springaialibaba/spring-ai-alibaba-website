@@ -137,31 +137,31 @@ public class VectorSimpleController {
 
 导入 4 条数据
 
-![](static/VNYnbYyJloNQv1xXNLAcPRyTnog.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/VNYnbYyJloNQv1xXNLAcPRyTnog.png)
 
 删除 id=1 的数据
 
-![](static/NHdVbwKdpoy241xqWsTcbNDqn8c.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/NHdVbwKdpoy241xqWsTcbNDqn8c.png)
 
 将内存里数据保存到本地
 
-![](static/S7WAbLYZioWVVhxRncwciIyMnye.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/S7WAbLYZioWVVhxRncwciIyMnye.png)
 
 这是对应的 json 数据，可以看到只有三条数据，其中 id=1 的数据被删除了
 
-![](static/Dl3Qbhex5oca2AxXfoacXAWSnde.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Dl3Qbhex5oca2AxXfoacXAWSnde.png)
 
 现在让我们重启服务，并调用 load 接口，重新从本地文件中加载数据到内存
 
-![](static/IMS3b5g5KoGHZTxkny7covrpnCc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/IMS3b5g5KoGHZTxkny7covrpnCc.png)
 
 调用 search 查询数据
 
-![](static/R3zxb8SUCoxeA5x97ZicHatnnie.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/R3zxb8SUCoxeA5x97ZicHatnnie.png)
 
 查询已经被过滤的数据
 
-![](static/XrYYbGKYQoNENCxhT6HciyOAnUd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/XrYYbGKYQoNENCxhT6HciyOAnUd.png)
 
 ### Redis
 
@@ -337,23 +337,23 @@ public class RedisController {
 
 向 Redis 中添加数据
 
-![](static/JFjTbe86EoGAwwx0UQ1cbJTTnNh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/JFjTbe86EoGAwwx0UQ1cbJTTnNh.png)
 
 在 Redis 中查看数据
 
-![](static/XfCmb7eL4o6iCyx1tPXcGAUCnpc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/XfCmb7eL4o6iCyx1tPXcGAUCnpc.png)
 
 利用 Redis，进行向量查询
 
-![](static/R63jbv3k6oOJZQxBWHRcBJxwnAc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/R63jbv3k6oOJZQxBWHRcBJxwnAc.png)
 
 删除 year 大于等于 2024 && name 为"yinzgi"的数据
 
-![](static/EpMVbD15Doxyzax0tzrcIR0Bnue.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/EpMVbD15Doxyzax0tzrcIR0Bnue.png)
 
 数据已被删除
 
-![](static/Yx4ibHOjIofHuUxUwhBcK4pln7g.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Yx4ibHOjIofHuUxUwhBcK4pln7g.png)
 
 ### Elasticsearch
 
@@ -577,23 +577,23 @@ public class VectorEsController {
 
 导入数据到 ES 中
 
-![](static/Ymhebi1KLofWIzxcO1rcjJLYn5f.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Ymhebi1KLofWIzxcO1rcjJLYn5f.png)
 
 ES 中可查到对应的数据
 
-![](static/WslIbBAXvoJnUExk37vcYtulnMg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/WslIbBAXvoJnUExk37vcYtulnMg.png)
 
 查询数据
 
-![](static/LcaTbI65YozRJdx4AhpcaDI0nf5.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/LcaTbI65YozRJdx4AhpcaDI0nf5.png)
 
 过滤删除
 
-![](static/FsVQbhh8pozpejxLYPUcc8YynLc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/FsVQbhh8pozpejxLYPUcc8YynLc.png)
 
 name 为 yingzi、year 为 2025 的数据被删除了
 
-![](static/TwJzbsGYmo6oMUxOJXRcR7a5n0c.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/TwJzbsGYmo6oMUxOJXRcR7a5n0c.png)
 
 
 

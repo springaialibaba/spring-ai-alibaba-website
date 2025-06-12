@@ -112,11 +112,11 @@ public class MapListController {
 
 转换为 Map 类型
 
-![](static/Iw5gbB01XoaEzixFoiAcgMGEnc3.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Iw5gbB01XoaEzixFoiAcgMGEnc3.png)
 
 转换为 List 类型
 
-![](static/C8OrbhbjMoMXtPxUG37cRVw0nUc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/C8OrbhbjMoMXtPxUG37cRVw0nUc.png)
 
 ### 实例对象转换
 
@@ -196,7 +196,7 @@ public class BeanController {
 
 ##### 效果
 
-![](static/OER3bxN4DoiFnjxTI4IcmsWsnQf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/OER3bxN4DoiFnjxTI4IcmsWsnQf.png)
 
 
 

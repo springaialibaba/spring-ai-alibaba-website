@@ -276,23 +276,23 @@ public class TimeController {
 
 无工具版，大模型无法知道当前时间
 
-![](static/AoQkbxgh7olAVTx2neVcpihgnIh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/AoQkbxgh7olAVTx2neVcpihgnIh.png)
 
 工具版—Function，通过自动注入对应的工具 Bean，实现获取时间
 
-![](static/IpT9bWvSoopqH8xi5rtcLOwqnmK.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/IpT9bWvSoopqH8xi5rtcLOwqnmK.png)
 
 工具版—Method，通过 @Tool 注解指定工具 Bean，实现获取时间
 
-![](static/ERkDbhGU3oWYJZxX7Ssc5fR2nMg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/ERkDbhGU3oWYJZxX7Ssc5fR2nMg.png)
 
 通过设置工具判断字段 internalToolExecutionEnabled=false（默认为 true），来手动控制工具执行
 
-![](static/QYnIbXx1jovwXRxfvL7cK1k3nKd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/QYnIbXx1jovwXRxfvL7cK1k3nKd.png)
 
 可结合历史消息记录，用来编写手动控制工具之后的逻辑
 
-![](static/CKYLb6pU1o5QZSxAKR7cB2KonoW.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/CKYLb6pU1o5QZSxAKR7cB2KonoW.png)
 
 ### 天气工具
 
@@ -599,15 +599,15 @@ public class WeatherController {
 
 无工具版，大模型无法知道天气情况
 
-![](static/LrWBb5iafoCJMNxYhZhcPgPCn5c.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/LrWBb5iafoCJMNxYhZhcPgPCn5c.png)
 
 工具版—Function，通过自动注入对应的工具 Bean，实现获取天气
 
-![](static/BEvabUgF1oRF5ixk2lHcoodYnfh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/BEvabUgF1oRF5ixk2lHcoodYnfh.png)
 
 工具版—Function，通过 @Tool 注解指定工具 Bean，实现获取天气
 
-![](static/WMjpbffGuoTegkxc12Uc6zOAnKb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/WMjpbffGuoTegkxc12Uc6zOAnKb.png)
 
 
 
@@ -620,7 +620,7 @@ public class WeatherController {
 
 ### 工具各类说明（不含 MCP 内容）
 
-![](static/tool源码-工具各类说明.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/tool源码-工具各类说明.png)
 
 ### Tool（工具注解）
 
@@ -3608,4 +3608,4 @@ public class ToolCallingProperties {
 
 ### client 触发工具链路
 
-![](static/tool-工具链路触发.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/tool-工具链路触发.png)

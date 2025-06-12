@@ -224,7 +224,7 @@ public class WebfluxClientApplication {
 
 #### 效果
 
-![](static/AlkVb6xPSombAmxM5MDcBOJon2b.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/AlkVb6xPSombAmxM5MDcBOJon2b.png)
 
 
 
@@ -233,7 +233,7 @@ public class WebfluxClientApplication {
 > [!TIP]
 > 本文档是 Java 实现 MCP 的 0.10.0 版本
 
-![](static/mcp-源码解读.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/mcp-源码解读.png)
 
 ### pom.xml
 
@@ -6658,7 +6658,7 @@ public final class McpSchema {
 
 ### SpringAI 下 MCP 各类的说明
 
-![](static/SpringAI下的MCP.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/SpringAI下的MCP.png)
 
 
 

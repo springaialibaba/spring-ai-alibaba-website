@@ -133,11 +133,11 @@ public class RagSimpleController {
 
 直接询问，并不知道“影子”是谁
 
-![](static/Npo0b5sLaorTEzxzRFTczLo2nWb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Npo0b5sLaorTEzxzRFTczLo2nWb.png)
 
 在 RAG 增强下，得知了“影子”
 
-![](static/APyjbCBm2o9qmixFY8dcBpKYnEg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/APyjbCBm2o9qmixFY8dcBpKYnEg.png)
 
 ## RAG 模块化案例
 
@@ -299,38 +299,38 @@ Generation
 
 首先，进来的 originalQuery 的原始文本为“你好，请告诉我影子这个人的身份信息”
 
-![](static/KAXabu18SoUDnvxLQmYcfnRAnvh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/KAXabu18SoUDnvxLQmYcfnRAnvh.png)
 
 经过 TranslationQueryTransformer 翻译为英文
 
-![](static/N0FTbkho8ozPNPxqAr4cKHpQnWb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/N0FTbkho8ozPNPxqAr4cKHpQnWb.png)
 
 默认是增加 3 个，且保留原来的 1 个
 
-![](static/Dhk1bOFozoLh1nx8O8XcBBMxnjf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Dhk1bOFozoLh1nx8O8XcBBMxnjf.png)
 
 从向量存储中检索文档
 
-![](static/KjlsbekV9ocAv2xqgL7chb6tnib.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/KjlsbekV9ocAv2xqgL7chb6tnib.png)
 
 将检索到的文档进行拼接
 
-![](static/QqOxbKnAsoUBABxHUkkcwotEn1f.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/QqOxbKnAsoUBABxHUkkcwotEn1f.png)
 
 选择第一个
 
-![](static/XsSibkFouoCa6zx5UC8cD0xIn0c.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/XsSibkFouoCa6zx5UC8cD0xIn0c.png)
 
 增加的上下文信息
 
-![](static/M1C7b3UBpoVd9dxDoyqc3EtNnJc.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/M1C7b3UBpoVd9dxDoyqc3EtNnJc.png)
 
 # RAG 的 ETL Pipeline 快速上手
 
 > [!TIP]
 > 提取（Extract）、转换（Transform）和加载（Load）框架是[第六章：Rag 增强问答质量](https://ik3te1knhq.feishu.cn/wiki/JPs3wA6mQiOR97kO98PcjOYsnzf)中数据处理的链路，将原始数据源导入到向量化存储的流程，确保数据处于最佳格式，以便 AI 模型进行检索
 
-![](/Users/guotao/Desktop/笔记/feishu/Spring ai alibaba贡献博客/static/QSmXbeYKHotZS4xzsskcHaQ8ntg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/QSmXbeYKHotZS4xzsskcHaQ8ntg.png)
 
 ### pom 文件
 
@@ -422,7 +422,7 @@ public class Constant {
 }
 ```
 
-![](/Users/guotao/Desktop/笔记/feishu/Spring ai alibaba贡献博客/static/YFNubwl4Posj9Qxy181ch0qunhf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/YFNubwl4Posj9Qxy181ch0qunhf.png)
 
 #### ReaderController
 
@@ -515,31 +515,31 @@ public class ReaderController {
 
 读取文本文件
 
-![](static/BuynbEf4CoEgrpxZsDQcJFGanPg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/BuynbEf4CoEgrpxZsDQcJFGanPg.png)
 
 读取 json 文件
 
-![](static/Cdbzbt9NxoODIIxqMDCceoJYnbd.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Cdbzbt9NxoODIIxqMDCceoJYnbd.png)
 
 读取 pdf 文件
 
-![](static/GXXnbbB5voLcAWxRzmwcywwZnng.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/GXXnbbB5voLcAWxRzmwcywwZnng.png)
 
 读取带目录的 pdf 文件
 
-![](static/I36Mb8pTHovOonx5s6DcpP0Encb.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/I36Mb8pTHovOonx5s6DcpP0Encb.png)
 
 读取 markdown 文件
 
-![](static/OkRmbADN6oWkAOxj6o4cvTSpnBe.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/OkRmbADN6oWkAOxj6o4cvTSpnBe.png)
 
 读取 html 文件
 
-![](static/Kl3jbSDOWoZuTLxB6ckcPTGrnUg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Kl3jbSDOWoZuTLxB6ckcPTGrnUg.png)
 
 利用 tika 读取任意文档格式
 
-![](static/P7VubwKbGoqTg4xlTbXc0KZunpf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/P7VubwKbGoqTg4xlTbXc0KZunpf.png)
 
 ### 转换文档
 
@@ -638,19 +638,19 @@ public class TransformerController {
 
 TokenTextSplitter 切分
 
-![](static/YwaabAMpzoTHGkxeuRwcAckjnzg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/YwaabAMpzoTHGkxeuRwcAckjnzg.png)
 
 DefaultContentFormatter 格式化
 
-![](static/Le65bQU7qoviLyxc5T3c10M0nxf.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Le65bQU7qoviLyxc5T3c10M0nxf.png)
 
 KeywordMetadataEnricher 提取关键字
 
-![](static/V9ylbKbhoo9gdjxpFrOcUWRWnah.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/V9ylbKbhoo9gdjxpFrOcUWRWnah.png)
 
 SummaryMetadataEnricher 提取摘要
 
-![](static/VR2JboLW4oQgAKxSULFclN0jnJm.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/VR2JboLW4oQgAKxSULFclN0jnJm.png)
 
 ### 写出文档
 
@@ -726,15 +726,15 @@ public class WriterController {
 
 Document 写出文本文件
 
-![](static/SPDdb11MhoD6HGx8lmCc3MPfnbz.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/SPDdb11MhoD6HGx8lmCc3MPfnbz.png)
 
 写入 vector
 
-![](static/Pq9HbrBe8oKMgyxN6hFcaxGPnpR.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/Pq9HbrBe8oKMgyxN6hFcaxGPnpR.png)
 
 从 vector 中查找
 
-![](static/SQjdbEKhAo72oIxh3CQcpHqenNh.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/SQjdbEKhAo72oIxh3CQcpHqenNh.png)
 
 
 
@@ -743,7 +743,7 @@ Document 写出文本文件
 > [!TIP]
 > Spring AI 实现了一个模块化的 RAG 架构，其灵感来自于论文：[Modular RAG: Transforming RAG Systems into LEGO-like Reconfigurable Frameworks](https://arxiv.org/abs/2407.21059)，本文是 RAG 模块化源码的讲解
 
-![](static/rag-模块化.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/rag-模块化.png)
 
 ## RetrievalAugmentationAdvisor
 
@@ -1814,7 +1814,7 @@ public final class ContextualQueryAugmenter implements QueryAugmenter {
 
 # ETL Pipeline 源码解析
 
-![](/Users/guotao/Desktop/笔记/feishu/Spring ai alibaba贡献博客/static/OKuGbaedFoPKCmxLbmNc03yHnDg.png)
+![](/public/img/user/ai/spring-ai-explained-sourcecode/OKuGbaedFoPKCmxLbmNc03yHnDg.png)
 
 ## DocumentReader（读取文档数据接口类）
 
