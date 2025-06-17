@@ -4,7 +4,7 @@ keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
 
-Spring AI Alibaba 实现了与阿里云通义模型的完整适配，接下来，我们将学习如何使用 spring ai alibaba 开发一个基于通义模型服务的智能聊天应用。
+接下来，我们将学习如何使用 Spring AI Alibaba 开发一个基于通义模型服务的智能聊天应用。
 
 ## 快速体验示例
 
