@@ -368,10 +368,9 @@ public Flux<String> chat(String chatId, String userMessageContent) {
 
     return this.chatClient.prompt()
             .user(userMessageContent)
-            .advisors(a -> a
-                    .param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
-                    .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100))
-            .stream().content();
+            .advisors(
+                    a -> a.param(CONVERSATION_ID, conversationId)
+            ).stream().content();
     }
 }
 ```
