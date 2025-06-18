@@ -4,15 +4,13 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章详细阐述了如何在 Spring AI 中整合和使用 Tool（工具），以增强 AI 模型的功能，使其能够与外部 API 或自定义服务进行交互。内容包括必要的 `pom.xml` 依赖配置（如 `spring-ai-autoconfigure-model-tool`）和在 `application.yml` 中启用特定工具（如时间和天气工具）的设置。通过一个获取指定城市时间的 'Time Tool' 实例，章节具体展示了两种工具实现方式：一种是直接使用 `@Tool` 注解的 Method 版本（如 `TimeTools` 类），另一种是基于 `java.util.function.Function` 接口并结合 Spring 自动配置的 Function 版本（如 `TimeAutoConfiguration` 和 `GetCurrentTimeByTimeZoneIdService`）。此外，`TimeController` 中的示例代码演示了如何在聊天交互中实际调用这些已注册的工具，以响应用户关于时间的查询。"
 ---
 
-本章包含：tool快速上手 + 源码解读（Tool + 工具触发链路）
+- 作者：影子
+- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 本章包含：Tool快速上手 + 源码解读（Tool类的说明 + 工具触发链路）
 
-# tool 快速上手
+## tool 快速上手
 
-> [!TIP]
-> Tool 工具允许模型与一组 API 或工具进行交互，增强模型功能
-
-以下实现了工具的典型案例：Method 版、Function 版实现、internalToolExecutionEnabled 设置
-
+> Tool 工具允许模型与一组 API 或工具进行交互，增强模型功能。 以下实现了工具的典型案例：Method 版、Function 版实现、internalToolExecutionEnabled 设置，实战代码可见：https://github.com/GTyingzi/spring-ai-tutorial 下的tool-calling
 
 
 ### pom 文件
@@ -282,23 +280,23 @@ public class TimeController {
 
 无工具版，大模型无法知道当前时间
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/AoQkbxgh7olAVTx2neVcpihgnIh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/AoQkbxgh7olAVTx2neVcpihgnIh.png)
 
 工具版—Function，通过自动注入对应的工具 Bean，实现获取时间
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/IpT9bWvSoopqH8xi5rtcLOwqnmK.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/IpT9bWvSoopqH8xi5rtcLOwqnmK.png)
 
 工具版—Method，通过 @Tool 注解指定工具 Bean，实现获取时间
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/ERkDbhGU3oWYJZxX7Ssc5fR2nMg.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/ERkDbhGU3oWYJZxX7Ssc5fR2nMg.png)
 
 通过设置工具判断字段 internalToolExecutionEnabled=false（默认为 true），来手动控制工具执行
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/QYnIbXx1jovwXRxfvL7cK1k3nKd.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/QYnIbXx1jovwXRxfvL7cK1k3nKd.png)
 
 可结合历史消息记录，用来编写手动控制工具之后的逻辑
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/CKYLb6pU1o5QZSxAKR7cB2KonoW.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/CKYLb6pU1o5QZSxAKR7cB2KonoW.png)
 
 ### 天气工具
 
@@ -605,28 +603,23 @@ public class WeatherController {
 
 无工具版，大模型无法知道天气情况
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/LrWBb5iafoCJMNxYhZhcPgPCn5c.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/LrWBb5iafoCJMNxYhZhcPgPCn5c.png)
 
 工具版—Function，通过自动注入对应的工具 Bean，实现获取天气
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/BEvabUgF1oRF5ixk2lHcoodYnfh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/BEvabUgF1oRF5ixk2lHcoodYnfh.png)
 
 工具版—Function，通过 @Tool 注解指定工具 Bean，实现获取天气
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/WMjpbffGuoTegkxc12Uc6zOAnKb.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/WMjpbffGuoTegkxc12Uc6zOAnKb.png)
 
+## Tool 源码解读
 
-
-
-
-# Tool 源码解读
-
->
 > 本文档是关于 Tool 调用底层机制的梳理
 
 ### 工具各类说明（不含 MCP 内容）
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/tool源码-工具各类说明.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/tool源码-工具各类说明.png)
 
 ### Tool（工具注解）
 
@@ -3468,9 +3461,8 @@ public final class ToolContext {
 }
 ```
 
-# 工具触发链路解读
+## 工具触发链路解读
 
-> [!TIP]
 > 导入工具依赖，自动注入在 ChatModel 时需要用到的 ToolCallingManager，进行工具的系列调用说明
 
 ### pom.xml
@@ -3614,4 +3606,4 @@ public class ToolCallingProperties {
 
 ### client 触发工具链路
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/tool-工具链路触发.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/tool-工具链路触发.png)

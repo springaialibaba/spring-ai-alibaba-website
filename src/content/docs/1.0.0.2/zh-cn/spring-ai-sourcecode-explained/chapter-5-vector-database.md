@@ -4,14 +4,13 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章探讨了向量数据库在 Spring AI 中的应用，强调其通过相似性搜索而非传统精确匹配来查询数据的核心能力。开篇介绍了项目所需的基础 `pom.xml` 依赖（如 `spring-ai-vector-store`）。随后，通过一个基于内存的 `SimpleVectorStore` 示例（在 `VectorSimpleController` 中实现），详细展示了如何添加文本数据（`Document` 对象）、删除数据、将内存中的向量数据持久化到本地 JSON 文件以及从该文件加载数据。该示例还演示了如何执行相似性搜索，包括使用 `topK` 参数限制结果数量和通过 `FilterExpressionBuilder` 根据元数据进行高级过滤。接下来，章节转向将 Redis 作为向量存储的实现方案，展示了 `spring-ai-starter-vector-store-redis` 依赖和相应的 `application.yml` 配置文件（包括 OpenAI embedding 模型如 `text-embedding-v1` 的设置、Redis 服务器连接信息以及向量存储特定的索引配置如 `initialize-schema`, `prefix`, `index-name`）。此外，还开始定义一个 `RedisConfig.java` 文件，用于自定义 `JedisPooled` 和 `RedisVectorStore` 的 Bean。"
 ---
 
-本章是快速上手（内存、Redis、Elasticsearch）+源码解读（向量数据库源码、Redis自动注入、Es自动注入）
+- 作者：影子
+- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 本章是快速上手（内存、Redis、Elasticsearch）+源码解读（向量数据库源码、Redis自动注入、Es自动注入）
 
-# 向量数据库快速上手
+## 向量数据库快速上手
 
-> [!TIP]
-> 向量数据库，查询不同于传统的关系型数据库，执行相似性搜索而不是完全匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量“相似”的向量。
-
-以下实现了向量数据库的典型案例：基于内存、Redis、Elasticsearch
+> 向量数据库，查询不同于传统的关系型数据库，执行相似性搜索而不是完全匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量“相似”的向量。 以下实现了向量数据库的典型案例：基于内存、Redis、Elasticsearch，实战代码可见：https://github.com/GTyingzi/spring-ai-tutorial 下的vector
 
 ### 基础 pom 文件
 
@@ -143,37 +142,44 @@ public class VectorSimpleController {
 
 导入 4 条数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/VNYnbYyJloNQv1xXNLAcPRyTnog.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/VNYnbYyJloNQv1xXNLAcPRyTnog.png)
 
 删除 id=1 的数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/NHdVbwKdpoy241xqWsTcbNDqn8c.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/NHdVbwKdpoy241xqWsTcbNDqn8c.png)
 
 将内存里数据保存到本地
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/S7WAbLYZioWVVhxRncwciIyMnye.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/S7WAbLYZioWVVhxRncwciIyMnye.png)
 
 这是对应的 json 数据，可以看到只有三条数据，其中 id=1 的数据被删除了
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/Dl3Qbhex5oca2AxXfoacXAWSnde.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/Dl3Qbhex5oca2AxXfoacXAWSnde.png)
 
 现在让我们重启服务，并调用 load 接口，重新从本地文件中加载数据到内存
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/IMS3b5g5KoGHZTxkny7covrpnCc.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/IMS3b5g5KoGHZTxkny7covrpnCc.png)
 
 调用 search 查询数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/R3zxb8SUCoxeA5x97ZicHatnnie.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/R3zxb8SUCoxeA5x97ZicHatnnie.png)
 
 查询已经被过滤的数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/XrYYbGKYQoNENCxhT6HciyOAnUd.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/XrYYbGKYQoNENCxhT6HciyOAnUd.png)
 
 ### Redis
 
-Redis 的向量存储模块源码解读可见 [Redis 源码解读](https://ik3te1knhq.feishu.cn/wiki/FGFdwj3cAi9ClqkMCizc6bT7nHf)
+Redis 的向量存储模块源码解读可见下文
 
-Redis 的向量查询需要用到 RediSearch，这里附上 Docker 镜像启动方式 [RediSearch（待补充）](https://ik3te1knhq.feishu.cn/wiki/XNG3wNKNjibtMukg0iNcn8sLnTe)
+Redis 的向量查询需要用到 RediSearch，这里附上 Docker 镜像启动方式
+```bash
+docker run -d \
+  --name redis-redisearch \
+  -p 6379:6379 \
+  redislabs/redisearch:latest
+```
+
 
 #### pom 依赖
 
@@ -343,27 +349,27 @@ public class RedisController {
 
 向 Redis 中添加数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/JFjTbe86EoGAwwx0UQ1cbJTTnNh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/JFjTbe86EoGAwwx0UQ1cbJTTnNh.png)
 
 在 Redis 中查看数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/XfCmb7eL4o6iCyx1tPXcGAUCnpc.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/XfCmb7eL4o6iCyx1tPXcGAUCnpc.png)
 
 利用 Redis，进行向量查询
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/R63jbv3k6oOJZQxBWHRcBJxwnAc.png)
+![](img/user/ai/spring-ai-explained-sourcecode/R63jbv3k6oOJZQxBWHRcBJxwnAc.png)
 
 删除 year 大于等于 2024 && name 为"yinzgi"的数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/EpMVbD15Doxyzax0tzrcIR0Bnue.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/EpMVbD15Doxyzax0tzrcIR0Bnue.png)
 
 数据已被删除
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/Yx4ibHOjIofHuUxUwhBcK4pln7g.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/Yx4ibHOjIofHuUxUwhBcK4pln7g.png)
 
 ### Elasticsearch
 
-Elasticsearch 的向量存储模块源码解读可见 [Elasticsearch 的向量解读（待补充）](https://ik3te1knhq.feishu.cn/wiki/CTipwYB98ifmgakOQyVc4eDKn5d)
+Elasticsearch 的向量存储模块源码解读可见下文
 
 #### pom 依赖
 
@@ -583,36 +589,29 @@ public class VectorEsController {
 
 导入数据到 ES 中
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/Ymhebi1KLofWIzxcO1rcjJLYn5f.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/Ymhebi1KLofWIzxcO1rcjJLYn5f.png)
 
 ES 中可查到对应的数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/WslIbBAXvoJnUExk37vcYtulnMg.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/WslIbBAXvoJnUExk37vcYtulnMg.png)
 
 查询数据
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/LcaTbI65YozRJdx4AhpcaDI0nf5.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/LcaTbI65YozRJdx4AhpcaDI0nf5.png)
 
 过滤删除
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/FsVQbhh8pozpejxLYPUcc8YynLc.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/FsVQbhh8pozpejxLYPUcc8YynLc.png)
 
 name 为 yingzi、year 为 2025 的数据被删除了
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/TwJzbsGYmo6oMUxOJXRcR7a5n0c.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/TwJzbsGYmo6oMUxOJXRcR7a5n0c.png)
 
+## 向量数据库源码解读
 
+> 向量数据库，查询不同于传统的关系型数据库，执行相似性搜索而不是完全匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量“相似”的向量。 Vector Databases 一般会配合 RAG 使用。本章讲解了向量数据库存储基本理论 + 基于内存实现的向量数据库
 
-# 向量数据库源码解读
-
-> [!TIP]
-> 向量数据库，查询不同于传统的关系型数据库，执行相似性搜索而不是完全匹配。当给定一个向量作为查询时，向量数据库会返回与查询向量“相似”的向量。
-
-Vector Databases 一般会配合 RAG 使用
-
-本章讲解了向量数据库存储基本理论 + 基于内存实现的向量数据库
-
-## Document（文档内容）
+### Document（文档内容）
 
 文档内容核心类，主要用于管理和存储文档的文本或媒体内容及其元数据
 
@@ -828,7 +827,7 @@ public class Document {
 }
 ```
 
-### DocumentWriter
+#### DocumentWriter
 
 该接口定义了一种写入 Document 列表的行为，
 
@@ -845,7 +844,7 @@ public interface DocumentWriter extends Consumer<List<Document>> {
 }
 ```
 
-## BatchingStrategy（文档堆处理策略接口类）
+### BatchingStrategy（文档堆处理策略接口类）
 
 定义将 Document 列表拆分为几个批次
 
@@ -855,7 +854,7 @@ public interface BatchingStrategy {
 }
 ```
 
-### TokenCountBatchingStrategy
+#### TokenCountBatchingStrategy
 
 基于文档的 token 计数将 Document 列表对象分配处理，确保每个批次的 token 总数不超过指定的最大 token 数，对缓冲区进行管理，通过设置 reservePercentage 参数（默认为 0.1），为每个批次保留一定比例的 token 数量，以应对处理过程中可能出现的 token 数量增加
 
@@ -955,7 +954,7 @@ public class TokenCountBatchingStrategy implements BatchingStrategy {
 }
 ```
 
-## SearchRequest（相似性搜索请求）
+### SearchRequest（相似性搜索请求）
 
 主要用于向量存储中的相似性搜索
 
@@ -1084,7 +1083,7 @@ public class SearchRequest {
 }
 ```
 
-## VectorStore
+### VectorStore
 
 VectorStore 接口定义了用于管理和查询向量数据库中的文档的操作。向量数据库专为 AI 应用设计，支持基于数据的向量表示进行相似性搜索，而非精确匹配。
 
@@ -1166,7 +1165,7 @@ public interface VectorStore extends DocumentWriter {
 }
 ```
 
-### AbstractObservationVectorStore
+#### AbstractObservationVectorStore
 
 实现具有观测能力的 VectorStore，通过集成 ObservationRegistry 和 VectorStoreObservationConvention，提供了对向量存储操作的观测功能，便于监控和调试
 
@@ -1250,7 +1249,7 @@ public abstract class AbstractObservationVectorStore implements VectorStore {
 
 ---
 
-## SimpleVectorStore（基于内存）
+### SimpleVectorStore（基于内存）
 
 类的作用：基于内存的向量存储实现类，提供了将向量数据存储到内存中，并支持将数据序列化到文件或从文件反序列化的功能
 
@@ -1505,7 +1504,7 @@ public class SimpleVectorStore extends AbstractObservationVectorStore {
 
 
 
-# Elasticsearch 的向量解读
+## Elasticsearch 的向量解读
 
 ### pom 文件
 
@@ -1655,7 +1654,7 @@ public class ElasticsearchVectorStoreAutoConfiguration {
 
 基于 ES 的向量存储实现类
 
-- `ElasticsearchClient elasticsearchClient` 字段：用于连接 ES 地客户端 [spring-data-elastichserach 源码解析](https://ik3te1knhq.feishu.cn/wiki/EKG9w62OpiCD3skkiNXc3XRvnus)
+- `ElasticsearchClient elasticsearchClient` 字段：用于连接 ES 地客户端
 - `ElasticsearchVectorStoreOptions option`：ES 向量存储的基本配置，包含索引名称、向量维度、相似性计算规则
 - `FilterExpressionConverter filterExpressionConverter`：过滤表达式转化器，主要用于删除、相似性匹配
 - `boolean initializeSchema` 字段：用于初始化创建索引（设置为 True）
@@ -2177,7 +2176,7 @@ public enum SimilarityFunction {
 
 
 
-# Redis 的向量解读
+## Redis 的向量解读
 
 ### pom 文件
 
@@ -2304,9 +2303,9 @@ public class RedisVectorStoreAutoConfiguration {
 
 基于 Redis 的向量存储实现类
 
-- `JedisPooled jedis`：用于与 Redis 交互 [spring-data-redis 源码解析（待补充）](https://ik3te1knhq.feishu.cn/wiki/Ay6owsjVFi3SYikG6cbcwXmMnuc)
+- `JedisPooled jedis`：用于与 Redis 交互
 - `prefix`：Redis 键的前缀，默认为"embedding:"
-- `indexName`: Redis 的索引名称，默认为"spring-ai-index"，创建索引用到了 [RediSearch（待补充）](https://ik3te1knhq.feishu.cn/wiki/XNG3wNKNjibtMukg0iNcn8sLnTe)
+- `indexName`: Redis 的索引名称，默认为"spring-ai-index"，创建索引用到了 RediSearch
 - `Algorithm vectorAlgorithm`：向量算法，支持 HNSW、FLAT（默认为 HNSW）
 - `String contentFieldName`：存储文档内容的字段名称，默认为"content"
 - `String embeddingFieldName`：存储向量嵌入的字段名称，默认为 embedding
