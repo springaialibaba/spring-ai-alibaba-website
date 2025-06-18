@@ -4,14 +4,13 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章介绍了 Spring AI Chat 功能的快速上手方法，包括项目依赖配置、`application.yml` 设置（并提及了使用阿里百炼进行 OpenAI 兼容替换的方案），并通过 `ChatController` 和 `ChatOptionController` 示例代码演示了基本的聊天调用（call）、流式响应（stream）以及如何配置聊天参数（如 temperature）。此外，章节还初步探讨了 `ChatClient` 和 `ChatModel` 的自动注入机制，提到了相关的配置类如 `ChatClientBuilderProperties` 和 `ChatClientBuilderConfigurer`。"
 ---
 
-本章包含：chat快速上手 + 源码解读（ChatClient + ChatModel 自动注入、ChatClient 调用链路）
+- 作者：影子
+- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 本章包含：chat快速上手 + 源码解读（ChatClient + ChatModel 自动注入、ChatClient 调用链路）
 
-# chat快速上手 
+## chat快速上手 
 
-> [!TIP]
-> 通过自然语言的句子和 AI 模型进行会话交流
-
-以下实现了 chat 的典型案例：Call、Stream
+> 通过自然语言的句子和 AI 模型进行会话交流，以下实现了 chat 的典型案例：Call、Stream，ChatOptions设置。实战代码可见：https://github.com/GTyingzi/spring-ai-tutorial下的chat
 
 ### pom 文件
 
@@ -87,7 +86,7 @@ public class ChatController {
         return chatClient.prompt(query).call().content();
     }
 
-    @GetMapping("/stream")
+  @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> stream(@RequestParam(value = "query", defaultValue = "你好，很高兴认识你，能简单介绍一下自己吗？")String query) {
         return chatClient.prompt(query).stream().content();
     }
@@ -98,11 +97,11 @@ public class ChatController {
 
 call 调用
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/IEW6bwFVUofWMBxF6nRcIDv6nCb.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/IEW6bwFVUofWMBxF6nRcIDv6nCb.png)
 
 stream 调用
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/VGlCbtPntodJ08xBChbcsY3gnPd.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/VGlCbtPntodJ08xBChbcsY3gnPd.png)
 
 #### ChatOptionController
 
@@ -163,20 +162,20 @@ chatClient 全局配置 temperature=0.9
 
 /call 接口的 temperature=0.9
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/QHmfbObZOoSjsxxDzREcVEq0nVd.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/QHmfbObZOoSjsxxDzREcVEq0nVd.png)
 
 /call/temperature 接口的 temperature=0.0
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/IYlsbQN6LoNL8hxzWz3ceJCFnQf.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/IYlsbQN6LoNL8hxzWz3ceJCFnQf.png)
 
 
 
-# ChatClient + ChatModel 自动注入篇
+## ChatClient + ChatModel 自动注入篇
 
 > [!TIP]
 > 配置 pom 文件后，自动注入 ChatModel、ChatClient.Builder 的原理
 
-## pom.xml 文件
+### pom.xml 文件
 
 入 ChatClient 依赖
 
@@ -196,13 +195,13 @@ chatClient 全局配置 temperature=0.9
 </dependency>
 ```
 
-## ChatClient 自动注入
+### ChatClient 自动注入
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/chatClient自动注入.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/chatClient自动注入.png)
 
 
 
-### ChatClientBuilderProperties
+#### ChatClientBuilderProperties
 
 类的作用：
 
@@ -246,7 +245,7 @@ public class ChatClientBuilderProperties {
 }
 ```
 
-### ChatClientBuilderConfigurer
+#### ChatClientBuilderConfigurer
 
 类的作用：
 
@@ -283,7 +282,7 @@ public class ChatClientBuilderConfigurer {
 }
 ```
 
-#### ChatClientCustomizer
+##### ChatClientCustomizer
 
 可通过实现 ChatClientCustomizer 函数式接口，自定义调整 ChatClient.Builder 的相关配置
 
@@ -296,7 +295,7 @@ public interface ChatClientCustomizer {
 }
 ```
 
-### ChatClientAutoConfiguration
+#### ChatClientAutoConfiguration
 
 类上重点注解说明
 
@@ -424,9 +423,9 @@ public class ChatClientAutoConfiguration {
 }
 ```
 
-## ChatModel 自动注入
+### ChatModel 自动注入
 
-### OpenAiParentProperties
+#### OpenAiParentProperties
 
 从 OpenAI 的开发者平台获取，基础配置信息
 
@@ -478,7 +477,7 @@ class OpenAiParentProperties {
 }
 ```
 
-### OpenAiConnectionProperties
+#### OpenAiConnectionProperties
 
 Connection 配置类，默认 baseUrl 为DEFAULTBASEURL，若配置文件有 baseUrl 配置则会覆盖
 
@@ -548,7 +547,7 @@ public class OpenAiChatProperties extends OpenAiParentProperties {
 }
 ```
 
-### OpenAiChatAutoConfiguration
+#### OpenAiChatAutoConfiguration
 
 类上重点注解说明
 
@@ -624,7 +623,7 @@ public class OpenAiChatAutoConfiguration {
 }
 ```
 
-### 工具类：OpenAIAutoConfigurationUtil
+#### 工具类：OpenAIAutoConfigurationUtil
 
 1. 校验 apiKey、baseUrl 最后拼接到 OpenAiApi 时不为空
 2. 根据 projectId、organizationId 设置请求头
@@ -674,14 +673,13 @@ public final class OpenAIAutoConfigurationUtil {
 
 
 
-# ChatClient 解读
+## ChatClient 解读
 
-> [!TIP]
 > ChatClient 端设置 advisors、ChatOptions、用户提示信息、系统提示信息、工具等信息，构建 DefaultChatClient.DefaultChatClientRequestSpec，再利用 DefaultChatClientUtils 将其转换为 ChatClientRequest
 
 AdvisorChain 链调用一系列的增强器Advisor，每个增强器输入是 ChatClientRequest，输出 ChatClientResponse（其中必定会用到的是 ChatModelCallAdvisor 或 ChatModelStreamAdvisor）
 
-## ChatClient
+### ChatClient
 
 类的说明：面向对话式 AI 模型的客户端接口，提供了系列的 API 与 AI 会话模型交互，该接口封装了请求构建、调用、响应处理等流畅，支持同步、流式调用
 
@@ -1008,7 +1006,7 @@ public interface ChatClient {
 }
 ```
 
-### DefaultChatClient
+#### DefaultChatClient
 
 ChatClient 接口的默认实现类，用于构建和执行与 AI 聊天模型交互的请求
 
@@ -1760,7 +1758,7 @@ public class DefaultChatClient implements ChatClient {
 }
 ```
 
-## DefaultChatClientUtils
+### DefaultChatClientUtils
 
 类作用：用来将 DefaultChatClient.DefaultChatClientRequestSpec 转换为 ChatClientRequest
 
@@ -1842,14 +1840,14 @@ final class DefaultChatClientUtils {
 }
 ```
 
-## AdvisorChain
+### AdvisorChain
 
 [AdvisorChain 链](https://ik3te1knhq.feishu.cn/wiki/KSvgwUyAXiwaZ1kAgSzcq7HdnQb)调用一系列的增强器 [Advisor 基础](https://ik3te1knhq.feishu.cn/wiki/SjjWwXPtOiCY2gkA7gic47FCn3d)，每个增强器输入是 ChatClientRequest，输出 ChatClientResponse（其中必定会用到的是 ChatModelCallAdvisor 或 ChatModelStreamAdvisor）
 
 - ChatModelCallAdvisor 触发 ChatModel 的 call 方法
 - ChatModelStreamAdvisor 触发 ChatModel 的 stream 方法
 
-## ChatModel
+### ChatModel
 
 ```java
 package org.springframework.ai.chat.model;
@@ -1898,7 +1896,7 @@ pom 引入对应依赖
 </dependency>
 ```
 
-### OpenAiChatModel
+#### OpenAiChatModel
 
 各字段说明
 
@@ -2442,7 +2440,7 @@ public class OpenAiChatModel implements ChatModel {
 }
 ```
 
-### OpenAiApi
+#### OpenAiApi
 
 各字段说明
 

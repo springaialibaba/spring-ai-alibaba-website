@@ -4,12 +4,13 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章重点介绍 Spring AI 中的 Advisor 功能，该功能允许在 AI模型的请求和响应流程中插入自定义逻辑，尤其侧重于聊天历史消息的管理。开篇通过 `MemoryMessageAdvisorController` 和 `MemoryPromptAdvisorController` 示例，快速上手了如何利用基于内存的 `MessageChatMemoryAdvisor` 和 `InMemoryChatMemoryRepository` 实现会话记忆，使模型能在同一会话中记住用户的先前信息。章节进一步预告了将探讨如何使用 SQLite、MySQL、Redis 等持久化存储方案来增强消息存储能力，并展示了相关的 Maven 依赖配置。"
 ---
 
-本章包含快速上手（基于内存、sqlite、mysql、redis的历史消息存储）+ 源码解读（advisor基础、BaseChatMemoryAdvisor解读、AdvisorChain链）
+- 作者：影子
+- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 本章包含快速上手（基于内存、sqlite、mysql、redis的历史消息存储）+ 源码解读（advisor基础、BaseChatMemoryAdvisor解读、AdvisorChain链）
 
-# 基于内存的消息存储快速上手 
+## 基于内存的消息存储快速上手 
 
-> [!TIP]
-> 用于在 AI 模型的请求和响应流程中插入自定义逻辑
+> 用于在 AI 模型的请求和响应流程中插入自定义逻辑。实战代码可见：https://github.com/GTyingzi/spring-ai-tutorial 下的advisor目录
 
 以下实现了 advisor 中有基于内存的历史消息存储的 chat 交互
 
@@ -119,15 +120,15 @@ public class MemoryMessageAdvisorController {
 
 以会话 Id=“yingzi”，先告知模型我的名字
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/ESn9bs6ohodvP9x69nXciSEpnXy.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/ESn9bs6ohodvP9x69nXciSEpnXy.png)
 
 再以同一个会话 Id=“yingzi”，模型能根据以往的消息记住了我的名字
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/TZcNb2hCYoe44Sx5EJacJOFNnjh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/TZcNb2hCYoe44Sx5EJacJOFNnjh.png)
 
 获取历史消息记录，我们能得到历史消息记录
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/VUPDbcm5eopLoexL6hAcsHHDnuo.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/VUPDbcm5eopLoexL6hAcsHHDnuo.png)
 
 #### MemoryPromptAdvisorController
 
@@ -191,21 +192,20 @@ public class MemoryPromptAdvisorController {
 
 以会话 Id=“yingzi”，先告知模型我的名字
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/KBoobHai0oeyr1xUkhGcsnvRnJI.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/KBoobHai0oeyr1xUkhGcsnvRnJI.png)
 
 再以同一个会话 Id=“yingzi”，模型能根据以往的消息记住了我的名字
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/MbEgbmWWpoRgCUxGyoVcJJ7SnXg.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/MbEgbmWWpoRgCUxGyoVcJJ7SnXg.png)
 
 获取历史消息记录，我们能得到历史消息记录
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/SP1hbvmh0oz97hxvEb4ceXddnWg.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/SP1hbvmh0oz97hxvEb4ceXddnWg.png)
 
 
 
-# （增强）基于 sqlite、mysql、redis 的消息存储
+##  （增强）基于 sqlite、mysql、redis 的消息存储
 
-> [!TIP]
 > 实现了基于 sqlite、mysql、redis 的消息存储
 
 ### pom 文件
@@ -294,7 +294,7 @@ spring:
         repository:
           jdbc:
             mysql:
-              jdbc-url: jdbc:mysql://localhost:3306/springaialibabamysql?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&tinyInt1isBit=false&allowLoadLocalInfile=true&allowLocalInfile=true&allowUrl
+              jdbc-url: jdbc:mysql://localhost:3306/spring_ai_alibaba_mysql?useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&tinyInt1isBit=false&allowLoadLocalInfile=true&allowLocalInfile=true&allowUrl
               username: root
               password: root
               driver-class-name: com.mysql.cj.jdbc.Driver
@@ -400,11 +400,11 @@ public class SqliteMemoryController {
 
 以会话"yingzi"发送消息，此时消息存储至 sqlite
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/UFJbbMvMbowwHBxYDracNCPcnNb.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/UFJbbMvMbowwHBxYDracNCPcnNb.png)
 
 从 sqlite 获取会话"yingzi"对应的消息
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/HwcbbwbpaoJ2JtxrZyocj1Ytnfe.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/HwcbbwbpaoJ2JtxrZyocj1Ytnfe.png)
 
 ### Mysql
 
@@ -510,15 +510,15 @@ public class MysqlMemoryController {
 
 以会话"yingzi"发送消息，此时消息存储至 mysql
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/3da352d7-3fa4-4af3-8b27-d31889a37e1c.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/3da352d7-3fa4-4af3-8b27-d31889a37e1c.png)
 
 消息被存储至 mysql 中
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/IDvDbZlpoov8HGxuxG1c4nu9nMd.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/IDvDbZlpoov8HGxuxG1c4nu9nMd.png)
 
 从 mysql 获取会话"yingzi"对应的消息
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/ZcRIbE9BCoYVlxxr95Zc4bABn8b.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/ZcRIbE9BCoYVlxxr95Zc4bABn8b.png)
 
 ### Redis
 
@@ -620,25 +620,25 @@ public class RedisMemoryController {
 
 以会话"yingzi"发送消息，此时消息存储至 redis
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/VjaTbASptoYByTxbcmQcZ0U0nrh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/VjaTbASptoYByTxbcmQcZ0U0nrh.png)
 
 消息被存储至 redis 中
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/RSnmbujXSomQIyxAeSwcbRsBnHh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/RSnmbujXSomQIyxAeSwcbRsBnHh.png)
 
 从 redis 获取会话"yingzi"对应的消息
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/UNqwb8wy7oOlR9xHoIzcbzfanxh.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/UNqwb8wy7oOlR9xHoIzcbzfanxh.png)
 
 
 
-# Advisor 基础
+## Advisor 基础
 
 基础提供了 SafeGuardAdvisor、SimpleLoggerAdvisor、ChatModelCallAdvisor、ChatModelStreamAdvisor、基于 BaseChatMemoryAdvisor 扩展的记忆功能
 
 ### 架构图
 
-![](/public/img/user/ai/spring-ai-explained-sourcecode/advisor基础-架构图.png)
+![](/img/user/ai/spring-ai-explained-sourcecode/advisor基础-架构图.png)
 
 ### Advisor
 
@@ -1143,7 +1143,7 @@ public final class ChatModelStreamAdvisor implements StreamAdvisor {
 
 
 
-# BaseChatMemoryAdvisor 解读篇
+## BaseChatMemoryAdvisor 解读篇
 
 ### BaseChatMemoryAdvisor
 
@@ -1757,12 +1757,11 @@ MessageChatMemoryAdvisor
 
 
 
-# AdvisorChain 链
+## AdvisorChain 链
 
-> [!TIP]
 > 管理一系列 Advisor调用链路
 
-## AdvisorChain
+### AdvisorChain
 
 接口类作用：组织和管理多个 Advsir
 
