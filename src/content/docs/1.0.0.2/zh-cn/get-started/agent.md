@@ -23,7 +23,7 @@ docker run -d -p 8080:8080 \
 
 打开浏览器访问 http://localhost:8080 查看前端页面：
 
-![Spring Ai Alibaba Playground](/img/user/ai/practices/playground/\image-20250607164742879.png)
+![Spring Ai Alibaba Playground](/img/user/ai/practices/playground/image-20250607164742879.png)
 
 Playground 作为一个 AI 智能体应用，依赖大模型等在线服务，需要通过环境变量指定访问凭证。如果要开启 Playground 全部能力，需要通过环境变量指定百度翻译、阿里云信息检索服务等工具访问凭证，具体请查看 [查看 Playground 完整部署文档](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-playground#%E5%BC%80%E5%90%AF%E6%9B%B4%E5%A4%9A%E7%BB%84%E4%BB%B6)。
 
