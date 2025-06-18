@@ -33,30 +33,58 @@ public class ChatModelController {
 		this.chatModel = chatModel;
 	}
 
-	@RequestMapping("/chat")
-	public String chat(String input) {
-		ChatResponse response = chatModel.call(new Prompt(input));
-		return response.getResult().getOutput().getContent();
+	@GetMapping("/simple/chat")
+	public String simpleChat() {
+		return dashScopeChatModel.call("hi");
 	}
 }
 ```
 
 使用 Prompt 作为输入：
-```java
 
+```java
+@RequestMapping("/chat")
+public String chat(String input) {
+	ChatResponse response = chatModel.call(new Prompt(input));
+	return response.getResult().getOutput().getContent();
+}
 ```
 
 Streaming 示例：
-```java
 
+```java
+@GetMapping("/stream/chat")
+public Flux<String> streamChat(HttpServletResponse response) {
+
+	// 避免返回乱码
+	response.setCharacterEncoding("UTF-8");
+
+	Flux<ChatResponse> stream = dashScopeChatModel.stream(new Prompt(DEFAULT_PROMPT, DashScopeChatOptions
+			.builder()
+			.withModel(DashScopeApi.ChatModel.QWEN_PLUS.getModel())
+			.build()));
+	return stream.map(resp -> resp.getResult().getOutput().getText());
+}
 ```
 
 通过 ChatOptions 在每次调用中调整模型参数：
-```java
 
+```java
+@GetMapping("/custom/chat")
+public String customChat() {
+
+	DashScopeChatOptions customOptions = DashScopeChatOptions.builder()
+			.withTopP(0.7)
+			.withTopK(50)
+			.withTemperature(0.8)
+			.build();
+
+	return dashScopeChatModel.call(new Prompt(DEFAULT_PROMPT, customOptions)).getResult().getOutput().getText();
+}
 ```
 
 ## Image Model
+
 ImageModel API 抽象了应用程序通过模型调用实现“文生图”的交互过程，即应用程序接收文本，调用模型生成图片。ImageModel 的入参为包装类型 `ImagePrompt`，输出类型为 `ImageResponse`。
 
 ### 使用示例
@@ -89,7 +117,36 @@ public class ImageModelController {
 
 通过 ImageOptions 在每次调用中调整模型参数：
 ```java
+@GetMapping("/image/multipleConditions")
+public ResponseEntity<?> multipleConditions(
+		@RequestParam(value = "subject", defaultValue = "一只会编程的猫") String subject,
+		@RequestParam(value = "environment", defaultValue = "办公室") String environment,
+		@RequestParam(value = "height", defaultValue = "1024") Integer height,
+		@RequestParam(value = "width", defaultValue = "1024") Integer width,
+		@RequestParam(value = "style", defaultValue = "生动") String style) {
 
+	String prompt = String.format(
+			"一个%s，置身于%s的环境中，使用%s的艺术风格，高清4K画质，细节精致",
+			subject, environment, style
+	);
+
+	ImageOptions options = ImageOptionsBuilder.builder()
+			.height(height)
+			.width(width)
+			.build();
+
+	try {
+		ImageResponse response = imageModel.call(new ImagePrompt(prompt, options));
+		return ResponseEntity.ok(response.getResult().getOutput().getUrl());
+	} catch (Exception e) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(Map.of(
+						"error", "图像生成失败",
+						"message", e.getMessage(),
+						"timestamp", LocalDateTime.now()
+				));
+	}
+}
 ```
 
 ## Audio Model

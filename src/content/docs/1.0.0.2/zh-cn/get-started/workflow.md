@@ -12,7 +12,9 @@ description: "本文演示如何使用 Spring AI Alibaba 实现 AI 流程编排�
 ### 商品评价分类系统简介
 接下来，我们将通过一个 `商品评价分类` 示例系统，展示如何使用 Spring AI Alibaba Graph 开发工作流应用。以下是 `商品评价分类` 示例系统的流程图：
 
-<img src="/img/user/ai/get-started/workflow-customer-service.png" style="max-width:300px; height:auto;" />
+<p align="center">
+  <img src="/img/user/ai/get-started/workflow-customer-service.png" style="max-width:300px; height:auto;" />
+</p>
 
 > 流程图片基于 Spring AI Alibaba Graph 的 PlantUML 导出功能绘制
 
