@@ -6,9 +6,9 @@ import { getEntries } from "astro:content";
 
 // 吊顶提示文案
 export const TOPBAR = {
-    "text": "Spring AI 1.0 GA 正式发布，快速了解所有核心功能！Spring AI Alibaba 正式版也马上来了！",
-    "mobileText": "Spring AI 1.0 GA 正式发布，快速了解所有核心功能！Spring AI Alibaba 正式版也马上来了",
-    "link": "/blog/spring-ai-100-ga-released/",
+    "text": "Spring AI Alibaba 1.0 GA 版本正式发布，开启 Java 智能体开发新时代！",
+    "mobileText": "Spring AI Alibaba 1.0 GA 版本正式发布，开启 Java 智能体开发新时代！",
+    "link": "/blog/spring-ai-alibaba-10-ga-release/",
     "target": "_blank",
     "display": true
 }
@@ -30,13 +30,13 @@ export const DOCS_BANNER = {
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
   {
-    key: "1.0.0",
-    label: "1.0.0",
+    key: "1.0.0.2",
+    label: "1.0.0.2",
     target: "_self",
-    link: "/docs/1.0.0/overview/",
+    link: "/docs/1.0.0.2/overview/",
     translations: {
-      en: "1.0.0",
-      link: "/en/docs/1.0.0/overview/",
+      en: "1.0.0.2",
+      link: "/en/docs/1.0.0.2/overview/",
     }
   },
   {
@@ -67,16 +67,6 @@ export const DOCS_ITEM = [
     translations: {
       en: "1.0.0-M3.2",
       link: "/en/docs/1.0.0-M3.2/overview/",
-    }
-  },
-  {
-    key: "dev",
-    label: "dev",
-    target: "_self",
-    link: "/docs/dev/overview/",
-    translations: {
-      en: "dev",
-      link: "/en/docs/dev/overview/",
     }
   },
 ];
