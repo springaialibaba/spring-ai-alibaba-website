@@ -70,18 +70,18 @@ Spring AI Alibaba MCP Gateway 模块的动态代理能力可以理解成是 higr
             <artifactId>spring-web</artifactId>
         </dependency>
 
-        <!-- Dynamic Mcp Server -->
+        <!-- Spring AI Alibaba MCP Gateway -->
         <dependency>
             <groupId>com.alibaba.cloud.ai</groupId>
             <artifactId>spring-ai-alibaba-mcp-gateway</artifactId>
             <version>1.0.0.3-SANPSHOT</version>
         </dependency>
 
-        <!-- MCP Server WebFlux 支持 -->
+        <!-- Spring AI Alibaba MCP Server -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-alibaba-starter-nacos-mcp-server</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0.3-SANPSHOT</version>
         </dependency>
 
     </dependencies>
@@ -96,12 +96,11 @@ Spring AI Alibaba MCP Gateway 模块的动态代理能力可以理解成是 higr
         alibaba:
           mcp:
             nacos:
-              server-addr:
+              server-addr: 127.0.0.1:8848
+              namespace: public
               username:
               password:
-              dynamic:
-                service-namespace: public
-                service-group: DEFAULT_GROUP
+              gateway:
                 service-names:
                  - echo-server
 ```
