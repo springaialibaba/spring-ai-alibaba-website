@@ -5,7 +5,7 @@ description: "本文演示如何使用 Spring AI Alibaba 实现 AI 流程编排�
 ---
 工作流是以相对固化的模式来人为地拆解任务，将一个大任务拆解为包含多个分支的固化流程。工作流的优势是确定性强，模型作为流程中的一个节点起到的更多是一个分类决策、内容生成的职责，因此它更适合意图识别等类别属性强的应用场景。
 
-基于 [Spring AI Alibaba Graph](../../tutorials/graph/whats-spring-ai-alibaba-graph) 可以轻松开发工作流，声明不同的节点，并将节点串联成一个流程图。
+基于 [Spring AI Alibaba Graph](../tutorials/graph/whats-spring-ai-alibaba-graph/) 可以轻松开发工作流，声明不同的节点，并将节点串联成一个流程图。
 
 ## 快速体验示例
 
@@ -245,11 +245,11 @@ Spring AI Alibaba 社区提供了相关配套工具，帮助您将 Dify 等低�
 ![Dify DSL to Graph](/img/user/ai/get-started/workflow-dify-dsl-to-graph-export.png)
 
 2. 导出为 Spring AI Alibaba 工程。
-您可以使用 [spring-ai-alibaba-graph-studio](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-graph/spring-ai-alibaba-graph-studio) 模块，快速生成 Spring AI Alibaba 工程。具体请参考社区编写的[基于 Dify 工作流生成 SAA 工程](../../practices/dify-dsl-to-graph)最佳实践文章。
+您可以使用 [spring-ai-alibaba-graph-studio](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-graph/spring-ai-alibaba-graph-studio) 模块，快速生成 Spring AI Alibaba 工程。具体请参考社区编写的[基于 Dify 工作流生成 SAA 工程](../practices/dify-dsl-to-graph/)最佳实践文章。
 
 > 请注意，这块的配套还在持续建设中，请关注文档更新，我们将补充更多详细说明。
 
 ### 转成 Spring AI Alibaba 工程的优势
 1. **扩展灵活度。** 使用低代码平台的可视化 UI 界面可以快速的绘制工作流，将脑海中的思路变成可运行的 AI 系统，但低代码平台存在很多开发约束，这可能会给生产落地过程中带来改造成本或障碍。而使用 Spring AI Alibaba 开发的工程，开发者具备完全掌控权，因此对于任何功能几乎都不存在扩展障碍。有了这一套转换系统，开发者可以享受可视化绘制的便捷性，同时在转成代码工程后可享受开发、部署的灵活度。
-2. **性能提升。** 根据社区的初步压测效果，对比一些低代码开发平台的开发部署模式，使用 Spring AI Alibaba 部署的智能体应用，能带来数十倍的性能提升。具体请查看[压测报告](../../practices/dify-dsl-to-graph#压测数据)。
+2. **性能提升。** 根据社区的初步压测效果，对比一些低代码开发平台的开发部署模式，使用 Spring AI Alibaba 部署的智能体应用，能带来数十倍的性能提升。具体请查看[压测报告](../practices/dify-dsl-to-graph/)。
 

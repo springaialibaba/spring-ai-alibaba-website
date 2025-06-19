@@ -43,7 +43,7 @@ description: "本文深入"
 ### 使用 `bom` 管理依赖版本
 我们推荐明确指定 Spring AI Alibaba、Spring AI、Spring Boot 的 bom 依赖版本，并在此基础上，按需启用所需要的依赖。
 
-> Spring AI Alibaba 与 Spring AI、Spring Boot 的版本依赖关系，请参考 [FAQ](../../faq)。
+> Spring AI Alibaba 与 Spring AI、Spring Boot 的版本依赖关系，请参考 [FAQ](../faq/)。
 
 ```xml
 <properties>

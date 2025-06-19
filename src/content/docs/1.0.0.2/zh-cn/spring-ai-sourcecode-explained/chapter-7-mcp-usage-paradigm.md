@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章介绍了 MCP（Model Context Protocol），一个旨在标准化 AI 模型与外部工具及资源交互方式的协议。通过一个基于 WebFlux 的客户端-服务器（Client-Server） 示例，展示了其在 Spring AI 中的应用。对于 MCP 服务器端，展示了 `spring-ai-starter-mcp-server-webflux` 依赖、`application.yml` 中的服务器配置（包括服务器名称、版本、类型、指令、SSE 端点及声明的能力如工具、资源调用等），以及如何通过一个带有 `@Tool` 注解的 `TimeService` 来暴露工具功能，并在主应用类 `WebfluxServerApplication` 中注册为 `ToolCallbackProvider`。对于 MCP 客户端，展示了 `spring-ai-starter-mcp-client-webflux` 依赖、客户端 `application.yml` 配置（包括启用标志、客户端名称、版本、请求超时、类型及指向 MCP 服务器的 SSE 连接），以及一个 `WebfluxClientApplication` 示例，该示例通过 `ChatClient` 与 MCP 服务器通信，利用服务器提供的工具来响应用户输入。章节后续计划进行 MCP 的源码解读。 "
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章是MCP快速上手 + 源码解读（MCP、SpringAI下的MCP）
 
 ## 第七章：MCP 使用范式
