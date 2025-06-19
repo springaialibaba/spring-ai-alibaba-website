@@ -30,7 +30,7 @@ export AI_DASHSCOPE_API_KEY=${REPLACE-WITH-VALID-API-KEY}
 启动示例应用：
 
 ```shell
-./mvnw compile exec:java -Dexec.mainClass="com.alibaba.cloud.ai.example.helloworld.HelloworldApplication"
+./mvnw spring-boot:run
 ```
 
 访问 `http://localhost:18080/helloworld/simple/chat?query=给我讲一个笑话吧` ，向通义模型提问并得到回答。
