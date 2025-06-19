@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章重点介绍 Spring AI 中的 Advisor 功能，该功能允许在 AI模型的请求和响应流程中插入自定义逻辑，尤其侧重于聊天历史消息的管理。开篇通过 `MemoryMessageAdvisorController` 和 `MemoryPromptAdvisorController` 示例，快速上手了如何利用基于内存的 `MessageChatMemoryAdvisor` 和 `InMemoryChatMemoryRepository` 实现会话记忆，使模型能在同一会话中记住用户的先前信息。章节进一步预告了将探讨如何使用 SQLite、MySQL、Redis 等持久化存储方案来增强消息存储能力，并展示了相关的 Maven 依赖配置。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章包含快速上手（基于内存、sqlite、mysql、redis的历史消息存储）+ 源码解读（advisor基础、BaseChatMemoryAdvisor解读、AdvisorChain链）
 
 ## 基于内存的消息存储快速上手 

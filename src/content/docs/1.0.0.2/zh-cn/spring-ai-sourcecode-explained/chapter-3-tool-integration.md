@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章详细阐述了如何在 Spring AI 中整合和使用 Tool（工具），以增强 AI 模型的功能，使其能够与外部 API 或自定义服务进行交互。内容包括必要的 `pom.xml` 依赖配置（如 `spring-ai-autoconfigure-model-tool`）和在 `application.yml` 中启用特定工具（如时间和天气工具）的设置。通过一个获取指定城市时间的 'Time Tool' 实例，章节具体展示了两种工具实现方式：一种是直接使用 `@Tool` 注解的 Method 版本（如 `TimeTools` 类），另一种是基于 `java.util.function.Function` 接口并结合 Spring 自动配置的 Function 版本（如 `TimeAutoConfiguration` 和 `GetCurrentTimeByTimeZoneIdService`）。此外，`TimeController` 中的示例代码演示了如何在聊天交互中实际调用这些已注册的工具，以响应用户关于时间的查询。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章包含：Tool快速上手 + 源码解读（Tool类的说明 + 工具触发链路）
 
 ## tool 快速上手

@@ -44,14 +44,10 @@ Spring AI 是 Spring 官方社区维护的开源框架，最初于 2024 年 5 �
 </dependencies>
 ```
 
-
-
-您可以参考我们发布在官网的 [快速开始](https://java2ai.com/) 了解如何开发 Chatbot、智能体或工作流等应用，总的来说，根据不同场景，您可以选择使用 `ChatClient` 或 `Spring Ai Alibaba Graph` 两个核心组件来开发 AI 应用。
+您可以参考我们发布在官网的 [快速开始](./get-started/chatbot/) 了解如何开发 Chatbot、智能体或工作流等应用，总的来说，根据不同场景，您可以选择使用 `ChatClient` 或 `Spring Ai Alibaba Graph` 两个核心组件来开发 AI 应用。
 
 ### 体验官方 Playground 示例
 Spring AI Alibaba 官方社区开发了一个**包含完整 “前端UI+后端实现” 的智能体 Playground 示例**，示例使用 Spring AI Alibaba 开发，可以体验聊天机器人、多轮对话、图片生成、多模态、工具调用、MCP集成、RAG知识库等所有框架核心能力。
-
-
 
 整体运行后的界面效果如下所示：
 
@@ -105,7 +101,7 @@ Spring AI Alibaba Graph 核心能力：
 
 
 
-关于 Graph 的具体使用方式，请关注官网文档更新。在下文中我们会介绍官方发布的 [基于 Spring AI Alibaba 实现的通用智能体平台](/#)，您可以把这些官方智能体实现当作 Graph 的最佳应用实践。
+关于 Graph 的具体使用方式，请关注官网文档更新。在下文中我们会介绍官方发布的基于 Spring AI Alibaba 实现的通用智能体平台，您可以把这些官方智能体实现当作 Graph 的最佳应用实践。
 
 ### 企业级 AI 应用生态集成
 在 Agent 生产落地过程中，用户需要解决智能体效果评估、MCP 工具集成、Prompt 管理、Token 上下文、可视化 Tracing等各种问题，Spring AI Alibaba 通过与 Nacos3、Higress AI 网关、阿里云 ARMS、阿里云向量检索数据库、百炼智能体平台等深度集成，提供全面的智能体企业级生产解决方案，加速智能体从 Demo 走向生产落地。

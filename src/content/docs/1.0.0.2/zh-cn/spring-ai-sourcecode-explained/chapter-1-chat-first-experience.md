@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章介绍了 Spring AI Chat 功能的快速上手方法，包括项目依赖配置、`application.yml` 设置（并提及了使用阿里百炼进行 OpenAI 兼容替换的方案），并通过 `ChatController` 和 `ChatOptionController` 示例代码演示了基本的聊天调用（call）、流式响应（stream）以及如何配置聊天参数（如 temperature）。此外，章节还初步探讨了 `ChatClient` 和 `ChatModel` 的自动注入机制，提到了相关的配置类如 `ChatClientBuilderProperties` 和 `ChatClientBuilderConfigurer`。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章包含：chat快速上手 + 源码解读（ChatClient + ChatModel 自动注入、ChatClient 调用链路）
 
 ## chat快速上手 

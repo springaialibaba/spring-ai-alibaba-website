@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章介绍了如何让 Spring AI 模型的输出结果遵循特定的结构化格式，例如 `Map`、`List` 或自定义的 Java Bean。这种能力使得 AI 的响应可以直接转换为应用程序易于处理和使用的数据类型。章节通过 `MapListController` 示例，展示了如何结合 `MapOutputConverter` 和 `ListOutputConverter` 将模型的自由文本输出分别转换为 `Map` 和 `List` 数据结构，并解释了如何在提示（Prompt）中加入格式化指令。随后，通过 `BeanController` 和一个名为 `BeanEntity` 的记录（Record）示例，演示了两种将输出直接转换为 Java Bean 对象的方法：一种是使用 `BeanOutputConverter` 进行显式转换，另一种是利用 `ChatClient` 流式 API 中的 `.entity(YourBean.class)` 方法实现更简洁的转换。章节最后开始探讨结构化输出相关的源码实现，首先介绍了 `FormatProvider` 接口，该接口用于定义输出格式的规范。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章内容是结构化快速上手 + 源码解读
 
 ## 结构化输出 快速上手

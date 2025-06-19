@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章探讨了向量数据库在 Spring AI 中的应用，强调其通过相似性搜索而非传统精确匹配来查询数据的核心能力。开篇介绍了项目所需的基础 `pom.xml` 依赖（如 `spring-ai-vector-store`）。随后，通过一个基于内存的 `SimpleVectorStore` 示例（在 `VectorSimpleController` 中实现），详细展示了如何添加文本数据（`Document` 对象）、删除数据、将内存中的向量数据持久化到本地 JSON 文件以及从该文件加载数据。该示例还演示了如何执行相似性搜索，包括使用 `topK` 参数限制结果数量和通过 `FilterExpressionBuilder` 根据元数据进行高级过滤。接下来，章节转向将 Redis 作为向量存储的实现方案，展示了 `spring-ai-starter-vector-store-redis` 依赖和相应的 `application.yml` 配置文件（包括 OpenAI embedding 模型如 `text-embedding-v1` 的设置、Redis 服务器连接信息以及向量存储特定的索引配置如 `initialize-schema`, `prefix`, `index-name`）。此外，还开始定义一个 `RedisConfig.java` 文件，用于自定义 `JedisPooled` 和 `RedisVectorStore` 的 Bean。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章是快速上手（内存、Redis、Elasticsearch）+源码解读（向量数据库源码、Redis自动注入、Es自动注入）
 
 ## 向量数据库快速上手

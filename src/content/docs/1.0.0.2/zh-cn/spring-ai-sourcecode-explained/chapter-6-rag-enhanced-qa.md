@@ -4,8 +4,8 @@ keywords: [Spring AI, Spring AI Alibaba, 源码解读]
 description: "本章主要介绍 RAG（Retrieval-Augmented Generation，检索增强生成）技术，该技术通过从外部知识库检索相关信息，并将其融入提供给大型语言模型（LLM）的提示（Prompt）中，从而显著增强模型在处理知识密集型任务时的表现和回答的准确性。"
 ---
 
-- 作者：影子
-- 教程代码：https://github.com/GTyingzi/spring-ai-tutorial
+- 作者：影子, Spring AI Alibaba Committer
+- 本文档基于 Spring AI 1.0.0 版本，Spring AI Alibaba 1.0.0.2 版本
 - 本章包含快速上手（Rag简单对比、模块化、ETL）+ 源码解读（模块化、ETL）
 
 ## Rag 快速上手
