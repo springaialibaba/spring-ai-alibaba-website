@@ -172,7 +172,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/rag/evalutaion")
+@RequestMapping("/rag/evaluation")
 public class RagEvaluationController {
 
     private static final Logger logger = LoggerFactory.getLogger(RagEvaluationController.class);
@@ -201,9 +201,9 @@ public class RagEvaluationController {
         simpleVectorStore.add(documents);
     }
 
-    @GetMapping("/evalute")
+    @GetMapping("/evaluate")
     public String evalute(@RequestParam(value = "query", defaultValue = "你好，请告诉我影子这个人的身份信息") String query) {
-        logger.info("start evalute");
+        logger.info("start evaluate");
         RetrievalAugmentationAdvisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
                         .vectorStore(simpleVectorStore)
@@ -221,12 +221,12 @@ public class RagEvaluationController {
                 // The AI model's response
                 chatResponse.getResult().getOutput().getText()
         );
-        logger.info("evalute request: {}", evaluationRequest);
+        logger.info("evaluate request: {}", evaluationRequest);
 
         RelevancyEvaluator evaluator = new RelevancyEvaluator(ChatClient.builder(qwenPlusChatModel));
         EvaluationResponse evaluationResponse = evaluator.evaluate(evaluationRequest);
         boolean pass = evaluationResponse.isPass();
-        logger.info("evalute result: {}", pass);
+        logger.info("evaluate result: {}", pass);
         return chatResponse.getResult().getOutput().getText();
     }
 }
