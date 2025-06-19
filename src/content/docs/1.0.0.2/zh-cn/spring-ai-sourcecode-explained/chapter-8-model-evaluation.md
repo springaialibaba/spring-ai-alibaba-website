@@ -202,7 +202,7 @@ public class RagEvaluationController {
     }
 
     @GetMapping("/evaluate")
-    public String evalute(@RequestParam(value = "query", defaultValue = "你好，请告诉我影子这个人的身份信息") String query) {
+    public String evaluate(@RequestParam(value = "query", defaultValue = "你好，请告诉我影子这个人的身份信息") String query) {
         logger.info("start evaluate");
         RetrievalAugmentationAdvisor retrievalAugmentationAdvisor = RetrievalAugmentationAdvisor.builder()
                 .documentRetriever(VectorStoreDocumentRetriever.builder()
