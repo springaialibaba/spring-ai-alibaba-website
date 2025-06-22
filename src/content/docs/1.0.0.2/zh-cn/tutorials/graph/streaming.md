@@ -1,5 +1,5 @@
 ---
-title: 人类反馈复原案例
+title: 节点流式输出
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端"
 ---

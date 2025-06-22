@@ -1,16 +1,16 @@
 ---
-title: 分配指定的MCP给指定的节点示例
-keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "在构建agent中，Graph中特定节点需要额外增加MCP提供的能力，需要分配指定的MCP给指定的node节点"
+title: Assigning MCP Tools to Specific Nodes
+keywords: [Spring AI,Tongyi Qianwen,Bailian,Intelligent Agent Applications]
+description: "When building agents, specific nodes in the Graph need additional capabilities provided by MCP, requiring assignment of specific MCPs to specific node nodes"
 ---
 
-> 分配指定的 MCP 给指定的 node 节点
+> Assign specific MCPs to specific node nodes
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 mcp-node 模块
+The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the mcp-node module.
 
 ### pom.xml
 
-这里使用 1.0.0.3-SNAPSHOT。在定义 StateGraph 方面和 1.0.0.2 有些变动
+Here we use version 1.0.0.3-SNAPSHOT. There are some changes in StateGraph definition compared to 1.0.0.2
 
 ```xml
 <properties>
@@ -44,7 +44,7 @@ description: "在构建agent中，Graph中特定节点需要额外增加MCP提�
 
 ### application.yml
 
-注意 spring.ai.graph.nodes 下的配置，node 配置对应 mcp 服务的映射
+Note the configuration under spring.ai.graph.nodes, mapping node configuration to mcp services
 
 ```yaml
 server:
@@ -82,7 +82,7 @@ spring:
 
 #### McpNodeProperties
 
-node 配置对应 mcp 服务的映射类
+Class mapping node configuration to mcp services
 
 ```java
 package com.spring.ai.tutorial.graph.mcp.config;
@@ -111,7 +111,7 @@ public class McpNodeProperties {
 
 #### McpGaphConfiguration
 
-注入 McpClientToolCallbackProvider，提供给 McpNode
+Inject McpClientToolCallbackProvider for use in McpNode
 
 ```java
 package com.spring.ai.tutorial.graph.mcp.config;
@@ -150,7 +150,7 @@ public class McpGaphConfiguration {
         KeyStrategyFactory keyStrategyFactory = () -> {
             HashMap<String, KeyStrategy> keyStrategyHashMap = new HashMap<>();
 
-            // 用户输入
+            // User input
             keyStrategyHashMap.put("query", new ReplaceStrategy());
             keyStrategyHashMap.put("mcpcontent", new ReplaceStrategy());
             return keyStrategyHashMap;
@@ -162,7 +162,7 @@ public class McpGaphConfiguration {
                 .addEdge(StateGraph.START, "mcp")
                 .addEdge("mcp", StateGraph.END);
 
-        // 添加 PlantUML 打印
+        // Add PlantUML printing
         GraphRepresentation representation = stateGraph.getGraph(GraphRepresentation.Type.PLANTUML,
                 "mcp flow");
         logger.info("\n=== mcp UML Flow ===");
@@ -178,7 +178,7 @@ public class McpGaphConfiguration {
 
 #### McpClientToolCallbackProvider
 
-根据节点名称，匹配对应的 MCP 提供的 ToolCallback
+Match corresponding ToolCallback provided by MCP based on node name
 
 ```java
 package com.spring.ai.tutorial.graph.mcp.tool;
@@ -248,7 +248,7 @@ public class McpClientToolCallbackProvider {
 
 #### McpNode
 
-通过 McpClientToolCallbackProvider 找到当前节点的 ToolCallback
+Find the ToolCallback for the current node through McpClientToolCallbackProvider
 
 ```java
 package com.spring.ai.tutorial.graph.mcp.node;
@@ -349,16 +349,16 @@ public class McpController {
 }
 ```
 
-### MCP Server 服务提供
+### MCP Server Service Provision
 
-提供一个 MCP Server 服务，远端 or 本地都可以
+Provide an MCP Server service, which can be remote or local
 
-这里本地启动一个MCP Server，提供一个时间服务
+Here we start a local MCP Server that provides a time service
 
-### 效果
+### Effect
 
-启动本地 MCP Server，提供时间服务
+Start local MCP Server to provide time service
 ![](/img/user/ai/tutorials/graph/NivBbKqXooFsgexeeRrcIV0rnEf.png)
 
-调用接口，触发本地端 MCP Server 提供的时间服务
+Call the interface, triggering the time service provided by the local MCP Server
 ![](/img/user/ai/tutorials/graph/LMPkbZ5heoHs2Qx604kcdiplnlc.png)

@@ -1,5 +1,5 @@
 ---
-title: 第一个快速入门手示例
+title: 快速入门
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI Alibaba Graph的第一个入门示例，构建agent工作流的雏形"
 ---

@@ -46,7 +46,7 @@
 			{
 				"label": "可用组件列表与使用指南",
 				"translations": {
-					"en": "Basic Framework"
+					"en": "Available Components and Usage Guide"
 				},
 			    "link": "docs/1.0.0.2/tutorials/starters-and-quick-guide"
 			},

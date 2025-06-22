@@ -1,23 +1,23 @@
 ---
-title: 人类反馈复原示例
-keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "在构建agent工作流中，人类反馈是很常见的场景，本期介绍如何利用Spring Ai Alibaba Graph构建工作流时，中断 -> 人类反馈介入 -> 无缝衔接剩下流程"
+title: Human Feedback
+keywords: [Spring AI,Tongyi Qianwen,Bailian,Intelligent Agent Applications]
+description: "Human feedback is a common scenario when building agent workflows. This article introduces how to use Spring AI Alibaba Graph to build workflows with interruption -> human feedback intervention -> seamless continuation of the remaining process"
 ---
 
-## 人类反馈复原案例
-> 在实际业务场景中，经常会遇到人类介入的场景，人类的不同操作将影响工作流不同的走向
+## Human Feedback Recovery Case
+> In real business scenarios, human intervention is often encountered. Different human operations will affect different workflow paths.
 
-以下实现一个简单案例：包含三个节点，扩展节点、人类节点、翻译节点
+The following implements a simple case that includes three nodes: expansion node, human node, and translation node.
 
-- 扩展节点：AI 模型流式对问题进行扩展输出
-- 人类节点：通过对用户的反馈，决定是直接结束，还是接着执行翻译节点
-- 翻译节点：将问题翻译为其他英文
+- Expansion node: AI model streams the expansion output based on the question
+- Human node: Decides whether to end directly or continue to execute the translation node based on user feedback
+- Translation node: Translates the question into English
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 human-node 模块
+The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the human-node module.
 
 ### pom.xml
 
-这里使用 1.0.0.3-SNAPSHOT。在定义 StateGraph 方面和 1.0.0.2 有些变动
+Here we use version 1.0.0.3-SNAPSHOT. There are some changes in StateGraph definition compared to 1.0.0.2
 
 ```xml
 <properties>
@@ -68,17 +68,17 @@ spring:
 
 ### config
 
-OverAllState 中存储的字段
+Fields stored in OverAllState:
 
-- query：用户的问题
-- expandernumber：扩展的数量
-- expandercontent：扩展的内容
-- feedback：人类反馈的内容
-- humannextnode：人类反馈后的下一个节点
-- translatelanguage：翻译的目标语言，默认为英文
-- translatecontent：翻译的内容
+- query: user's question
+- expandernumber: number of expansions
+- expandercontent: expansion content
+- feedback: human feedback content
+- humannextnode: next node after human feedback
+- translatelanguage: target language for translation, default is English
+- translatecontent: translated content
 
-定义 ExpanderNode，边的连接为：
+Define ExpanderNode, with edges connecting:
 
 ```bash
 START -> expander -> humanfeedback
@@ -125,18 +125,18 @@ public class GraphHumanConfiguration {
     public StateGraph humanGraph(ChatClient.Builder chatClientBuilder) throws GraphStateException {
         KeyStrategyFactory keyStrategyFactory = () -> {
             HashMap<String, KeyStrategy> keyStrategyHashMap = new HashMap<>();
-            // 用户输入
+            // User input
             keyStrategyHashMap.put("query", new ReplaceStrategy());
             keyStrategyHashMap.put("threadid", new ReplaceStrategy());
 
             keyStrategyHashMap.put("expandernumber", new ReplaceStrategy());
             keyStrategyHashMap.put("expandercontent", new ReplaceStrategy());
 
-            // 人类反馈
+            // Human feedback
             keyStrategyHashMap.put("feedback", new ReplaceStrategy());
             keyStrategyHashMap.put("humannextnode", new ReplaceStrategy());
 
-            // 是否需要翻译
+            // Whether translation is needed
             keyStrategyHashMap.put("translatelanguage", new ReplaceStrategy());
             keyStrategyHashMap.put("translatecontent", new ReplaceStrategy());
             return keyStrategyHashMap;
@@ -153,7 +153,7 @@ public class GraphHumanConfiguration {
                         "translate", "translate", StateGraph.END, StateGraph.END))
                 .addEdge("translate", StateGraph.END);
 
-        // 添加 PlantUML 打印
+        // Add PlantUML printing
         GraphRepresentation representation = stateGraph.getGraph(GraphRepresentation.Type.PLANTUML,
                 "human flow");
         logger.info("\n=== expander UML Flow ===");
@@ -337,7 +337,7 @@ public class TranslateNode implements NodeAction {
 
 ### edge
 
-人类节点的下一个边是条件边，由 HumanFeedbackDispatcher 控制下一步跳转到哪一个节点
+The next edge of the human node is a conditional edge, controlled by HumanFeedbackDispatcher to determine which node to jump to next
 
 ```java
 package com.spring.ai.tutorial.graph.human.dispatcher;
@@ -363,8 +363,8 @@ public class HumanFeedbackDispatcher implements EdgeAction {
 
 #### GraphHumanController
 
-- CompileConfig.builder().saverConfig(saverConfig).interruptBefore("humanfeedback"）：在人类反馈节点前断流
-- Sinks.Many<ServerSentEvent<String>> sink：接收 Stream 数据
+- CompileConfig.builder().saverConfig(saverConfig).interruptBefore("humanfeedback"): Interrupts the flow before the human feedback node
+- Sinks.Many<ServerSentEvent<String>> sink: Receives Stream data
 
 ```java
 package com.spring.ai.tutorial.graph.human.controller;
@@ -463,9 +463,9 @@ public class GraphHumanController {
 
 ##### GraphProcess
 
-- ExecutorService executor：配置线程池，获取 stream 流
+- ExecutorService executor: Configure thread pool to get stream flow
 
-将结果写入到 sink 中
+Write the results to the sink
 
 ```java
 package com.spring.ai.tutorial.graph.stream.controller.GraphProcess;
@@ -518,7 +518,7 @@ public class GraphProcess {
                     throw new CompletionException(e);
                 }
             }).thenAccept(v -> {
-                // 正常完成
+                // Normal completion
                 sink.tryEmitComplete();
             }).exceptionally(e -> {
                 sink.tryEmitError(e);
@@ -529,10 +529,10 @@ public class GraphProcess {
 }
 ```
 
-#### 效果
+#### Effect
 
-调用 expand 接口，流式输出 && 断流得到最终结果
+Call the expand interface, stream output && interrupt flow to get final result
 ![](/img/user/ai/tutorials/graph/PoNhbwWV0oa0QixIMsHcsdYFn8f.png)
 
-再调用 resume 接口，状态恢复续上流，接着走后续逻辑
+Then call the resume interface, restore state to continue the flow and handle subsequent logic
 ![](/img/user/ai/tutorials/graph/HPNUbeoWioKO3px26yccElXWnre.png)
