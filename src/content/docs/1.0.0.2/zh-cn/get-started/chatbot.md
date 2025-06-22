@@ -33,7 +33,7 @@ description: "本文介绍如何使用 Spring AI Alibaba 开发一个基于通�
 	./mvnw spring-boot:run
 	```
 
-    访问 `http://localhost:18080/helloworld/simple/chat?query=给我讲一个笑话吧` ，向通义模型提问并得到回答。
+    访问 `http://localhost:8080/helloworld/simple/chat?query=给我讲一个笑话吧` ，向通义模型提问并得到回答。
 
 ## 示例开发指南
 
