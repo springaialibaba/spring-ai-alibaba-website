@@ -34,13 +34,13 @@ Playground 作为一个 AI 智能体应用，依赖大模型等在线服务，�
 ## 多智能体
 我们把基于 Spring AI `ChatClient` 开发的 AI 应用叫做单智能体应用，上文中的 Playground 就是一个典型案例。
 
-对于一些复杂的 AI 应用场景，我们可以使用 [Spring AI Alibaba Graph](../tutorials/graph/whats-spring-ai-alibaba-graph/) 开发多智能体应用。Spring AI Alibaba Graph 既可以用于开发工作流应用，也可以用于开发多智能体应用。相比于[工作流](./workflow/)模式，多智能体模式虽也遵循特定的流程，但是在整个决策、执行流程上具备更多的自主性和灵活性。
+对于一些复杂的 AI 应用场景，开发者可以使用 [Spring AI Alibaba Graph](../tutorials/graph/whats-spring-ai-alibaba-graph/) 开发多智能体应用。Spring AI Alibaba Graph 既可以用于开发工作流应用，也可以用于开发多智能体应用。相比于[工作流](./workflow/)模式，多智能体模式虽也遵循特定的流程，但是在整个决策、执行流程上具备更多的自主性和灵活性。
 
 > 关于单智能体面临的挑战、多智能体定义以及解决方式等，在 [【概览】-【从聊天机器人、工作流到多智能体】](../overview/) 一节中有详细介绍。
 
 社区基于 Spring AI Alibaba Graph 开发了多款具备自主规划能力的智能体产品与平台，目前已经发布的包括 JManus、DeepResearch、ChatBI（NL2SQL） 三款产品。
 
-三款智能体产品链接如下，开发者可直接部署应用或在此基础上进行适配改造：
+相关智能体产品链接如下，开发者可直接部署应用或在此基础上进行适配改造：
 
 * [JManus](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-jmanus)，一款基于 Java 实现的，包含良好的前端 UI 交互界面的通用智能体产品；
 * [DeepResearch](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-deepresearch)，一款基于 Spring AI Alibaba Graph 实现的 DeepResearch 产品；

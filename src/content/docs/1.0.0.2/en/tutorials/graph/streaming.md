@@ -1,16 +1,16 @@
 ---
-title: 人类反馈复原案例
-keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端"
+title: Node Streaming Output
+keywords: [Spring AI,Tongyi Qianwen,Bailian,Intelligent Agent Applications]
+description: "Graph connects multiple nodes together for workflow orchestration. When a node calls an AI model, that node needs to stream the AI model's response results to the frontend"
 ---
 
-Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端
+Graph connects multiple nodes together for workflow orchestration. When a node calls an AI model, that node needs to stream the AI model's response results to the frontend.
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 stream-node 模块
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the stream-node module.
 
 ### pom.xml
 
-这里使用 1.0.0.3-SNAPSHOT。在定义 StateGraph 方面和 1.0.0.2 有些变动
+Here we use version 1.0.0.3-SNAPSHOT. There are some changes in StateGraph definition compared to 1.0.0.2
 
 ```xml
 <properties>
@@ -61,13 +61,13 @@ spring:
 
 ### config
 
-OverAllState 中存储的字段
+Fields stored in OverAllState:
 
-- query：用户的问题
-- expandernumber：扩展的数量
-- expandercontent：扩展的内容
+- query: user's question
+- expandernumber: number of expansions
+- expandercontent: expansion content
 
-定义 ExpanderNode，边的连接为：START -> expander -> END
+Define ExpanderNode, with edges connecting: START -> expander -> END
 
 ```java
 package com.spring.ai.tutorial.graph.stream.config;
@@ -99,7 +99,7 @@ public class GraphNodeStreamConfiguration {
         KeyStrategyFactory keyStrategyFactory = () -> {
             HashMap<String, KeyStrategy> keyStrategyHashMap = new HashMap<>();
 
-            // 用户输入
+            // User input
             keyStrategyHashMap.put("query", new ReplaceStrategy());
             keyStrategyHashMap.put("expandernumber", new ReplaceStrategy());
             keyStrategyHashMap.put("expandercontent", new ReplaceStrategy());
@@ -111,7 +111,7 @@ public class GraphNodeStreamConfiguration {
                 .addEdge(StateGraph.START, "expander")
                 .addEdge("expander", StateGraph.END);
 
-        // 添加 PlantUML 打印
+        // Add PlantUML printing
         GraphRepresentation representation = stateGraph.getGraph(GraphRepresentation.Type.PLANTUML,
                 "expander flow");
         logger.info("\n=== expander UML Flow ===");
@@ -181,7 +181,7 @@ public class ExpanderNode implements NodeAction {
 
 #### GraphStreamController
 
-- Sinks.Many<ServerSentEvent<String>> sink：接收 Stream 数据
+- Sinks.Many<ServerSentEvent<String>> sink: Receives Stream data
 
 ```java
 package com.spring.ai.tutorial.graph.stream.controller;
@@ -245,9 +245,9 @@ public class GraphStreamController {
 
 ##### GraphProcess
 
-- ExecutorService executor：配置线程池，获取 stream 流
+- ExecutorService executor: Configure thread pool to get stream flow
 
-将结果写入到 sink 中
+Write the results to the sink
 
 ```java
 package com.spring.ai.tutorial.graph.stream.controller.GraphProcess;
@@ -300,7 +300,7 @@ public class GraphProcess {
                     throw new CompletionException(e);
                 }
             }).thenAccept(v -> {
-                // 正常完成
+                // Normal completion
                 sink.tryEmitComplete();
             }).exceptionally(e -> {
                 sink.tryEmitError(e);
@@ -311,5 +311,5 @@ public class GraphProcess {
 }
 ```
 
-#### 效果
+#### Effect
 ![](/img/user/ai/tutorials/graph/KHSBb6HzYogFBkx433jc4vfvnHh.png)

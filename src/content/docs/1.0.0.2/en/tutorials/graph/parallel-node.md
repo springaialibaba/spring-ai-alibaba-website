@@ -1,16 +1,16 @@
 ---
-title: 多节点并行执行示例
-keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Spring AI Alibaba Graph的第多节点并行执行示例"
+title: Parallel Node Execution
+keywords: [Spring AI,Tongyi Qianwen,Bailian,Intelligent Agent Applications]
+description: "Spring AI Alibaba Graph's parallel node execution example"
 ---
 
-> Graph 中，当前节点不依赖上游节点的结果，可并行处理
+> In Graph, when the current node doesn't depend on upstream node results, it can be processed in parallel
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章为其 parallel-node 模块
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter is in the parallel-node module.
 
 ### pom.xml
 
-这里使用 1.0.0.3-SNAPSHOT。在定义 StateGraph 方面和 1.0.0.2 有些变动
+Here we use version 1.0.0.3-SNAPSHOT. There are some changes in StateGraph definition compared to 1.0.0.2
 
 ```xml
 <properties>
@@ -61,18 +61,18 @@ spring:
 
 ### config
 
-OverAllState 中存储的字段
+Fields stored in OverAllState:
 
-- query：用户的问题
-- expandernumber：扩展的数量
-- expandercontent：扩展的内容
-- translatelanguage：翻译的目标语言
-- translatecontent：翻译的内容
-- mergeresult：合并扩展节点、翻译节点后的结果
+- query: user's question
+- expandernumber: number of expansions
+- expandercontent: expansion content
+- translatelanguage: target language for translation
+- translatecontent: translated content
+- mergeresult: result after merging expansion node and translation node
 
-定义 ExpanderNode、TranslateNode、内部定义 MergeResultsNode
+Define ExpanderNode, TranslateNode, and internally define MergeResultsNode
 
-边的连接为：
+The edges connect as follows:
 
 ```java
 START -> expander -> merge
@@ -119,7 +119,7 @@ public class ParallelGraphConfiguration {
         KeyStrategyFactory keyStrategyFactory = () -> {
             HashMap<String, KeyStrategy> keyStrategyHashMap = new HashMap<>();
 
-            // 用户输入
+            // User input
             keyStrategyHashMap.put("query", new ReplaceStrategy());
 
             keyStrategyHashMap.put("expandernumber", new ReplaceStrategy());
@@ -145,7 +145,7 @@ public class ParallelGraphConfiguration {
 
                 .addEdge("merge", StateGraph.END);
 
-        // 添加 PlantUML 打印
+        // Add PlantUML printing
         GraphRepresentation representation = stateGraph.getGraph(GraphRepresentation.Type.PLANTUML,
                 "expander flow");
         logger.info("\n=== expander UML Flow ===");
@@ -172,11 +172,11 @@ public class ParallelGraphConfiguration {
 
 #### ExpanderNode
 
-- PromptTemplate DEFAULTPROMPTTEMPLATE：扩展文本的提示词
-- ChatClient chatClient：调用 AI 模型的 client 端
-- Integer NUMBER：默认扩展为 3 条相似问题
+- PromptTemplate DEFAULTPROMPTTEMPLATE: prompt for text expansion
+- ChatClient chatClient: client for calling the AI model
+- Integer NUMBER: default expansion of 3 similar questions
 
-最后将 AI 模型的响应内容返回给给到字段 expandercontent 中
+The response content from the AI model is finally returned to the expandercontent field
 
 ```java
 package com.spring.ai.tutorial.graph.node;
@@ -228,11 +228,11 @@ public class ExpanderNode implements NodeAction {
 
 #### TranslateNode
 
-- PromptTemplate DEFAULTPROMPTTEMPLATE：翻译文本的提示词
-- ChatClient chatClient：调用 AI 模型的 client 端
-- String TARGETLANGUAGE：默认翻译为英文
+- PromptTemplate DEFAULTPROMPTTEMPLATE: prompt for text translation
+- ChatClient chatClient: client for calling the AI model
+- String TARGETLANGUAGE: default translation language is English
 
-最后将 AI 模型的响应内容返回给给到字段 translatecontent 中
+The response content from the AI model is finally returned to the translatecontent field
 
 ```java
 package com.spring.ai.tutorial.graph.parallel.node;
@@ -276,7 +276,7 @@ public class TranslateNode implements NodeAction {
 
 #### MergeResultsNode
 
-将 ExpanderNode、TranslateNode 处理得到的结果塞入 mergeresult 字段中
+Places the results processed by ExpanderNode and TranslateNode into the mergeresult field
 
 ```java
 private record MergeResultsNode() implements NodeAction {
@@ -344,5 +344,5 @@ public class ParallelController {
 }
 ```
 
-#### 效果
+#### Effect
 ![](/img/user/ai/tutorials/graph/X9yHbGypQoTzvixzyA6cNNwkn7d.png)

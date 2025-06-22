@@ -1,14 +1,12 @@
 ---
-title: 第一个快速入门手示例
+title: 节点流式输出
 keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Spring AI Alibaba Graph的第一个入门示例，构建agent工作流的雏形"
+description: "Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端"
 ---
 
-框架代码地址：[https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-graph](https://github.com/alibaba/spring-ai-alibaba/tree/main/spring-ai-alibaba-graph)
+Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端
 
-以下是最简单的一个 graph 示例，实现对用户问题的扩展几条相似的
-
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 simple 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章代码为其 stream-node 模块
 
 ### pom.xml
 
@@ -72,7 +70,7 @@ OverAllState 中存储的字段
 定义 ExpanderNode，边的连接为：START -> expander -> END
 
 ```java
-package com.spring.ai.tutorial.graph.config;
+package com.spring.ai.tutorial.graph.stream.config;
 
 import com.alibaba.cloud.ai.graph.GraphRepresentation;
 import com.alibaba.cloud.ai.graph.KeyStrategy;
@@ -80,7 +78,7 @@ import com.alibaba.cloud.ai.graph.KeyStrategyFactory;
 import com.alibaba.cloud.ai.graph.StateGraph;
 import com.alibaba.cloud.ai.graph.exception.GraphStateException;
 import com.alibaba.cloud.ai.graph.state.strategy.ReplaceStrategy;
-import com.spring.ai.tutorial.graph.node.ExpanderNode;
+import com.spring.ai.tutorial.graph.stream.node.ExpanderNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -92,12 +90,12 @@ import java.util.HashMap;
 import static com.alibaba.cloud.ai.graph.action.AsyncNodeAction.nodeasync;
 
 @Configuration
-public class GraphConfiguration {
+public class GraphNodeStreamConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(GraphConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(GraphNodeStreamConfiguration.class);
 
     @Bean
-    public StateGraph simpleGraph(ChatClient.Builder chatClientBuilder) throws GraphStateException {
+    public StateGraph streamGraph(ChatClient.Builder chatClientBuilder) throws GraphStateException {
         KeyStrategyFactory keyStrategyFactory = () -> {
             HashMap<String, KeyStrategy> keyStrategyHashMap = new HashMap<>();
 
@@ -122,6 +120,7 @@ public class GraphConfiguration {
 
         return stateGraph;
     }
+
 }
 ```
 
@@ -129,14 +128,8 @@ public class GraphConfiguration {
 
 #### ExpanderNode
 
-- PromptTemplate DEFAULTPROMPTTEMPLATE：扩展文本的提示词
-- ChatClient chatClient：调用 AI 模型的 client 端
-- Integer NUMBER：默认扩展为 3 条相似问题
-
-最后将 AI 模型的响应内容返回给给到字段 expandercontent 中
-
 ```java
-package com.spring.ai.tutorial.graph.node;
+package com.spring.ai.tutorial.graph.stream.node;
 
 import com.alibaba.cloud.ai.graph.NodeOutput;
 import com.alibaba.cloud.ai.graph.OverAllState;
@@ -149,10 +142,8 @@ import org.springframework.ai.chat.prompt.PromptTemplate;
 import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class ExpanderNode implements NodeAction {
 
@@ -171,64 +162,154 @@ public class ExpanderNode implements NodeAction {
         String query = state.value("query", "");
         Integer expanderNumber = state.value("expandernumber", this.NUMBER);
 
+        Flux<ChatResponse> chatResponseFlux = this.chatClient.prompt().user((user) -> user.text(DEFAULTPROMPTTEMPLATE.getTemplate()).param("number", expanderNumber).param("query", query)).stream().chatResponse();
 
-        Flux<String> streamResult = this.chatClient.prompt().user((user) -> user.text(DEFAULTPROMPTTEMPLATE.getTemplate()).param("number", expanderNumber).param("query", query)).stream().content();
-        String result = streamResult.reduce("", (acc, item) -> acc + item).block();
-        List<String> queryVariants = Arrays.asList(result.split("\n"));
-
-        HashMap<String, Object> resultMap = new HashMap<>();
-        resultMap.put("expandercontent", queryVariants);
-        return resultMap;
+        AsyncGenerator<? extends NodeOutput> generator = StreamingChatGenerator.builder()
+                .startingNode("expanderllmstream")
+                .startingState(state)
+                .mapResult(response -> {
+                    String text = response.getResult().getOutput().getText();
+                    List<String> queryVariants = Arrays.asList(text.split("\n"));
+                    return Map.of("expandercontent", queryVariants);
+                }).build(chatResponseFlux);
+        return Map.of("expandercontent", generator);
     }
 }
 ```
 
 ### controller
 
+#### GraphStreamController
+
+- Sinks.Many<ServerSentEvent<String>> sink：接收 Stream 数据
+
 ```java
-package com.spring.ai.tutorial.graph.controller;
+package com.spring.ai.tutorial.graph.stream.controller;
 
 import com.alibaba.cloud.ai.graph.CompiledGraph;
-import com.alibaba.cloud.ai.graph.OverAllState;
+import com.alibaba.cloud.ai.graph.NodeOutput;
 import com.alibaba.cloud.ai.graph.RunnableConfig;
 import com.alibaba.cloud.ai.graph.StateGraph;
 import com.alibaba.cloud.ai.graph.exception.GraphStateException;
+import com.spring.ai.tutorial.graph.stream.controller.GraphProcess.GraphProcess;
+import org.bsc.async.AsyncGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/graph")
-public class SimpleGraphController {
+@RequestMapping("/graph/stream")
+public class GraphStreamController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimpleGraphController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GraphStreamController.class);
 
     private final CompiledGraph compiledGraph;
 
-    public SimpleGraphController(@Qualifier("simpleGraph") StateGraph stateGraph) throws GraphStateException {
+    public GraphStreamController(@Qualifier("streamGraph")StateGraph stateGraph) throws GraphStateException {
         this.compiledGraph = stateGraph.compile();
     }
 
-    @GetMapping(value = "/expand")
-    public Map<String, Object> expand(@RequestParam(value = "query", defaultValue = "你好，很高兴认识你，能简单介绍一下自己吗？", required = false) String query,
+    @GetMapping(value = "/expand", produces = MediaType.TEXTEVENTSTREAMVALUE)
+    public Flux<ServerSentEvent<String>> expand(@RequestParam(value = "query", defaultValue = "你好，很高兴认识你，能简单介绍一下自己吗？", required = false) String query,
                                                 @RequestParam(value = "expandernumber", defaultValue = "3", required = false) Integer  expanderNumber,
                                                 @RequestParam(value = "threadid", defaultValue = "yingzi", required = false) String threadId){
         RunnableConfig runnableConfig = RunnableConfig.builder().threadId(threadId).build();
         Map<String, Object> objectMap = new HashMap<>();
         objectMap.put("query", query);
         objectMap.put("expandernumber", expanderNumber);
-        Optional<OverAllState> invoke = this.compiledGraph.invoke(objectMap, runnableConfig);
-        return invoke.map(OverAllState::data).orElse(new HashMap<>());
-    }}
+
+        GraphProcess graphProcess = new GraphProcess(this.compiledGraph);
+        Sinks.Many<ServerSentEvent<String>> sink = Sinks.many().unicast().onBackpressureBuffer();
+        AsyncGenerator<NodeOutput> resultFuture = compiledGraph.stream(objectMap, runnableConfig);
+        graphProcess.processStream(resultFuture, sink);
+
+        return sink.asFlux()
+                .doOnCancel(() -> logger.info("Client disconnected from stream"))
+                .doOnError(e -> logger.error("Error occurred during streaming", e));
+    }
+
+
+}
+```
+
+##### GraphProcess
+
+- ExecutorService executor：配置线程池，获取 stream 流
+
+将结果写入到 sink 中
+
+```java
+package com.spring.ai.tutorial.graph.stream.controller.GraphProcess;
+
+import com.alibaba.cloud.ai.graph.CompiledGraph;
+import com.alibaba.cloud.ai.graph.NodeOutput;
+import com.alibaba.cloud.ai.graph.streaming.StreamingOutput;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.bsc.async.AsyncGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.codec.ServerSentEvent;
+import reactor.core.publisher.Sinks;
+
+import java.util.Map;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class GraphProcess {
+
+    private static final Logger logger = LoggerFactory.getLogger(GraphProcess.class);
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    private CompiledGraph compiledGraph;
+
+    public GraphProcess(CompiledGraph compiledGraph) {
+        this.compiledGraph = compiledGraph;
+    }
+
+    public void processStream(AsyncGenerator<NodeOutput> generator, Sinks.Many<ServerSentEvent<String>> sink) {
+        executor.submit(() -> {
+            generator.forEachAsync(output -> {
+                try {
+                    logger.info("output = {}", output);
+                    String nodeName = output.node();
+                    String content;
+                    if (output instanceof StreamingOutput streamingOutput) {
+                        content = JSON.toJSONString(Map.of(nodeName, streamingOutput.chunk()));
+                    } else {
+                        JSONObject nodeOutput = new JSONObject();
+                        nodeOutput.put("data", output.state().data());
+                        nodeOutput.put("node", nodeName);
+                        content = JSON.toJSONString(nodeOutput);
+                    }
+                    sink.tryEmitNext(ServerSentEvent.builder(content).build());
+                } catch (Exception e) {
+                    throw new CompletionException(e);
+                }
+            }).thenAccept(v -> {
+                // 正常完成
+                sink.tryEmitComplete();
+            }).exceptionally(e -> {
+                sink.tryEmitError(e);
+                return null;
+            });
+        });
+    }
+}
 ```
 
 #### 效果
-![](/img/user/ai/tutorials/graph/HD8hbyfCyomfSvx0NMcceVthnZc.png)
+![](/img/user/ai/tutorials/graph/KHSBb6HzYogFBkx433jc4vfvnHh.png)

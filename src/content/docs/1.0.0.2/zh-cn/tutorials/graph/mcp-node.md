@@ -1,12 +1,12 @@
 ---
-title: 分配指定的MCP给指定的节点示例
+title: 分配MCP工具给指定节点
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "在构建agent中，Graph中特定节点需要额外增加MCP提供的能力，需要分配指定的MCP给指定的node节点"
 ---
 
 > 分配指定的 MCP 给指定的 node 节点
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 mcp-node 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章代码为其 mcp-node 模块
 
 ### pom.xml
 

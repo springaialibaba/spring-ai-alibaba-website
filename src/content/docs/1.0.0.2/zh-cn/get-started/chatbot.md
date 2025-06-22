@@ -29,9 +29,9 @@ description: "本文介绍如何使用 Spring AI Alibaba 开发一个基于通�
 
 3. 启动示例应用并访问
 
-    ```shell
-    ./mvnw compile exec:java -Dexec.mainClass="com.alibaba.cloud.ai.example.helloworld.HelloworldApplication"
-    ```
+	```shell
+	./mvnw spring-boot:run
+	```
 
     访问 `http://localhost:18080/helloworld/simple/chat?query=给我讲一个笑话吧` ，向通义模型提问并得到回答。
 
