@@ -8,7 +8,7 @@ description: "Spring AI Alibaba Graph的第一个入门示例，构建agent工�
 
 以下是最简单的一个 graph 示例，实现对用户问题的扩展几条相似的
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 simple 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章代码为其 simple 模块
 
 ### pom.xml
 

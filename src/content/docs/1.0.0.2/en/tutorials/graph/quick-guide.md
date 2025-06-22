@@ -8,7 +8,7 @@ Framework code address: [https://github.com/alibaba/spring-ai-alibaba/tree/main/
 
 Below is the simplest graph example, which implements expansion of several similar queries based on a user's question.
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the simple module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the simple module.
 
 ### pom.xml
 
@@ -251,7 +251,7 @@ description: "Spring AI Alibaba Graph's parallel node execution example"
 
 > In Graph, when the current node doesn't depend on upstream node results, it can be processed in parallel
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter is in the parallel-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter is in the parallel-node module.
 
 ### pom.xml
 
@@ -617,7 +617,7 @@ The following implements a simple case that includes three nodes: expansion node
 - Human node: Decides whether to end directly or continue to execute the translation node based on user feedback
 - Translation node: Translates the question into English
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the human-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the human-node module.
 
 ### pom.xml
 

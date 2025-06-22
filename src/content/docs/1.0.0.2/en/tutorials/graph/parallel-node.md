@@ -6,7 +6,7 @@ description: "Spring AI Alibaba Graph's parallel node execution example"
 
 > In Graph, when the current node doesn't depend on upstream node results, it can be processed in parallel
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter is in the parallel-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter is in the parallel-node module.
 
 ### pom.xml
 

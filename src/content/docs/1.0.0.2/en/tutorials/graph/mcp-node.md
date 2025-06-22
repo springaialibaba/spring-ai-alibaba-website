@@ -6,7 +6,7 @@ description: "When building agents, specific nodes in the Graph need additional 
 
 > Assign specific MCPs to specific node nodes
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the mcp-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the mcp-node module.
 
 ### pom.xml
 

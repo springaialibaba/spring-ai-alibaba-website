@@ -6,7 +6,7 @@ description: "Spring AI Alibaba Graph的第多节点并行执行示例"
 
 > Graph 中，当前节点不依赖上游节点的结果，可并行处理
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章为其 parallel-node 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章为其 parallel-node 模块
 
 ### pom.xml
 

@@ -6,7 +6,7 @@ description: "Graph将多个节点连接在一起进行工作流编排，其中�
 
 Graph将多个节点连接在一起进行工作流编排，其中某个节点在调用AI模型时，该节点需要流式的将AI模型响应结果给到前端
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 stream-node 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章代码为其 stream-node 模块
 
 ### pom.xml
 

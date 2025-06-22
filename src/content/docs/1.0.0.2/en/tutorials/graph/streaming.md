@@ -6,7 +6,7 @@ description: "Graph connects multiple nodes together for workflow orchestration.
 
 Graph connects multiple nodes together for workflow orchestration. When a node calls an AI model, that node needs to stream the AI model's response results to the frontend.
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the stream-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the stream-node module.
 
 ### pom.xml
 

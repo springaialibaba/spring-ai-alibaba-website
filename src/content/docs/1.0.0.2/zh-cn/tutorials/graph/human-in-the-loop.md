@@ -13,7 +13,7 @@ description: "在构建agent工作流中，人类反馈是很常见的场景，�
 - 人类节点：通过对用户的反馈，决定是直接结束，还是接着执行翻译节点
 - 翻译节点：将问题翻译为其他英文
 
-实战代码可见：[https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) 下的 graph 目录，本章代码为其 human-node 模块
+实战代码可见：[spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) 下的 graph 目录，本章代码为其 human-node 模块
 
 ### pom.xml
 

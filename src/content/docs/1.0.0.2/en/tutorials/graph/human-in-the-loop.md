@@ -13,7 +13,7 @@ The following implements a simple case that includes three nodes: expansion node
 - Human node: Decides whether to end directly or continue to execute the translation node based on user feedback
 - Translation node: Translates the question into English
 
-The practical code can be found at: [https://github.com/GTyingzi/spring-ai-tutorial](https://github.com/GTyingzi/spring-ai-tutorial) under the graph directory. This chapter's code is in the human-node module.
+The practical code can be found at: [spring-ai-alibaba-examples](https://github.com/springaialibaba/spring-ai-alibaba-examples) under the graph directory. This chapter's code is in the human-node module.
 
 ### pom.xml
 
