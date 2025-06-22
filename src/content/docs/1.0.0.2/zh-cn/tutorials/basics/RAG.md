@@ -395,3 +395,4 @@ QueryAugmenter queryAugmenter = ContextualQueryAugmenter.builder()
 ```
 
 此组件使用的提示词可以通过构建器中可用的 `promptTemplate()` 和 `emptyContextPromptTemplate()` 方法进行自定义。
+

@@ -117,3 +117,4 @@ List<ToolCallback> asyncCallbacks = McpToolUtils.getToolCallbacksFromAsyncClient
 ### 原生镜像支持
 
 `McpHints` 类为 MCP 模式类提供 GraalVM 原生镜像提示。 在构建原生镜像时，此类会自动注册 MCP 模式类的所有必要反射提示。
+
