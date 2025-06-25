@@ -61,7 +61,7 @@ API 由非流式处理方案和 和 流式处理方案组成。 它还包括表�
 
 #### Advisor顺序
 
-链中 advisors 的执行顺序由 getOrder() 方法确定。需要理解的关键点：
+链中 advisors 的执行顺序由 `getOrder()` 方法确定。需要理解的关键点：
 
 - 具有较低顺序值的 advisors 首先执行。
 

@@ -12,10 +12,6 @@ MCP Java SDK 提供了模型上下文协议的 Java 实现，通过同步和异�
 
 `Spring AI MCP` 通过 Spring Boot 集成扩展了 MCP Java SDK，提供了 客户端 和 服务器 启动器。 使用 Spring Initializer 引导具有 MCP 支持的 AI 应用程序。
 
-> MCP Java SDK 0.8.0 中的重大变更 ⚠️
->
-> MCP Java SDK 0.8.0 版本引入了几个重大变更，包括新的基于会话的架构。如果您正在从 Java SDK 0.7.0 升级，请参阅 迁移指南 获取详细说明。
-
 ### MCP Java SDK 架构
 
 提示：本节提供了 MCP Java SDK 架构 的概述。 对于 Spring AI MCP 集成，请参阅 Spring AI MCP 启动器 文档。
