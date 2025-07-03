@@ -1,5 +1,5 @@
 ---
-title: 对话模型(Chat Model)
+title: 对话-图像-音频模型(Chat-Image-AudioModel)
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
@@ -98,6 +98,7 @@ public String chatWithOptions(String input) {
 ```
 
 ## Image Model
+
 ImageModel API 抽象了应用程序通过模型调用实现“文生图”的交互过程，即应用程序接收文本，调用模型生成图片。ImageModel 的入参为包装类型 `ImagePrompt`，输出类型为 `ImageResponse`。
 
 ### 使用示例
