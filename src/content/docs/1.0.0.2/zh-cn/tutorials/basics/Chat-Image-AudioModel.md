@@ -1,5 +1,5 @@
 ---
-title: 对话模型(Chat Model)
+title: 对话-图像-音频模型(Chat-Image-AudioModel)
 keywords: [Spring AI,通义千问,百炼,智能体应用]
 description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
 ---
@@ -33,71 +33,58 @@ public class ChatModelController {
 		this.chatModel = chatModel;
 	}
 
-	@RequestMapping("/chat")
-	public String chat(String input) {
-		ChatResponse response = chatModel.call(new Prompt(input));
-		return response.getResult().getOutput().getContent();
+	@GetMapping("/simple/chat")
+	public String simpleChat() {
+		return dashScopeChatModel.call("hi");
 	}
 }
 ```
 
 使用 Prompt 作为输入：
+
 ```java
-@RequestMapping("/chatWithPrompt")
-public String chatWithPrompt(String input) {
-    Prompt prompt = new Prompt(input);
-    ChatResponse response = chatModel.call(prompt);
-    return response.getResult().getOutput().getContent();
+@RequestMapping("/chat")
+public String chat(String input) {
+	ChatResponse response = chatModel.call(new Prompt(input));
+	return response.getResult().getOutput().getContent();
 }
 ```
 
 Streaming 示例：
+
 ```java
-@RequestMapping("/streamChat")
-public void streamChat(String input, HttpServletResponse response) throws IOException {
-    response.setContentType("text/event-stream");
-    response.setCharacterEncoding("UTF-8");
+@GetMapping("/stream/chat")
+public Flux<String> streamChat(HttpServletResponse response) {
 
-    Prompt prompt = new Prompt(input);
-    chatModel.stream(prompt, new StreamHandler() {
-        @Override
-        public void onMessage(ChatMessage message) {
-            try {
-                response.getWriter().write("data: " + message.getContent() + "\n\n");
-                response.getWriter().flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+	// 避免返回乱码
+	response.setCharacterEncoding("UTF-8");
 
-        @Override
-        public void onComplete() {
-            try {
-                response.getWriter().write("event: complete\n\n");
-                response.getWriter().flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    });
+	Flux<ChatResponse> stream = dashScopeChatModel.stream(new Prompt(DEFAULT_PROMPT, DashScopeChatOptions
+			.builder()
+			.withModel(DashScopeApi.ChatModel.QWEN_PLUS.getModel())
+			.build()));
+	return stream.map(resp -> resp.getResult().getOutput().getText());
 }
 ```
 
 通过 ChatOptions 在每次调用中调整模型参数：
+
 ```java
-@RequestMapping("/chatWithOptions")
-public String chatWithOptions(String input) {
-    ChatOptions options = ChatOptions.builder()
-            .withTemperature(0.7)
-            .withMaxTokens(150)
-            .build();
-    Prompt prompt = new Prompt(input, options);
-    ChatResponse response = chatModel.call(prompt);
-    return response.getResult().getOutput().getContent();
+@GetMapping("/custom/chat")
+public String customChat() {
+
+	DashScopeChatOptions customOptions = DashScopeChatOptions.builder()
+			.withTopP(0.7)
+			.withTopK(50)
+			.withTemperature(0.8)
+			.build();
+
+	return dashScopeChatModel.call(new Prompt(DEFAULT_PROMPT, customOptions)).getResult().getOutput().getText();
 }
 ```
 
 ## Image Model
+
 ImageModel API 抽象了应用程序通过模型调用实现“文生图”的交互过程，即应用程序接收文本，调用模型生成图片。ImageModel 的入参为包装类型 `ImagePrompt`，输出类型为 `ImageResponse`。
 
 ### 使用示例
@@ -130,18 +117,35 @@ public class ImageModelController {
 
 通过 ImageOptions 在每次调用中调整模型参数：
 ```java
-@RequestMapping("/imageWithOptions")
-public String imageWithOptions(String input) {
-    ImageOptions options = ImageOptionsBuilder.builder()
-            .withModel("dall-e-3")
-            .withResolution("1024x1024")
-            .build();
+@GetMapping("/image/multipleConditions")
+public ResponseEntity<?> multipleConditions(
+		@RequestParam(value = "subject", defaultValue = "一只会编程的猫") String subject,
+		@RequestParam(value = "environment", defaultValue = "办公室") String environment,
+		@RequestParam(value = "height", defaultValue = "1024") Integer height,
+		@RequestParam(value = "width", defaultValue = "1024") Integer width,
+		@RequestParam(value = "style", defaultValue = "生动") String style) {
 
-    ImagePrompt imagePrompt = new ImagePrompt(input, options);
-    ImageResponse response = imageModel.call(imagePrompt);
-    String imageUrl = response.getResult().getOutput().getUrl();
+	String prompt = String.format(
+			"一个%s，置身于%s的环境中，使用%s的艺术风格，高清4K画质，细节精致",
+			subject, environment, style
+	);
 
-    return "redirect:" + imageUrl;
+	ImageOptions options = ImageOptionsBuilder.builder()
+			.height(height)
+			.width(width)
+			.build();
+
+	try {
+		ImageResponse response = imageModel.call(new ImagePrompt(prompt, options));
+		return ResponseEntity.ok(response.getResult().getOutput().getUrl());
+	} catch (Exception e) {
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(Map.of(
+						"error", "图像生成失败",
+						"message", e.getMessage(),
+						"timestamp", LocalDateTime.now()
+				));
+	}
 }
 ```
 
