@@ -130,7 +130,7 @@ Spring AI Alibaba Nl2sql 模块可基于大模型的 ChatBI 技术，帮助用�
 
 4. **可观测与效果评估，加速智能体从 Demo 走向生产落地**
 
-Spring AI 在多个关键节点都做了 SDK 默认埋点，用来记录运行过程中的 metrics 与 tracing 信息，这包括模型调用、向量检索、工具调用等关键环节的调用情况。Spring AI tracing 信息兼容 OpenTelemetry，因此理论上可接入市面上主流的开源平台入 Langfuse，或者阿里云 ARMS。
+Spring AI 在多个关键节点都做了 SDK 默认埋点，用来记录运行过程中的 metrics 与 tracing 信息，这包括模型调用、向量检索、工具调用等关键环节的调用情况。Spring AI tracing 信息兼容 OpenTelemetry，因此理论上可接入市面上主流的开源平台 Langfuse，或者阿里云 ARMS。
 
 ## 从聊天机器人、工作流到多智能体
 ### 聊天机器人（ChatBot）
