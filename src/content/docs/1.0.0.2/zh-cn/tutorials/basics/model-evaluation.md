@@ -1,7 +1,7 @@
 ---
 title: 模型评估
 keywords: [Spring AI, MCP, 模型上下文协议, 智能体应用]
-description: "模型上下文协议（Model Context Protocol）介绍"
+description: "Spring AI Alibaba模型上下文协议（Model Context Protocol）评估"
 ---
 
 ## 评估测试

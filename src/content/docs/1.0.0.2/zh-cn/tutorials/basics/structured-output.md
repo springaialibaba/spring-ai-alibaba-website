@@ -1,7 +1,7 @@
 ---
 title: 格式化输出(Structured Output)
 keywords: [Chat Model, 聊天, 对话]
-description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
+description: "Spring AI Alibaba 结构化输出介绍"
 ---
 
 ## 结构化输出转换器
