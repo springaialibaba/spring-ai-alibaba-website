@@ -126,7 +126,7 @@ Flux<String> output = chatClient.prompt()
 
 ## call() 返回值
 
-`ChatClient.call()` 方法支持几种不同类型的响应格式。
+`ChatClientRequestSpec.call()` 方法支持几种不同类型的响应格式。
 
 *   `String content()`：返回响应的字符串内容
 *   `ChatResponse chatResponse()`：返回`ChatResponse`包含多个代以及有关响应的元数据的对象，例如，使用了多少个令牌来创建响应。
