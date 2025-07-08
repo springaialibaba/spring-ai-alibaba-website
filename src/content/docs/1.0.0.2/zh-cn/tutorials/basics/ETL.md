@@ -1,7 +1,7 @@
 ---
 title: ETL管道
 keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
+description: "Spring AI Alibaba ETL管道"
 ---
 
 ## ETL管道
@@ -16,7 +16,7 @@ RAG用例通过从数据体中检索相关信息来增强生成模型的能力�
 
 ETL管道创建、转换和存储`Document`实例。
 
-![ETL-document.png](ETL-document.png)
+![ETL-document.png](../../../../../../../public/img/user/ai/tutorials/basics/ETL-document.png)
 
 `Document`类包含文本、元数据以及可选的额外媒体类型，如图像、音频和视频。
 
@@ -32,7 +32,7 @@ ETL管道有三个主要组件：
 
 要构建一个简单的ETL管道，您可以将这三种类型的实例链接在一起。
 
-![ETL-instance.png](ETL-instance.png)
+![ETL-instance.png](../../../../../../../public/img/user/ai/tutorials/basics/ETL-instance.png)
 
 假设我们有以下ETL类型的实例：
 
@@ -101,7 +101,7 @@ public interface DocumentWriter extends Consumer<List<Document>> {
 
 以下类图说明了ETL接口和实现。
 
-![ETL.png](ETL.png)
+![ETL.png](../../../../../../../public/img/user/ai/tutorials/basics/ETL.png)
 
 ### DocumentReaders
 

@@ -1,7 +1,7 @@
 ---
 title: Advisors API
 keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
+description: "Spring AI Alibaba顾问"
 ---
 
 ## Advisors API
@@ -16,7 +16,7 @@ Spring AI Advisors API提供了一种灵活而强大的方法来拦截、修改�
 var chatClient = ChatClient.builder(chatModel)
     .defaultAdvisors(
         MessageChatMemoryAdvisor.builder(chatMemory).build(), // chat-memory advisor
-        QuestionAnswerAdvisor.builder((vectorStore).builder() // RAG advisor
+        QuestionAnswerAdvisor.builder(vectorStore).builder() // RAG advisor
     )
     .build();
 
@@ -35,7 +35,7 @@ String response = this.chatClient.prompt()
 ### 核心组件
 
 API 由非流式处理方案和 和 流式处理方案组成。 它还包括表示 Chat Completion 响应的未密封 Prompt 请求。两者都在 advisor 链中持有 to share 状态。
-![core-components.png](core-components.png)
+![core-components.png](../../../../../../../public/img/user/ai/tutorials/basics/core-components.png)
 
 通常执行各种作，例如检查未密封的 Prompt 数据、自定义和扩充 Prompt 数据、调用 advisor 链中的下一个实体、选择性地阻止请求、检查聊天完成响应以及引发异常以指示处理错误。`nextAroundCall()` `nextAroundStream()`
 
@@ -45,7 +45,7 @@ API 由非流式处理方案和 和 流式处理方案组成。 它还包括表�
 
 以下流程图说明了 advisor 链与 Chat Model 之间的交互：
 
-![advisor-chain-and-chat-model.png](advisor-chain-and-chat-model.png)
+![advisor-chain-and-chat-model.png](../../../../../../../public/img/user/ai/tutorials/basics/advisor-chain-and-chat-model.png)
 
 1. Spring AI 框架从用户的 `Prompt` 创建一个 `AdvisedRequest`，同时创建一个空的 `AdvisorContext` 对象。
 
@@ -247,7 +247,7 @@ Spring AI Alibaba框架提供了几个内置的 advisors 来增强您的 AI 交�
 
 #### 流式与非流式
 
-![non-streaming-and-streaming.png](non-streaming-and-streaming.png)
+![non-streaming-and-streaming.png](../../../../../../../public/img/user/ai/tutorials/basics/non-streaming-and-streaming.png)
 
 - 非流式 advisors 处理完整的请求和响应。
 
