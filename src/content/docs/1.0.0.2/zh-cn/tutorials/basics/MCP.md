@@ -1,7 +1,7 @@
 ---
 title: MCP
 keywords: [Spring AI,通义千问,百炼,智能体应用]
-description: "Spring AI 与通义千问集成，使用 Spring AI 开发 Java AI 应用。"
+description: "Spring AI Alibaba MCP协议介绍"
 ---
 
 ## 模型上下文协议(MCP)
@@ -18,7 +18,7 @@ MCP Java SDK 提供了模型上下文协议的 Java 实现，通过同步和异�
 
 Java MCP 实现遵循三层架构：
 
-![MCP.png](MCP.png)
+![MCP.png](../../../../../../../public/img/user/ai/tutorials/basics/MCP.png)
 
 - **客户端/服务器层：** McpClient 处理客户端操作，而 McpServer 管理服务器端协议操作。两者都使用 McpSession 进行通信管理。
 
@@ -30,7 +30,7 @@ MCP 客户端
 
 ---
 
-![MCP-client.png](MCP-client.png)
+![MCP-client.png](../../../../../../../public/img/user/ai/tutorials/basics/MCP-client.png)
 
 MCP 客户端是模型上下文协议（MCP）架构中的关键组件，负责建立和管理与 MCP 服务器的连接。它实现了协议的客户端部分，处理：
 
@@ -65,7 +65,7 @@ MCP 客户端是模型上下文协议（MCP）架构中的关键组件，负责�
 MCP服务器
 
 ---
-![MCP-server.png](MCP-server.png)
+![MCP-server.png](../../../../../../../public/img/user/ai/tutorials/basics/MCP-server.png)
 
 MCP 服务器是模型上下文协议（MCP）架构中的基础组件，为客户端提供工具、资源和功能。它实现了协议的服务器端，负责：
 
