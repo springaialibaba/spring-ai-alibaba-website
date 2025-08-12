@@ -251,3 +251,4 @@ ChatMemory chatMemory = MessageWindowChatMemory.builder()
 
 4. **参考案例**：
    - [Chat Memory 示例项目](https://github.com/springaialibaba/spring-ai-alibaba-examples/tree/main/spring-ai-alibaba-chat-memory-example)
+   
