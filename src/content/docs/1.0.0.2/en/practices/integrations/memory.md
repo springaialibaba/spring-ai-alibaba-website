@@ -13,7 +13,7 @@ The Spring AI Alibaba Memory module is an extended implementation built on top o
 Select appropriate storage backend dependencies as needed:
 
 ```xml
-<!-- Redis Storage -->
+<!-- Redis Storage -->        
 <dependency>
     <groupId>com.alibaba.cloud.ai</groupId>
     <artifactId>spring-ai-alibaba-starter-memory-redis</artifactId>
