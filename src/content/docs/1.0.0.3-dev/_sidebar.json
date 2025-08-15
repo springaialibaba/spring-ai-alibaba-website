@@ -1,0 +1,187 @@
+[
+	{
+        "label": "概述",
+        "translations": {
+            "en": "Overview"
+        },
+        "link": "docs/1.0.0.3-dev/overview/"
+    },
+    {
+        "label": "快速开始",
+        "translations": {
+            "en": "Get Started"
+        },
+        "items": [
+			{
+				"label": "安装",
+				"translations": {
+					"en": "Installation"
+				},
+				"link": "docs/1.0.0.3-dev/get-started/installation"
+			},
+			{
+				"label": "快速开始 - 简单智能体",
+				"translations": {
+					"en": "Quick Start - Simple Agent"
+				},
+				"link": "docs/1.0.0.3-dev/get-started/quick-start-simple-agent"
+			},
+			{
+				"label": "快速开始 - 工作流智能体",
+				"translations": {
+					"en": "Quick Start - Workflow Agent"
+				},
+				"link": "docs/1.0.0.3-dev/get-started/quick-start-workflow-agent"
+			},
+			{
+				"label": "快速开始 - 流式输出",
+				"translations": {
+					"en": "Quick Start - Streaming"
+				},
+				"link": "docs/1.0.0.3-dev/get-started/quick-start-streaming"
+			},
+			{
+				"label": "官方示例仓库",
+				"translations": {
+					"en": "Examples Repository"
+				},
+				"link": "https://github.com/spring-ai-alibaba/spring-ai-alibaba-examples"
+			},
+			{
+				"label": "关于Spring AI Alibaba",
+				"translations": {
+					"en": "About Spring AI Alibaba"
+				},
+				"link": "docs/1.0.0.3-dev/get-started/about-saa"
+			}
+        ],
+		"collapsed": false
+	},
+	{
+		"label": "核心概念",
+		"translations": {
+			"en": "Concepts"
+		},
+		"collapsed": false,
+		"items": [
+			{
+				"label": "智能体",
+				"translations": {
+					"en": "Agents"
+				},
+				"collapsed": false,
+				"items": [
+					{
+						"label": "简单智能体",
+						"translations": {
+							"en": "Simple Agent"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/agents/simple-agent"
+					},
+					{
+						"label": "工作流智能体",
+						"translations": {
+							"en": "Workflow Agent"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/agents/workflow-agent"
+					}
+				]
+			},
+			{
+				"label": "工具",
+				"translations": {
+					"en": "Tools"
+				},
+				"collapsed": true,
+				"items": [
+					{
+						"label": "工具调用",
+						"translations": {
+							"en": "Tool Calling"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/tools/tool-calling"
+					},
+                    {
+                        "label": "MCP工具",
+						"translations": {
+							"en": "MCP Tools"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/tools/mcp-tools"
+                    },
+					{
+						"label": "Spring AI Alibaba 社区工具插件",
+						"translations": {
+							"en": "Community Tools"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/tools/community-tools"
+					}
+				]
+			},
+			{
+				"label": "MCP",
+				"translations": {
+					"en": "MCP"
+				},
+				"link": "docs/1.0.0.3-dev/concepts/mcp"
+			},
+			{
+				"label": "会话与记忆",
+				"translations": {
+					"en": "Memory"
+				},
+				"link": "docs/1.0.0.3-dev/concepts/memory"
+			},
+			{
+				"label": "模型集成",
+				"translations": {
+					"en": "LLM Integration"
+				},
+				"link": "docs/1.0.0.3-dev/concepts/llm-integration"
+			},
+			{
+				"label": "可观测性",
+				"translations": {
+					"en": "Observability"
+				},
+				"link": "docs/1.0.0.3-dev/concepts/observability"
+			}
+		]
+	},
+	{
+		"label": "官方应用",
+		"translations": {
+			"en": "Applications"
+		},
+		"collapsed": true,
+		"items": [
+			{
+				"label": "JManus",
+				"translations": {
+					"en": "JManus"
+				},
+				"link": "docs/1.0.0.3-dev/applications/jmanus"
+			},
+			{
+				"label": "DeepResearch",
+				"translations": {
+					"en": "DeepResearch"
+				},
+				"link": "docs/1.0.0.3-dev/applications/deepresearch"
+			},
+			{
+				"label": "Graph Studio",
+				"translations": {
+					"en": "Graph Studio"
+				},
+				"link": "docs/1.0.0.3-dev/applications/graph-studio"
+			},
+			{
+				"label": "NL2SQL",
+				"translations": {
+					"en": "NL2SQL"
+				},
+				"link": "docs/1.0.0.3-dev/applications/nl2sql"
+			}
+		]
+	}
+]
