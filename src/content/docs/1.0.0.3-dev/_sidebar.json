@@ -83,7 +83,111 @@
 						"translations": {
 							"en": "Workflow Agent"
 						},
-						"link": "docs/1.0.0.3-dev/concepts/agents/workflow-agent"
+						"collapsed": false,
+						"items": [
+							{
+								"label": "什么是Spring AI Alibaba Graph？",
+								"translations": {
+									"en": "About Spring AI Alibaba Graph"
+								},
+								"link": "docs/1.0.0.3-dev/concepts/agents/about-graph"
+							},
+							{
+								"label": "StateGraph状态图",
+								"translations": {
+									"en": "StateGraph"
+								},
+								"link": "docs/1.0.0.3-dev/concepts/agents/state-graph"
+							},
+							{
+								"label": "编译和运行",
+								"translations": {
+									"en": "Compilation & Execution"
+								},
+								"link": "docs/1.0.0.3-dev/concepts/agents/graph-execution"
+							},
+							{
+								"label": "节点开发",
+								"translations": {
+									"en": "Node Development"
+								},
+								"collapsed": true,
+								"items": [
+									{
+										"label": "节点基础与自定义",
+										"translations": {
+											"en": "Node Basics & Custom Nodes"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/node-basics"
+									},
+									{
+										"label": "内置节点",
+										"translations": {
+											"en": "Built-in Nodes"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/builtin-nodes"
+									}
+								]
+							},
+							{
+								"label": "边与路由",
+								"translations": {
+									"en": "Edges & Routing"
+								},
+								"link": "docs/1.0.0.3-dev/concepts/agents/edge-routing"
+							},
+							{
+								"label": "高级特性",
+								"translations": {
+									"en": "Advanced Features"
+								},
+								"collapsed": true,
+								"items": [
+									{
+										"label": "并行执行模式",
+										"translations": {
+											"en": "Parallel Execution"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/parallel-execution"
+									},
+									{
+										"label": "子图与嵌套工作流",
+										"translations": {
+											"en": "Subgraphs & Nested Workflows"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/subgraphs"
+									},
+									{
+										"label": "人机交互与中断恢复",
+										"translations": {
+											"en": "Human-in-the-Loop & Interruption"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/human-in-loop"
+									},
+									{
+										"label": "检查点与持久化",
+										"translations": {
+											"en": "Checkpoints & Persistence"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/checkpoints"
+									},
+									{
+										"label": "流式输出",
+										"translations": {
+											"en": "Streaming Output"
+										},
+										"link": "docs/1.0.0.3-dev/concepts/agents/streaming"
+									}
+								]
+							},
+							{
+								"label": "预定义Agent模式",
+								"translations": {
+									"en": "Predefined Agent Patterns"
+								},
+								"link": "docs/1.0.0.3-dev/concepts/agents/predefined-patterns"
+							}
+						]
 					}
 				]
 			},
@@ -95,25 +199,25 @@
 				"collapsed": true,
 				"items": [
 					{
-						"label": "工具调用",
+						"label": "工具调用基础",
 						"translations": {
-							"en": "Tool Calling"
+							"en": "Tool Calling Basics"
 						},
-						"link": "docs/1.0.0.3-dev/concepts/tools/tool-calling"
+						"link": "docs/1.0.0.3-dev/concepts/tools/tool-calling-basics"
 					},
-                    {
-                        "label": "MCP工具",
-						"translations": {
-							"en": "MCP Tools"
-						},
-						"link": "docs/1.0.0.3-dev/concepts/tools/mcp-tools"
-                    },
 					{
 						"label": "Spring AI Alibaba 社区工具插件",
 						"translations": {
 							"en": "Community Tools"
 						},
 						"link": "docs/1.0.0.3-dev/concepts/tools/community-tools"
+					},
+					{
+						"label": "工具节点",
+						"translations": {
+							"en": "Tool Nodes"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/tools/graph-tool-nodes"
 					}
 				]
 			},
@@ -122,7 +226,74 @@
 				"translations": {
 					"en": "MCP"
 				},
-				"link": "docs/1.0.0.3-dev/concepts/mcp"
+				"collapsed": true,
+				"items": [
+					{
+						"label": "MCP协议基础",
+						"translations": {
+							"en": "MCP Protocol Basics"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/mcp/protocol-basics"
+					},
+					{
+						"label": "MCP工具集成",
+						"translations": {
+							"en": "MCP Tool Integration"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/mcp/tool-integration"
+					},
+					{
+						"label": "Nacos MCP Registry",
+						"translations": {
+							"en": "Nacos MCP Registry"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/mcp/nacos-registry"
+					},
+					{
+						"label": "分布式MCP架构",
+						"translations": {
+							"en": "Distributed MCP Architecture"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/mcp/distributed-architecture"
+					}
+				]
+			},
+			{
+				"label": "RAG",
+				"translations": {
+					"en": "RAG"
+				},
+				"collapsed": true,
+				"items": [
+					{
+						"label": "RAG基础概念",
+						"translations": {
+							"en": "RAG Basics"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/rag/basics"
+					},
+					{
+						"label": "文档处理与向量化",
+						"translations": {
+							"en": "Document Processing & Vectorization"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/rag/document-processing"
+					},
+					{
+						"label": "检索与重排",
+						"translations": {
+							"en": "Retrieval & Reranking"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/rag/retrieval-rerank"
+					},
+					{
+						"label": "百炼RAG集成",
+						"translations": {
+							"en": "Bailian RAG Integration"
+						},
+						"link": "docs/1.0.0.3-dev/concepts/rag/bailian-integration"
+					}
+				]
 			},
 			{
 				"label": "会话与记忆",
