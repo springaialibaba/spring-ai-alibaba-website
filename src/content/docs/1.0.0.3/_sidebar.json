@@ -1,0 +1,308 @@
+[
+    {
+        "label": "介绍",
+        "translations": {
+            "en": "Introduction"
+        },
+        "collapsed": false,
+        "items": [
+            {
+                "label": "什么是 Spring AI Alibaba",
+                "translations": {
+                    "en": "What is Spring AI Alibaba?"
+                },
+                "link": "docs/1.0.0.3/introduction/what-is-spring-ai-alibaba"
+            },
+            {
+                "label": "您的第一个智能体 (Your First Agent)",
+                "translations": {
+                    "en": "Your first Agent"
+                },
+                "link": "docs/1.0.0.3/introduction/your-first-agent"
+            },
+            {
+                "label": "多智能体系统 (Multi-Agent Systems)",
+                "translations": {
+                    "en": "Multi Agent Systems"
+                },
+                "link": "docs/1.0.0.3/introduction/multi-agent-systems"
+            },
+            {
+                "label": "Playground",
+                "translations": {
+                    "en": "Playground"
+                },
+                "link": "docs/1.0.0.3/introduction/playground"
+            },
+            {
+                "label": "监控与调试 (Monitoring & Debugging)",
+                "translations": {
+                    "en": "Monitoring & Debugging"
+                },
+                "link": "docs/1.0.0.3/introduction/monitoring-debugging"
+            },
+            {
+                "label": "社区 (Community)",
+                "translations": {
+                    "en": "Community"
+                },
+                "link": "docs/1.0.0.3/introduction/community"
+            }
+        ]
+    },
+    {
+        "label": "单智能体指南",
+        "translations": {
+            "en": "Single-Agent Guides"
+        },
+        "collapsed": true,
+        "items": [
+            {
+                "label": "Chat Client",
+                "translations": {
+                    "en": "Chat Client"
+                },
+                "collapsed": true,
+                "items": [
+                    {
+                        "label": "Chat Client API",
+                        "translations": {
+                            "en": "Chat Client API"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/chat-client"
+                    },
+                    {
+                        "label": "提示词 (Prompts)",
+                        "translations": {
+                            "en": "Prompts"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/prompts"
+                    },
+                    {
+                        "label": "结构化输出 (Structured Output)",
+                        "translations": {
+                            "en": "Structured Output"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/structured-output"
+                    },
+                    {
+                        "label": "Advisors",
+                        "translations": {
+                            "en": "Advisors"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/advisors"
+                    },
+                    {
+                        "label": "Streaming",
+                        "translations": {
+                            "en": "Streaming"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/streaming"
+                    },
+                    {
+                        "label": "默认配置 (Defaults and Configuration)",
+                        "translations": {
+                            "en": "Defaults and Configuration"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/defaults-configuration"
+                    },
+                    {
+                        "label": "模型 (Models)",
+                        "translations": {
+                            "en": "Models"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/models"
+                    },
+                    {
+                        "label": "聊天记忆 (Chat Memory)",
+                        "translations": {
+                            "en": "Chat Memory"
+                        },
+                        "link": "docs/1.0.0.3/single-agent/chat-memory"
+                    }
+                ]
+            },
+            {
+                "label": "多模态 (Multimodality)",
+                "translations": {
+                    "en": "Multimodality"
+                },
+                "link": "docs/1.0.0.3/single-agent/multimodality"
+            },
+            {
+                "label": "工具调用 (Tool Calling)",
+                "translations": {
+                    "en": "Tool Calling"
+                },
+                "link": "docs/1.0.0.3/single-agent/tool-calling"
+            },
+            {
+                "label": "模型上下文协议 (MCP)",
+                "translations": {
+                    "en": "Model Context Protocol (MCP)"
+                },
+                "link": "docs/1.0.0.3/single-agent/mcp"
+            },
+            {
+                "label": "检索增强生成 (RAG)",
+                "translations": {
+                    "en": "Retrieval Augmented Generation (RAG)"
+                },
+                "link": "docs/1.0.0.3/single-agent/rag"
+            },
+            {
+                "label": "模型评估 (Model Evaluation)",
+                "translations": {
+                    "en": "Model Evaluation"
+                },
+                "link": "docs/1.0.0.3/single-agent/model-evaluation"
+            },
+            {
+                "label": "可观测性 (Observability)",
+                "translations": {
+                    "en": "Observability"
+                },
+                "link": "docs/1.0.0.3/single-agent/observability"
+            }
+        ]
+    },
+    {
+        "label": "多智能体指南",
+        "translations": {
+            "en": "Multi-Agent Guides"
+        },
+        "collapsed": true,
+        "items": [
+            {
+                "label": "多智能体架构 (Multi-Agent Architectures)",
+                "translations": {
+                    "en": "Multi-Agent Architectures"
+                },
+                "link": "docs/1.0.0.3/multi-agent/architectures"
+            },
+            {
+                "label": "开发 Graph 应用",
+                "translations": {
+                    "en": "Develop Graph Application"
+                },
+                "collapsed": true,
+                "items": [
+                    {
+                        "label": "概览",
+                        "translations": {
+                            "en": "Overview"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/overview"
+                    },
+                    {
+                        "label": "使用 Graph API",
+                        "translations": {
+                            "en": "Use the Graph API"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/use-graph-api"
+                    }
+                ]
+            },
+            {
+                "label": "流式处理 (Streaming)",
+                "translations": {
+                    "en": "Streaming"
+                },
+                "link": "docs/1.0.0.3/multi-agent/streaming"
+            },
+            {
+                "label": "持久化 (Persistence)",
+                "translations": {
+                    "en": "Persistence"
+                },
+                "link": "docs/1.0.0.3/multi-agent/persistence"
+            },
+            {
+                "label": "持久执行 (Durable Execution)",
+                "translations": {
+                    "en": "Durable Execution"
+                },
+                "link": "docs/1.0.0.3/multi-agent/durable-execution"
+            },
+            {
+                "label": "记忆 (Memory)",
+                "translations": {
+                    "en": "Memory"
+                },
+                "link": "docs/1.0.0.3/multi-agent/memory"
+            },
+            {
+                "label": "上下文 (Context)",
+                "translations": {
+                    "en": "Context"
+                },
+                "link": "docs/1.0.0.3/multi-agent/context"
+            },
+            {
+                "label": "人机协作 (Human-in-the-loop)",
+                "translations": {
+                    "en": "Human-in-the-loop"
+                },
+                "link": "docs/1.0.0.3/multi-agent/human-in-the-loop"
+            },
+            {
+                "label": "时间旅行 (Time Travel)",
+                "translations": {
+                    "en": "Time Travel"
+                },
+                "link": "docs/1.0.0.3/multi-agent/time-travel"
+            },
+            {
+                "label": "子图 (Subgraphs)",
+                "translations": {
+                    "en": "Subgraphs"
+                },
+                "link": "docs/1.0.0.3/multi-agent/subgraphs"
+            },
+            {
+                "label": "可观测性 (Observability)",
+                "translations": {
+                    "en": "Observability"
+                },
+                "link": "docs/1.0.0.3/multi-agent/observability"
+            }
+        ]
+    },
+    {
+        "label": "Playground",
+        "translations": {
+            "en": "Playground"
+        },
+        "collapsed": true,
+        "items": [
+            {
+                "label": "Studio",
+                "translations": {
+                    "en": "Studio"
+                },
+                "link": "docs/1.0.0.3/playground/studio"
+            },
+            {
+                "label": "JManus",
+                "translations": {
+                    "en": "JManus"
+                },
+                "link": "docs/1.0.0.3/playground/jmanus"
+            },
+            {
+                "label": "DeepResearch",
+                "translations": {
+                    "en": "DeepResearch"
+                },
+                "link": "docs/1.0.0.3/playground/deepresearch"
+            },
+            {
+                "label": "NL2SQL",
+                "translations": {
+                    "en": "NL2SQL"
+                },
+                "link": "docs/1.0.0.3/playground/nl2sql"
+            }
+        ]
+    }
+]
