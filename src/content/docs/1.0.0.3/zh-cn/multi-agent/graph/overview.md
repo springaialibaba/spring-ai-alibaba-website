@@ -136,12 +136,89 @@ AsyncNodeAction asyncProcessorAction = state -> {
 .addNode("processor", asyncProcessorAction)
 ```
 
+#### 节点缓存
+
+Spring AI Alibaba Graph 支持基于节点输入的任务/节点缓存。要使用缓存：
+
+- 在编译图时指定缓存
+- 为节点指定缓存策略。每个缓存策略支持：
+  - `keyFunction`：用于基于节点输入生成缓存键，默认为输入的哈希值
+  - `ttl`：缓存的生存时间（秒）。如果未指定，缓存永不过期
+
+```java
+import com.alibaba.cloud.ai.graph.cache.InMemoryCache;
+import com.alibaba.cloud.ai.graph.cache.CachePolicy;
+
+// 定义昂贵的计算节点
+NodeAction expensiveAction = state -> {
+    // 模拟昂贵的计算
+    try {
+        Thread.sleep(2000);
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+
+    Integer x = state.value("x", Integer.class).orElse(0);
+    return Map.of("result", x * 2);
+};
+
+// 构建带缓存的图
+StateGraph workflow = new StateGraph(keyStrategyFactory)
+    .addNode("expensive_node", node_async(expensiveAction),
+             CachePolicy.builder().ttl(Duration.ofSeconds(3)).build())
+    .addEdge(START, "expensive_node")
+    .addEdge("expensive_node", END);
+
+// 编译时指定缓存
+CompiledGraph app = workflow.compile(CompileConfig.builder()
+    .cache(new InMemoryCache())
+    .build());
+
+// 第一次运行需要 2 秒
+app.invoke(Map.of("x", 5));
+
+// 第二次运行使用缓存，立即返回
+app.invoke(Map.of("x", 5));
+```
+
+#### 运行时上下文
+
+创建图时，您可以指定运行时上下文模式，用于传递给节点的运行时上下文。这对于传递不属于图状态的信息很有用，例如模型名称或数据库连接等依赖项。
+
+```java
+@Component
+public class ContextAwareGraph {
+
+    // 定义上下文模式
+    public static class RuntimeContext {
+        private String llmProvider = "qwen";
+        private String userId;
+
+        // getters and setters
+    }
+
+    // 使用上下文的节点
+    NodeAction contextAwareAction = (state, context) -> {
+        RuntimeContext ctx = (RuntimeContext) context;
+        String provider = ctx.getLlmProvider();
+        String userId = ctx.getUserId();
+
+        // 根据上下文选择不同的处理逻辑
+        String result = processWithProvider(state, provider, userId);
+
+        return Map.of("result", result);
+    };
+}
+```
+
 #### 节点最佳实践
 
 - **保持简单**：每个节点应该专注于一个明确的任务
 - **错误处理**：在节点内部处理可预期的错误，返回错误状态而不是抛出异常
 - **幂等性**：确保节点可以安全地重复执行
 - **性能考虑**：对于 I/O 密集型操作，使用异步节点以提高并发性
+- **缓存策略**：对于计算密集型节点，考虑使用缓存
+- **上下文使用**：合理利用运行时上下文传递依赖信息
 
 ### 3. Edge（边）
 
@@ -180,6 +257,103 @@ EdgeAction routingLogic = state -> {
 ))
 ```
 
+#### 条件入口点
+
+条件入口点让您可以根据自定义逻辑从不同节点开始。您可以从虚拟的 `START` 节点使用 `addConditionalEdges`：
+
+```java
+// 定义入口路由逻辑
+EdgeAction entryRoutingLogic = state -> {
+    String userType = (String) state.value("user_type").orElse("guest");
+    return userType.equals("admin") ? "admin_handler" : "user_handler";
+};
+
+// 添加条件入口点
+.addConditionalEdges(START, edge_async(entryRoutingLogic), Map.of(
+    "admin_handler", "admin_handler",
+    "user_handler", "user_handler"
+))
+```
+
+#### Send 对象
+
+默认情况下，节点和边是预先定义的，并在相同的共享状态上操作。但是，在某些情况下，确切的边可能事先不知道，和/或您可能希望同时存在不同版本的状态。一个常见的例子是 map-reduce 设计模式。在这种设计模式中，第一个节点可能生成对象列表，您可能希望将其他节点应用于所有这些对象。对象的数量可能事先未知（意味着边的数量可能未知），下游节点的输入状态应该不同（每个生成的对象一个）。
+
+为了支持这种设计模式，Spring AI Alibaba Graph 支持从条件边返回 `Send` 对象。`Send` 接受两个参数：第一个是节点的名称，第二个是要传递给该节点的状态。
+
+```java
+import com.alibaba.cloud.ai.graph.Send;
+
+// 定义 map-reduce 路由逻辑
+EdgeAction mapReduceRouting = state -> {
+    List<String> subjects = state.value("subjects", List.class).orElse(new ArrayList<>());
+
+    // 为每个主题创建一个 Send 对象
+    return subjects.stream()
+        .map(subject -> new Send("generate_joke", Map.of("subject", subject)))
+        .collect(Collectors.toList());
+};
+
+// 添加 map-reduce 条件边
+.addConditionalEdges("node_a", edge_async(mapReduceRouting))
+```
+
+#### Command 对象
+
+结合控制流（边）和状态更新（节点）可能很有用。例如，您可能希望在同一个节点中既执行状态更新又决定下一个要去的节点。Spring AI Alibaba Graph 通过从节点函数返回 `Command` 对象提供了这样做的方法：
+
+```java
+import com.alibaba.cloud.ai.graph.Command;
+
+// 结合状态更新和控制流的节点
+NodeAction commandNode = state -> {
+    // 执行业务逻辑
+    String foo = state.value("foo", String.class).orElse("");
+
+    if ("bar".equals(foo)) {
+        // 既更新状态又指定下一个节点
+        return Command.builder()
+            .update(Map.of("foo", "baz"))
+            .goto("my_other_node")
+            .build();
+    } else {
+        // 只更新状态，使用默认路由
+        return Command.builder()
+            .update(Map.of("foo", "updated"))
+            .build();
+    }
+};
+```
+
+#### 何时使用 Command 而不是条件边？
+
+- 当您需要**既**更新图状态**又**路由到不同节点时，使用 `Command`。例如，在实现多智能体切换时，重要的是路由到不同的智能体并向该智能体传递一些信息。
+- 使用条件边在不更新状态的情况下有条件地在节点之间路由。
+
+#### 在父图中导航到节点
+
+如果您使用子图，您可能希望从子图内的节点导航到不同的子图（即父图中的不同节点）。为此，您可以在 `Command` 中指定 `graph=Command.PARENT`：
+
+```java
+NodeAction parentNavigationNode = state -> {
+    return Command.builder()
+        .update(Map.of("foo", "bar"))
+        .goto("other_subgraph")  // 父图中的节点
+        .graph(Command.PARENT)
+        .build();
+};
+```
+
+#### 在工具内部使用
+
+一个常见的用例是从工具内部更新图状态。例如，在客户支持应用程序中，您可能希望在对话开始时根据客户的账号或 ID 查找客户信息。
+
+#### 人机协作
+
+`Command` 是人机协作工作流的重要组成部分：当使用 `interrupt()` 收集用户输入时，然后使用 `Command` 提供输入并通过 `Command.resume("用户输入")` 恢复执行。
+```
+```
+
 ### 4. OverAllState（全局状态）
 
 OverAllState 是 Spring AI Alibaba Graph 的核心概念之一，它是在整个图执行过程中共享的状态对象。与传统的参数传递方式不同，状态对象提供了一种更加灵活和强大的数据管理方式。
@@ -193,11 +367,15 @@ OverAllState 是 Spring AI Alibaba Graph 的核心概念之一，它是在整个
 - **线程安全**：内置并发控制，支持多线程安全访问
 - **版本管理**：支持状态的版本控制，便于调试和回滚
 
-#### 状态更新策略
+#### Reducers（状态更新策略）
+
+Reducers 是理解节点更新如何应用到状态的关键。状态中的每个键都有自己独立的 reducer 函数。如果没有明确指定 reducer 函数，则假定对该键的所有更新都应该覆盖它。
+
+#### 默认 Reducer
 
 Spring AI Alibaba Graph 提供了多种状态更新策略：
 
-1. **REPLACE（替换）**：新值完全替换旧值，适用于单一值的更新
+1. **REPLACE（替换）**：新值完全替换旧值，适用于单一值的更新（默认行为）
 2. **APPEND（追加）**：新值追加到现有列表中，适用于消息、日志等场景
 3. **MERGE（合并）**：将新的 Map 与现有 Map 合并，适用于复杂对象的部分更新
 
@@ -205,47 +383,140 @@ Spring AI Alibaba Graph 提供了多种状态更新策略：
 import com.alibaba.cloud.ai.graph.KeyStrategy;
 import com.alibaba.cloud.ai.graph.KeyStrategyFactory;
 
-// 定义状态更新策略
-KeyStrategyFactory keyStrategyFactory = () -> {
+// 示例 A：默认 Reducer（全部使用 REPLACE）
+KeyStrategyFactory defaultFactory = () -> {
+    Map<String, KeyStrategy> strategies = new HashMap<>();
+    strategies.put("foo", KeyStrategy.REPLACE);
+    strategies.put("bar", KeyStrategy.REPLACE);
+    return strategies;
+};
+
+// 假设输入状态为 {"foo": 1, "bar": ["hi"]}
+// 第一个节点返回 {"foo": 2}，状态变为 {"foo": 2, "bar": ["hi"]}
+// 第二个节点返回 {"bar": ["bye"]}，状态变为 {"foo": 2, "bar": ["bye"]}
+
+// 示例 B：混合 Reducer
+KeyStrategyFactory mixedFactory = () -> {
+    Map<String, KeyStrategy> strategies = new HashMap<>();
+    strategies.put("foo", KeyStrategy.REPLACE);
+    strategies.put("bar", KeyStrategy.APPEND);  // 使用追加策略
+    return strategies;
+};
+
+// 假设输入状态为 {"foo": 1, "bar": ["hi"]}
+// 第一个节点返回 {"foo": 2}，状态变为 {"foo": 2, "bar": ["hi"]}
+// 第二个节点返回 {"bar": ["bye"]}，状态变为 {"foo": 2, "bar": ["hi", "bye"]}
+```
+
+#### 在图状态中使用消息
+
+##### 为什么使用消息？
+
+大多数现代 LLM 提供商都有一个聊天模型接口，接受消息列表作为输入。Spring AI 的 `ChatClient` 特别接受 `Message` 对象列表作为输入。这些消息有多种形式，如 `UserMessage`（用户输入）或 `AssistantMessage`（LLM 响应）。
+
+##### 在图中使用消息
+
+在许多情况下，将先前的对话历史作为消息列表存储在图状态中是有帮助的。为此，我们可以向图状态添加一个存储 `Message` 对象列表的键（通道），并使用 reducer 函数对其进行注释。reducer 函数对于告诉图如何在每次状态更新时更新状态中的 `Message` 对象列表至关重要。
+
+```java
+import com.alibaba.cloud.ai.graph.KeyStrategy;
+import com.alibaba.cloud.ai.graph.KeyStrategyFactory;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.messages.AssistantMessage;
+
+// 定义包含消息的状态策略
+KeyStrategyFactory messageStateFactory = () -> {
     Map<String, KeyStrategy> strategies = new HashMap<>();
 
     // 基础数据使用替换策略
     strategies.put("input", KeyStrategy.REPLACE);
     strategies.put("user_id", KeyStrategy.REPLACE);
-    strategies.put("session_id", KeyStrategy.REPLACE);
 
-    // 消息和日志使用追加策略
+    // 消息使用追加策略，支持消息历史
     strategies.put("messages", KeyStrategy.APPEND);
-    strategies.put("execution_log", KeyStrategy.APPEND);
-    strategies.put("errors", KeyStrategy.APPEND);
 
-    // 复杂对象使用合并策略
-    strategies.put("user_profile", KeyStrategy.MERGE);
+    // 其他数据
     strategies.put("analysis_results", KeyStrategy.MERGE);
-    strategies.put("metadata", KeyStrategy.MERGE);
 
     return strategies;
 };
 
-// 在节点中访问和更新状态
-NodeAction exampleAction = state -> {
-    // 类型安全的状态读取
+// 在节点中处理消息
+NodeAction messageProcessingAction = state -> {
+    // 读取现有消息
+    List<Message> messages = state.value("messages", List.class).orElse(new ArrayList<>());
     String input = state.value("input", String.class).orElse("");
-    List<String> messages = state.value("messages", List.class).orElse(new ArrayList<>());
-    Map<String, Object> userProfile = state.value("user_profile", Map.class).orElse(new HashMap<>());
 
-    // 执行业务逻辑
-    String processedInput = processInput(input);
+    // 添加用户消息
+    UserMessage userMessage = new UserMessage(input);
 
-    // 返回状态更新
+    // 调用 LLM
+    String response = chatClient.prompt()
+        .messages(messages)
+        .user(input)
+        .call()
+        .content();
+
+    // 创建助手消息
+    AssistantMessage assistantMessage = new AssistantMessage(response);
+
+    // 返回状态更新（消息会被追加到现有列表）
     return Map.of(
-        "processed_input", processedInput,                    // 替换策略
-        "messages", "输入处理完成: " + processedInput,          // 追加策略
-        "analysis_results", Map.of(                          // 合并策略
-            "input_length", input.length(),
-            "processing_time", System.currentTimeMillis()
-        )
+        "messages", List.of(userMessage, assistantMessage),
+        "last_response", response
     );
+};
+```
+
+#### 多种状态模式
+
+通常，所有图节点都使用单一模式进行通信。这意味着它们将读取和写入相同的状态通道。但是，在某些情况下我们希望对此有更多控制：
+
+- 内部节点可以传递图的输入/输出中不需要的信息
+- 我们可能还希望为图使用不同的输入/输出模式
+
+```java
+// 定义不同的状态类
+public class InputState {
+    private String userInput;
+    // getters and setters
+}
+
+public class OutputState {
+    private String graphOutput;
+    // getters and setters
+}
+
+public class OverallState {
+    private String foo;
+    private String userInput;
+    private String graphOutput;
+    // getters and setters
+}
+
+public class PrivateState {
+    private String bar;
+    // getters and setters
+}
+
+// 节点可以读取和写入不同的状态模式
+NodeAction node1 = (state) -> {
+    // 从 InputState 读取，写入 OverallState
+    String userInput = ((InputState) state).getUserInput();
+    return Map.of("foo", userInput + " name");
+};
+
+NodeAction node2 = (state) -> {
+    // 从 OverallState 读取，写入 PrivateState
+    String foo = ((OverallState) state).getFoo();
+    return Map.of("bar", foo + " is");
+};
+
+NodeAction node3 = (state) -> {
+    // 从 PrivateState 读取，写入 OutputState
+    String bar = ((PrivateState) state).getBar();
+    return Map.of("graphOutput", bar + " Lance");
 };
 ```
 
@@ -254,8 +525,10 @@ NodeAction exampleAction = state -> {
 1. **合理的键命名**：使用清晰、一致的键名，避免冲突
 2. **策略选择**：根据数据特性选择合适的更新策略
 3. **数据分层**：区分临时数据、中间结果和最终输出
-4. **大小控制**：避免在状态中存储过大的对象，考虑使用引用
-5. **版本兼容**：考虑状态结构的向后兼容性
+4. **消息管理**：对于聊天应用，合理使用消息追加策略
+5. **模式设计**：根据需要使用不同的输入/输出模式
+6. **大小控制**：避免在状态中存储过大的对象，考虑使用引用
+7. **版本兼容**：考虑状态结构的向后兼容性
 
 ### 5. CompiledGraph（已编译图）
 
@@ -330,12 +603,51 @@ CompletableFuture<Optional<OverAllState>> futureResult =
     CompletableFuture.supplyAsync(() -> app.invoke(Map.of("input", "用户输入")));
 ```
 
+#### 递归限制
+
+递归限制设置图在单次执行期间可以执行的最大超级步数。一旦达到限制，Spring AI Alibaba Graph 将抛出 `GraphRecursionException`。默认情况下，此值设置为 25 步。递归限制可以在运行时在任何图上设置，并通过配置传递给 `.invoke`/`.stream`：
+
+```java
+// 设置递归限制
+app.invoke(Map.of("input", "用户输入"),
+          InvokeConfig.builder().recursionLimit(5).build());
+```
+
+#### 图迁移
+
+Spring AI Alibaba Graph 可以轻松处理图定义（节点、边和状态）的迁移，即使在使用检查点器跟踪状态时也是如此：
+
+- 对于图末尾的线程（即未中断），您可以更改图的整个拓扑（即所有节点和边，删除、添加、重命名等）
+- 对于当前中断的线程，我们支持除重命名/删除节点之外的所有拓扑更改（因为该线程现在可能即将进入不再存在的节点）
+- 对于修改状态，我们对添加和删除键具有完全的向后和向前兼容性
+- 重命名的状态键在现有线程中丢失其保存的状态
+- 类型以不兼容方式更改的状态键目前可能在具有更改前状态的线程中引起问题
+
+#### 可视化
+
+能够可视化图通常很有用，特别是当它们变得更复杂时。Spring AI Alibaba Graph 提供了几种内置的可视化图的方法：
+
+```java
+// 生成图的可视化表示
+CompiledGraph app = workflow.compile();
+
+// 生成 Mermaid 图表
+String mermaidDiagram = app.generateMermaidDiagram();
+System.out.println(mermaidDiagram);
+
+// 生成 DOT 格式图表
+String dotDiagram = app.generateDotDiagram();
+System.out.println(dotDiagram);
+```
+
 #### 性能考虑
 
 - **线程池配置**：合理配置线程池大小以平衡性能和资源消耗
 - **内存管理**：监控状态对象大小，避免内存泄漏
 - **并行度控制**：根据系统资源调整并行执行的节点数量
 - **缓存策略**：对于重复计算，考虑使用缓存机制
+- **递归限制**：根据应用需求设置合适的递归限制
+- **状态设计**：优化状态结构以提高序列化/反序列化性能
 
 ## 深入理解状态管理
 
@@ -530,7 +842,21 @@ public class SimpleGraphExample {
 
 现在您已经了解了 Spring AI Alibaba Graph 的核心概念，接下来可以学习：
 
+### 基础使用
 - [使用 Graph API](./use-graph-api) - 详细的 API 使用指南和实际示例
-- [流式处理](./streaming) - 如何实现实时的流式输出
-- [持久化](./persistence) - 检查点和状态恢复
-- [人机协作](./human-in-the-loop) - 在工作流中集成人工干预
+- [流式处理](../streaming) - 如何实现实时的流式输出和响应式编程
+
+### 高级功能
+- [持久化](../persistence) - 检查点和状态恢复机制
+- [人机协作](../human-in-the-loop) - 在工作流中集成人工干预
+- [时间旅行](../time-travel) - 回溯和调试图执行历史
+- [子图](../subgraphs) - 构建模块化和可重用的图组件
+
+### 实际应用
+- [多智能体系统](../multi-agent) - 构建协作的智能体系统
+- [内存管理](../memory) - 长期记忆和上下文管理
+- [持久化执行](../durable-execution) - 长时间运行的可靠任务执行
+
+### 开发工具
+- [Playground Studio](../../playground/studio) - 可视化图开发和调试工具
+- [JManus](../../playground/jmanus) - 图管理和监控平台

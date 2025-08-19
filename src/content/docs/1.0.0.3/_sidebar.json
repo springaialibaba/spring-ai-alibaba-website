@@ -194,6 +194,41 @@
                             "en": "Use the Graph API"
                         },
                         "link": "docs/1.0.0.3/multi-agent/graph/use-graph-api"
+                    },
+                    {
+                        "label": "基础用法",
+                        "translations": {
+                            "en": "Basic Usage"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/basic-usage"
+                    },
+                    {
+                        "label": "高级配置",
+                        "translations": {
+                            "en": "Advanced Configuration"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/advanced-config"
+                    },
+                    {
+                        "label": "控制流",
+                        "translations": {
+                            "en": "Control Flow"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/control-flow"
+                    },
+                    {
+                        "label": "并行处理",
+                        "translations": {
+                            "en": "Parallel Processing"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/parallel-processing"
+                    },
+                    {
+                        "label": "可视化和调试",
+                        "translations": {
+                            "en": "Visualization & Debugging"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/graph/visualization-debugging"
                     }
                 ]
             },
