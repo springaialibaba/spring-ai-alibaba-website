@@ -173,43 +173,7 @@
         },
         "collapsed": true,
         "items": [
-            {
-                "label": "多智能体架构 (Multi-Agent Architectures)",
-                "translations": {
-                    "en": "Multi-Agent Architectures"
-                },
-                "collapsed": true,
-                "items": [
-                    {
-                        "label": "概览",
-                        "translations": {
-                            "en": "Overview"
-                        },
-                        "link": "docs/1.0.0.3/multi-agent/architectures/overview"
-                    },
-                    {
-                        "label": "架构模式",
-                        "translations": {
-                            "en": "Architecture Patterns"
-                        },
-                        "link": "docs/1.0.0.3/multi-agent/architectures/patterns"
-                    },
-                    {
-                        "label": "通信与协调",
-                        "translations": {
-                            "en": "Communication & Coordination"
-                        },
-                        "link": "docs/1.0.0.3/multi-agent/architectures/communication-coordination"
-                    },
-                    {
-                        "label": "容错与性能",
-                        "translations": {
-                            "en": "Fault Tolerance & Performance"
-                        },
-                        "link": "docs/1.0.0.3/multi-agent/architectures/fault-tolerance-performance"
-                    }
-                ]
-            },
+
             {
                 "label": "开发 Graph 应用",
                 "translations": {
@@ -238,7 +202,44 @@
                 "translations": {
                     "en": "Streaming"
                 },
-                "link": "docs/1.0.0.3/multi-agent/streaming"
+                "collapsed": true,
+                "items": [
+                    {
+                        "label": "概览",
+                        "translations": {
+                            "en": "Overview"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/streaming/overview"
+                    },
+                    {
+                        "label": "智能体流式处理",
+                        "translations": {
+                            "en": "Agent Streaming"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/streaming/agent-streaming"
+                    },
+                    {
+                        "label": "工作流流式处理",
+                        "translations": {
+                            "en": "Workflow Streaming"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/streaming/workflow-streaming"
+                    },
+                    {
+                        "label": "自定义流式数据",
+                        "translations": {
+                            "en": "Custom Streaming"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/streaming/custom-streaming"
+                    },
+                    {
+                        "label": "性能优化",
+                        "translations": {
+                            "en": "Performance"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/streaming/performance"
+                    }
+                ]
             },
             {
                 "label": "持久化 (Persistence)",

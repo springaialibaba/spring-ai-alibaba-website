@@ -3,567 +3,307 @@ title: 时间旅行 (Time Travel)
 description: Spring AI Alibaba 时间旅行功能
 ---
 
-# 时间旅行 (Time Travel)
+# 时间旅行 ⏱️
 
-时间旅行功能允许开发者回溯多智能体系统的执行历史，查看任意时间点的状态，并支持从历史状态恢复执行。
+当使用基于模型决策的非确定性系统（例如，由 LLM 驱动的智能体）时，详细检查其决策过程可能很有用：
 
-## 核心概念
+1. 🤔 **理解推理**：分析导致成功结果的步骤。
+2. 🐞 **调试错误**：识别错误发生的位置和原因。
+3. 🔍 **探索替代方案**：测试不同路径以发现更好的解决方案。
 
-### 时间点快照
-- **状态快照**: 特定时间点的完整系统状态
-- **增量快照**: 相对于上一个快照的变化
-- **自动快照**: 系统自动创建的快照
-- **手动快照**: 用户手动创建的快照
+Spring AI Alibaba 提供[时间旅行功能](../how-tos/human-in-the-loop/time-travel.md)来支持这些用例。具体来说，您可以从先前的检查点恢复执行——要么重放相同的状态，要么修改它以探索替代方案。在所有情况下，恢复过去的执行都会在历史中产生新的分支。
 
-### 时间轴管理
-- **线性时间轴**: 单一的执行时间线
-- **分支时间轴**: 支持多个执行分支
-- **合并时间轴**: 将分支合并回主时间线
+:::tip
+有关如何使用时间旅行的信息，请参阅[使用时间旅行](../how-tos/human-in-the-loop/time-travel.md)。
+:::
 
-## 基本配置
+## 使用时间旅行
+
+要在 Spring AI Alibaba 中使用[时间旅行](./time-travel.md)：
+
+1. [运行图](#1-运行图)：使用 [`invoke`](https://spring-ai-alibaba.github.io/reference/graphs/#invoke) 或 [`stream`](https://spring-ai-alibaba.github.io/reference/graphs/#stream) 方法运行图的初始输入。
+2. [识别现有线程中的检查点](#2-识别检查点)：使用 [`getStateHistory()`](https://spring-ai-alibaba.github.io/reference/graphs/#getStateHistory) 方法检索特定 `threadId` 的执行历史并定位所需的 `checkpointId`。
+   或者，在您希望执行暂停的节点之前设置[中断](../how-tos/human-in-the-loop/add-human-in-the-loop.md)。然后您可以找到记录到该中断的最新检查点。
+3. [更新图状态（可选）](#3-更新状态可选)：使用 [`updateState`](https://spring-ai-alibaba.github.io/reference/graphs/#updateState) 方法修改检查点处的图状态，并从替代状态恢复执行。
+4. [从检查点恢复执行](#4-从检查点恢复执行)：使用 `invoke` 或 `stream` 方法，输入为 `null`，配置包含适当的 `threadId` 和 `checkpointId`。
+
+## 在工作流中使用
+
+此示例构建了一个简单的 Spring AI Alibaba 工作流，该工作流生成笑话主题并使用 LLM 编写笑话。它演示了如何运行图、检索过去的执行检查点、可选地修改状态，以及从选定的检查点恢复执行以探索替代结果。
+
+### 设置
+
+首先，我们需要设置基本的依赖和配置：
 
 ```java
 @Configuration
-@EnableTimeTravel
+@EnableStateGraph
 public class TimeTravelConfig {
-    
+
     @Bean
-    public TimeTravelManager timeTravelManager() {
-        return TimeTravelManager.builder()
-            .snapshotStore(snapshotStore())
-            .snapshotInterval(Duration.ofMinutes(5))
-            .maxSnapshots(100)
-            .compressionEnabled(true)
+    public CheckpointSaver checkpointSaver() {
+        return new InMemoryCheckpointSaver(); // 在生产环境中使用数据库实现
+    }
+
+    @Bean
+    public ChatClient chatClient() {
+        return ChatClient.builder()
+            .model("qwen-plus") // 或其他支持的模型
+            .temperature(0.0)
             .build();
     }
-    
-    @Bean
-    public SnapshotStore snapshotStore() {
-        return new DatabaseSnapshotStore(dataSource());
-    }
+}
+
+// 定义状态类
+public class JokeState {
+    private String topic;
+    private String joke;
+
+    // constructors, getters and setters
+    public JokeState() {}
+
+    public String getTopic() { return topic; }
+    public void setTopic(String topic) { this.topic = topic; }
+
+    public String getJoke() { return joke; }
+    public void setJoke(String joke) { this.joke = joke; }
 }
 ```
 
-## 状态快照
-
-### 自动快照创建
+### 构建工作流
 
 ```java
 @Component
-public class AutoSnapshotService {
-    
+public class JokeWorkflow {
+
     @Autowired
-    private TimeTravelManager timeTravelManager;
-    
-    @EventListener
-    public void onNodeCompletion(NodeCompletionEvent event) {
-        if (shouldCreateSnapshot(event)) {
-            createSnapshot(event.getExecutionId(), "Auto snapshot after " + event.getNodeId());
-        }
+    private ChatClient chatClient;
+
+    @Autowired
+    private CheckpointSaver checkpointSaver;
+
+    // LLM 调用生成笑话主题
+    public JokeState generateTopic(JokeState state) {
+        ChatResponse response = chatClient.prompt()
+            .user("给我一个有趣的笑话主题")
+            .call();
+
+        state.setTopic(response.getResult().getOutput().getContent());
+        return state;
     }
-    
-    @EventListener
-    public void onStateChange(StateChangeEvent event) {
-        if (isSignificantChange(event)) {
-            createSnapshot(event.getExecutionId(), "State change: " + event.getChangeDescription());
-        }
+
+    // LLM 调用基于主题编写笑话
+    public JokeState writeJoke(JokeState state) {
+        String prompt = String.format("写一个关于 %s 的简短笑话", state.getTopic());
+
+        ChatResponse response = chatClient.prompt()
+            .user(prompt)
+            .call();
+
+        state.setJoke(response.getResult().getOutput().getContent());
+        return state;
     }
-    
-    @Scheduled(fixedRate = 300000) // 每5分钟
-    public void createPeriodicSnapshots() {
-        List<String> activeExecutions = executionManager.getActiveExecutionIds();
-        
-        for (String executionId : activeExecutions) {
-            createSnapshot(executionId, "Periodic snapshot");
-        }
-    }
-    
-    private void createSnapshot(String executionId, String description) {
-        try {
-            GraphExecution execution = executionManager.getExecution(executionId);
-            
-            Snapshot snapshot = Snapshot.builder()
-                .id(UUID.randomUUID().toString())
-                .executionId(executionId)
-                .timestamp(Instant.now())
-                .description(description)
-                .state(execution.getCurrentState())
-                .nodeId(execution.getCurrentNode())
-                .metadata(execution.getMetadata())
-                .build();
-            
-            timeTravelManager.saveSnapshot(snapshot);
-            
-        } catch (Exception e) {
-            log.error("Failed to create snapshot for execution: {}", executionId, e);
-        }
-    }
-    
-    private boolean shouldCreateSnapshot(NodeCompletionEvent event) {
-        return event.getNodeId().endsWith("_checkpoint") || 
-               event.getExecutionTime().toSeconds() > 60;
-    }
-    
-    private boolean isSignificantChange(StateChangeEvent event) {
-        return event.getChangeType() == ChangeType.MAJOR ||
-               event.getAffectedFields().size() > 5;
+
+    @Bean
+    public StateGraph<JokeState> createJokeGraph() {
+        return StateGraph.<JokeState>builder()
+            // 添加节点
+            .addNode("generate_topic", this::generateTopic)
+            .addNode("write_joke", this::writeJoke)
+
+            // 添加边连接节点
+            .addEdge("__start__", "generate_topic")
+            .addEdge("generate_topic", "write_joke")
+            .addEdge("write_joke", "__end__")
+
+            // 编译图
+            .build()
+            .compile(checkpointSaver);
     }
 }
 ```
 
-### 手动快照管理
+### 1. 运行图
 
 ```java
-@RestController
-@RequestMapping("/api/time-travel")
-public class TimeTravelController {
-    
+@Service
+public class TimeTravelExample {
+
     @Autowired
-    private TimeTravelService timeTravelService;
-    
-    @PostMapping("/snapshots")
-    public ResponseEntity<Snapshot> createSnapshot(@RequestBody CreateSnapshotRequest request) {
-        Snapshot snapshot = timeTravelService.createManualSnapshot(
-            request.getExecutionId(),
-            request.getDescription(),
-            request.getTags()
+    private StateGraph<JokeState> jokeGraph;
+
+    public void demonstrateTimeTravel() {
+        // 创建配置
+        Map<String, Object> config = Map.of(
+            "configurable", Map.of(
+                "thread_id", UUID.randomUUID().toString()
+            )
         );
-        
-        return ResponseEntity.ok(snapshot);
-    }
-    
-    @GetMapping("/executions/{executionId}/snapshots")
-    public ResponseEntity<List<Snapshot>> getSnapshots(@PathVariable String executionId) {
-        List<Snapshot> snapshots = timeTravelService.getSnapshots(executionId);
-        return ResponseEntity.ok(snapshots);
-    }
-    
-    @GetMapping("/snapshots/{snapshotId}")
-    public ResponseEntity<SnapshotDetail> getSnapshotDetail(@PathVariable String snapshotId) {
-        SnapshotDetail detail = timeTravelService.getSnapshotDetail(snapshotId);
-        return ResponseEntity.ok(detail);
-    }
-    
-    @PostMapping("/snapshots/{snapshotId}/restore")
-    public ResponseEntity<Void> restoreFromSnapshot(@PathVariable String snapshotId) {
-        timeTravelService.restoreFromSnapshot(snapshotId);
-        return ResponseEntity.ok().build();
+
+        // 运行图
+        JokeState result = jokeGraph.invoke(new JokeState(), config);
+
+        System.out.println("主题: " + result.getTopic());
+        System.out.println();
+        System.out.println("笑话: " + result.getJoke());
+
+        // 示例输出：
+        // 主题: 程序员的咖啡依赖症
+        //
+        // 笑话: 为什么程序员总是喝咖啡？
+        // 因为没有咖啡，他们就会进入睡眠模式！
     }
 }
 ```
 
-## 时间轴浏览
-
-### 时间轴可视化
+### 2. 识别检查点
 
 ```java
 @Service
-public class TimelineVisualizationService {
-    
+public class CheckpointIdentificationService {
+
     @Autowired
-    private SnapshotRepository snapshotRepository;
-    
-    public Timeline generateTimeline(String executionId) {
-        List<Snapshot> snapshots = snapshotRepository.findByExecutionIdOrderByTimestamp(executionId);
-        
-        List<TimelineEvent> events = snapshots.stream()
-            .map(this::snapshotToTimelineEvent)
-            .collect(Collectors.toList());
-        
-        return Timeline.builder()
-            .executionId(executionId)
-            .events(events)
-            .startTime(events.isEmpty() ? null : events.get(0).getTimestamp())
-            .endTime(events.isEmpty() ? null : events.get(events.size() - 1).getTimestamp())
-            .totalDuration(calculateTotalDuration(events))
-            .build();
+    private StateGraph<JokeState> jokeGraph;
+
+    public void identifyCheckpoints(Map<String, Object> config) {
+        // 状态按时间倒序返回
+        List<StateSnapshot> states = jokeGraph.getStateHistory(config);
+
+        System.out.println("检查点历史:");
+        for (StateSnapshot state : states) {
+            System.out.println("下一步: " + state.getNext());
+            System.out.println("检查点ID: " + state.getConfig().get("configurable"));
+            System.out.println();
+        }
+
+        // 示例输出：
+        // 下一步: []
+        // 检查点ID: {thread_id=..., checkpoint_id=1f02ac4a-ec9f-6524-8002-8f7b0bbeed0e}
+        //
+        // 下一步: [write_joke]
+        // 检查点ID: {thread_id=..., checkpoint_id=1f02ac4a-ce2a-6494-8001-cb2e2d651227}
+        //
+        // 下一步: [generate_topic]
+        // 检查点ID: {thread_id=..., checkpoint_id=1f02ac4a-a4e0-630d-8000-b73c254ba748}
+        //
+        // 下一步: [__start__]
+        // 检查点ID: {thread_id=..., checkpoint_id=1f02ac4a-a4dd-665e-bfff-e6c8c44315d9}
     }
-    
-    private TimelineEvent snapshotToTimelineEvent(Snapshot snapshot) {
-        return TimelineEvent.builder()
-            .id(snapshot.getId())
-            .timestamp(snapshot.getTimestamp())
-            .type("snapshot")
-            .title(snapshot.getDescription())
-            .nodeId(snapshot.getNodeId())
-            .stateHash(calculateStateHash(snapshot.getState()))
-            .build();
-    }
-    
-    public TimelineComparison compareTimepoints(String executionId, Instant time1, Instant time2) {
-        Snapshot snapshot1 = findSnapshotNearTime(executionId, time1);
-        Snapshot snapshot2 = findSnapshotNearTime(executionId, time2);
-        
-        StateDiff diff = calculateStateDiff(snapshot1.getState(), snapshot2.getState());
-        
-        return TimelineComparison.builder()
-            .snapshot1(snapshot1)
-            .snapshot2(snapshot2)
-            .stateDiff(diff)
-            .timeDifference(Duration.between(time1, time2))
-            .build();
+
+    public StateSnapshot selectCheckpoint(Map<String, Object> config) {
+        List<StateSnapshot> states = jokeGraph.getStateHistory(config);
+
+        // 选择倒数第二个状态（在 write_joke 之前）
+        StateSnapshot selectedState = states.get(1);
+
+        System.out.println("选中的检查点:");
+        System.out.println("下一步: " + selectedState.getNext());
+        System.out.println("状态值: " + selectedState.getValues());
+
+        // 示例输出：
+        // 下一步: [write_joke]
+        // 状态值: {topic=程序员的咖啡依赖症}
+
+        return selectedState;
     }
 }
 ```
 
-### 状态差异分析
+### 3. 更新状态（可选）
 
-```java
-@Component
-public class StateDiffAnalyzer {
-    
-    public StateDiff calculateStateDiff(OverallState state1, OverallState state2) {
-        Map<String, Object> map1 = state1.toMap();
-        Map<String, Object> map2 = state2.toMap();
-        
-        List<FieldChange> changes = new ArrayList<>();
-        
-        // 检查修改和删除的字段
-        for (Map.Entry<String, Object> entry : map1.entrySet()) {
-            String key = entry.getKey();
-            Object value1 = entry.getValue();
-            Object value2 = map2.get(key);
-            
-            if (value2 == null) {
-                changes.add(FieldChange.deleted(key, value1));
-            } else if (!Objects.equals(value1, value2)) {
-                changes.add(FieldChange.modified(key, value1, value2));
-            }
-        }
-        
-        // 检查新增的字段
-        for (Map.Entry<String, Object> entry : map2.entrySet()) {
-            String key = entry.getKey();
-            if (!map1.containsKey(key)) {
-                changes.add(FieldChange.added(key, entry.getValue()));
-            }
-        }
-        
-        return StateDiff.builder()
-            .changes(changes)
-            .totalChanges(changes.size())
-            .addedFields(countChangesByType(changes, ChangeType.ADDED))
-            .modifiedFields(countChangesByType(changes, ChangeType.MODIFIED))
-            .deletedFields(countChangesByType(changes, ChangeType.DELETED))
-            .build();
-    }
-    
-    private int countChangesByType(List<FieldChange> changes, ChangeType type) {
-        return (int) changes.stream()
-            .filter(change -> change.getType() == type)
-            .count();
-    }
-}
-```
-
-## 状态恢复
-
-### 精确恢复
+`updateState` 将创建一个新的检查点。新检查点将与同一线程关联，但具有新的检查点 ID。
 
 ```java
 @Service
-public class StateRestorationService {
-    
+public class StateUpdateService {
+
     @Autowired
-    private TimeTravelManager timeTravelManager;
-    
-    @Autowired
-    private ExecutionManager executionManager;
-    
-    public void restoreToSnapshot(String snapshotId) {
-        Snapshot snapshot = timeTravelManager.getSnapshot(snapshotId);
-        
-        GraphExecution execution = executionManager.getExecution(snapshot.getExecutionId());
-        
-        // 暂停当前执行
-        execution.pause();
-        
-        try {
-            // 恢复状态
-            execution.restoreState(snapshot.getState());
-            execution.setCurrentNode(snapshot.getNodeId());
-            
-            // 清理后续状态
-            cleanupFutureState(execution, snapshot.getTimestamp());
-            
-            // 恢复执行
-            execution.resume();
-            
-            log.info("Successfully restored execution {} to snapshot {}", 
-                snapshot.getExecutionId(), snapshotId);
-                
-        } catch (Exception e) {
-            log.error("Failed to restore to snapshot: {}", snapshotId, e);
-            execution.resume(); // 恢复原始执行
-            throw new StateRestorationException("Failed to restore state", e);
-        }
-    }
-    
-    public void restoreToTimepoint(String executionId, Instant timepoint) {
-        Snapshot nearestSnapshot = findNearestSnapshot(executionId, timepoint);
-        
-        if (nearestSnapshot == null) {
-            throw new NoSnapshotFoundException("No snapshot found near timepoint: " + timepoint);
-        }
-        
-        restoreToSnapshot(nearestSnapshot.getId());
-    }
-    
-    private void cleanupFutureState(GraphExecution execution, Instant cutoffTime) {
-        // 删除快照时间点之后的所有快照
-        timeTravelManager.deleteSnapshotsAfter(execution.getId(), cutoffTime);
-        
-        // 清理执行历史
-        execution.clearHistoryAfter(cutoffTime);
-    }
-    
-    private Snapshot findNearestSnapshot(String executionId, Instant timepoint) {
-        return snapshotRepository.findNearestSnapshot(executionId, timepoint);
+    private StateGraph<JokeState> jokeGraph;
+
+    public Map<String, Object> updateStateExample(StateSnapshot selectedState) {
+        // 创建新状态值
+        JokeState newValues = new JokeState();
+        newValues.setTopic("小鸡");
+
+        // 更新状态
+        Map<String, Object> newConfig = jokeGraph.updateState(
+            selectedState.getConfig(),
+            newValues
+        );
+
+        System.out.println("新配置: " + newConfig);
+
+        // 示例输出：
+        // 新配置: {configurable={thread_id=c62e2e03-c27b-4cb6-8cea-ea9bfedae006,
+        //                        checkpoint_ns=,
+        //                        checkpoint_id=1f02ac4a-ecee-600b-8002-a1d21df32e4c}}
+
+        return newConfig;
     }
 }
 ```
 
-### 分支恢复
+### 4. 从检查点恢复执行
 
 ```java
 @Service
-public class BranchRestorationService {
-    
-    public String createBranchFromSnapshot(String snapshotId, String branchName) {
-        Snapshot snapshot = timeTravelManager.getSnapshot(snapshotId);
-        
-        // 创建新的执行分支
-        String branchExecutionId = UUID.randomUUID().toString();
-        
-        GraphExecution originalExecution = executionManager.getExecution(snapshot.getExecutionId());
-        GraphExecution branchExecution = originalExecution.createBranch(branchExecutionId);
-        
-        // 恢复到快照状态
-        branchExecution.restoreState(snapshot.getState());
-        branchExecution.setCurrentNode(snapshot.getNodeId());
-        
-        // 注册分支
-        executionManager.registerBranch(branchExecutionId, branchExecution);
-        
-        // 记录分支信息
-        ExecutionBranch branch = ExecutionBranch.builder()
-            .branchId(branchExecutionId)
-            .parentExecutionId(snapshot.getExecutionId())
-            .branchPoint(snapshot.getTimestamp())
-            .branchName(branchName)
-            .createdAt(Instant.now())
-            .build();
-        
-        branchRepository.save(branch);
-        
-        return branchExecutionId;
-    }
-    
-    public void mergeBranch(String branchExecutionId, String targetExecutionId) {
-        GraphExecution branchExecution = executionManager.getExecution(branchExecutionId);
-        GraphExecution targetExecution = executionManager.getExecution(targetExecutionId);
-        
-        // 分析分支差异
-        BranchDiff diff = analyzeBranchDiff(branchExecution, targetExecution);
-        
-        // 执行合并策略
-        MergeStrategy strategy = determineMergeStrategy(diff);
-        strategy.merge(branchExecution, targetExecution);
-        
-        // 清理分支
-        executionManager.removeBranch(branchExecutionId);
-        branchRepository.deleteByBranchId(branchExecutionId);
-    }
-}
-```
+public class ExecutionResumptionService {
 
-## 时间查询
-
-### 时间范围查询
-
-```java
-@Service
-public class TimeRangeQueryService {
-    
-    public List<StateSnapshot> queryStateInRange(String executionId, Instant startTime, Instant endTime) {
-        List<Snapshot> snapshots = snapshotRepository
-            .findByExecutionIdAndTimestampBetween(executionId, startTime, endTime);
-        
-        return snapshots.stream()
-            .map(this::snapshotToStateSnapshot)
-            .collect(Collectors.toList());
-    }
-    
-    public ExecutionSummary summarizeExecution(String executionId, Instant startTime, Instant endTime) {
-        List<Snapshot> snapshots = queryStateInRange(executionId, startTime, endTime)
-            .stream()
-            .map(StateSnapshot::getSnapshot)
-            .collect(Collectors.toList());
-        
-        return ExecutionSummary.builder()
-            .executionId(executionId)
-            .timeRange(TimeRange.of(startTime, endTime))
-            .totalSnapshots(snapshots.size())
-            .nodesExecuted(countUniqueNodes(snapshots))
-            .stateChanges(countStateChanges(snapshots))
-            .averageExecutionTime(calculateAverageExecutionTime(snapshots))
-            .build();
-    }
-    
-    public List<PerformanceMetric> analyzePerformanceOverTime(String executionId, Duration interval) {
-        List<Snapshot> snapshots = snapshotRepository.findByExecutionId(executionId);
-        
-        return snapshots.stream()
-            .collect(Collectors.groupingBy(
-                snapshot -> truncateToInterval(snapshot.getTimestamp(), interval)))
-            .entrySet().stream()
-            .map(entry -> PerformanceMetric.builder()
-                .timestamp(entry.getKey())
-                .snapshotCount(entry.getValue().size())
-                .averageStateSize(calculateAverageStateSize(entry.getValue()))
-                .executionVelocity(calculateExecutionVelocity(entry.getValue()))
-                .build())
-            .sorted(Comparator.comparing(PerformanceMetric::getTimestamp))
-            .collect(Collectors.toList());
-    }
-}
-```
-
-## 时间旅行调试
-
-### 调试工具
-
-```java
-@Component
-public class TimeTravelDebugger {
-    
     @Autowired
-    private TimeTravelManager timeTravelManager;
-    
-    public DebugSession startDebugSession(String executionId) {
-        List<Snapshot> snapshots = timeTravelManager.getSnapshots(executionId);
-        
-        DebugSession session = DebugSession.builder()
-            .sessionId(UUID.randomUUID().toString())
-            .executionId(executionId)
-            .snapshots(snapshots)
-            .currentSnapshotIndex(snapshots.size() - 1)
-            .startTime(Instant.now())
-            .build();
-        
-        debugSessionRepository.save(session);
-        return session;
-    }
-    
-    public DebugStepResult stepBackward(String sessionId) {
-        DebugSession session = debugSessionRepository.findById(sessionId)
-            .orElseThrow(() -> new DebugSessionNotFoundException(sessionId));
-        
-        if (session.getCurrentSnapshotIndex() > 0) {
-            session.setCurrentSnapshotIndex(session.getCurrentSnapshotIndex() - 1);
-            Snapshot currentSnapshot = session.getSnapshots().get(session.getCurrentSnapshotIndex());
-            
-            return DebugStepResult.builder()
-                .snapshot(currentSnapshot)
-                .direction(StepDirection.BACKWARD)
-                .canStepBackward(session.getCurrentSnapshotIndex() > 0)
-                .canStepForward(session.getCurrentSnapshotIndex() < session.getSnapshots().size() - 1)
-                .build();
-        }
-        
-        return DebugStepResult.noStep("Already at the beginning");
-    }
-    
-    public DebugStepResult stepForward(String sessionId) {
-        DebugSession session = debugSessionRepository.findById(sessionId)
-            .orElseThrow(() -> new DebugSessionNotFoundException(sessionId));
-        
-        if (session.getCurrentSnapshotIndex() < session.getSnapshots().size() - 1) {
-            session.setCurrentSnapshotIndex(session.getCurrentSnapshotIndex() + 1);
-            Snapshot currentSnapshot = session.getSnapshots().get(session.getCurrentSnapshotIndex());
-            
-            return DebugStepResult.builder()
-                .snapshot(currentSnapshot)
-                .direction(StepDirection.FORWARD)
-                .canStepBackward(session.getCurrentSnapshotIndex() > 0)
-                .canStepForward(session.getCurrentSnapshotIndex() < session.getSnapshots().size() - 1)
-                .build();
-        }
-        
-        return DebugStepResult.noStep("Already at the end");
-    }
-    
-    public void setBreakpoint(String executionId, String nodeId) {
-        Breakpoint breakpoint = Breakpoint.builder()
-            .executionId(executionId)
-            .nodeId(nodeId)
-            .enabled(true)
-            .createdAt(Instant.now())
-            .build();
-        
-        breakpointRepository.save(breakpoint);
+    private StateGraph<JokeState> jokeGraph;
+
+    public JokeState resumeFromCheckpoint(Map<String, Object> newConfig) {
+        // 从检查点恢复执行
+        JokeState result = jokeGraph.invoke(null, newConfig);
+
+        System.out.println("恢复执行结果:");
+        System.out.println("主题: " + result.getTopic());
+        System.out.println("笑话: " + result.getJoke());
+
+        // 示例输出：
+        // 主题: 小鸡
+        // 笑话: 小鸡为什么要加入乐队？
+        //       因为它有出色的鼓槌！
+
+        return result;
     }
 }
-```
 
-## 性能优化
+// 完整的时间旅行示例
+@Service
+public class CompleteTimeTravelExample {
 
-### 快照压缩
+    @Autowired
+    private StateGraph<JokeState> jokeGraph;
 
-```java
-@Component
-public class SnapshotCompression {
-    
-    public CompressedSnapshot compressSnapshot(Snapshot snapshot) {
-        try {
-            byte[] stateBytes = serializeState(snapshot.getState());
-            byte[] compressedBytes = compress(stateBytes);
-            
-            return CompressedSnapshot.builder()
-                .originalSnapshot(snapshot)
-                .compressedData(compressedBytes)
-                .originalSize(stateBytes.length)
-                .compressedSize(compressedBytes.length)
-                .compressionRatio((double) compressedBytes.length / stateBytes.length)
-                .build();
-                
-        } catch (Exception e) {
-            log.error("Failed to compress snapshot: {}", snapshot.getId(), e);
-            return CompressedSnapshot.uncompressed(snapshot);
-        }
-    }
-    
-    public Snapshot decompressSnapshot(CompressedSnapshot compressed) {
-        try {
-            byte[] decompressedBytes = decompress(compressed.getCompressedData());
-            OverallState state = deserializeState(decompressedBytes);
-            
-            return compressed.getOriginalSnapshot().withState(state);
-            
-        } catch (Exception e) {
-            log.error("Failed to decompress snapshot", e);
-            throw new SnapshotDecompressionException("Failed to decompress snapshot", e);
-        }
-    }
-    
-    private byte[] compress(byte[] data) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
-            gzos.write(data);
-        }
-        return baos.toByteArray();
-    }
-    
-    private byte[] decompress(byte[] compressedData) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(compressedData))) {
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = gzis.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
-            }
-        }
-        return baos.toByteArray();
+    public void demonstrateCompleteTimeTravel() {
+        // 1. 运行图
+        Map<String, Object> config = Map.of(
+            "configurable", Map.of(
+                "thread_id", UUID.randomUUID().toString()
+            )
+        );
+
+        JokeState initialResult = jokeGraph.invoke(new JokeState(), config);
+        System.out.println("初始结果:");
+        System.out.println("主题: " + initialResult.getTopic());
+        System.out.println("笑话: " + initialResult.getJoke());
+        System.out.println();
+
+        // 2. 识别检查点
+        List<StateSnapshot> states = jokeGraph.getStateHistory(config);
+        StateSnapshot selectedState = states.get(1); // 选择 write_joke 之前的状态
+
+        // 3. 更新状态
+        JokeState newValues = new JokeState();
+        newValues.setTopic("程序员");
+        Map<String, Object> newConfig = jokeGraph.updateState(selectedState.getConfig(), newValues);
+
+        // 4. 从检查点恢复执行
+        JokeState newResult = jokeGraph.invoke(null, newConfig);
+        System.out.println("时间旅行后的结果:");
+        System.out.println("主题: " + newResult.getTopic());
+        System.out.println("笑话: " + newResult.getJoke());
     }
 }
 ```
@@ -572,50 +312,72 @@ public class SnapshotCompression {
 
 ```properties
 # 时间旅行配置
-spring.ai.time-travel.enabled=true
-spring.ai.time-travel.auto-snapshot.enabled=true
-spring.ai.time-travel.auto-snapshot.interval=5m
+spring.ai.alibaba.time-travel.enabled=true
+spring.ai.alibaba.time-travel.checkpointer.type=database
+spring.ai.alibaba.time-travel.checkpointer.cleanup-interval=24h
 
-# 快照存储配置
-spring.ai.time-travel.snapshot.store=database
-spring.ai.time-travel.snapshot.compression.enabled=true
-spring.ai.time-travel.snapshot.max-count=100
+# 检查点存储配置
+spring.ai.alibaba.time-travel.checkpoint.max-history=100
+spring.ai.alibaba.time-travel.checkpoint.compression.enabled=true
+spring.ai.alibaba.time-travel.checkpoint.async-save=true
 
-# 性能配置
-spring.ai.time-travel.performance.async-save=true
-spring.ai.time-travel.performance.batch-size=10
-spring.ai.time-travel.performance.cleanup-interval=1h
-
-# 调试配置
-spring.ai.time-travel.debug.enabled=true
-spring.ai.time-travel.debug.breakpoints.enabled=true
-spring.ai.time-travel.debug.session-timeout=1h
+# 状态历史配置
+spring.ai.alibaba.time-travel.history.max-entries=50
+spring.ai.alibaba.time-travel.history.retention-days=30
+spring.ai.alibaba.time-travel.history.auto-cleanup=true
 ```
 
 ## 最佳实践
 
-### 1. 快照策略
-- 在关键节点创建快照
-- 合理设置快照间隔
-- 实施快照压缩
+### 1. 检查点管理
+- **合理设置检查点频率**：在关键节点自动创建检查点
+- **控制历史大小**：设置合理的历史记录保留策略
+- **使用有意义的线程ID**：便于识别和管理不同的执行线程
 
-### 2. 性能优化
-- 异步保存快照
-- 批量处理操作
-- 定期清理过期快照
+### 2. 状态更新策略
+- **谨慎修改状态**：确保状态修改的一致性和有效性
+- **测试替代路径**：使用时间旅行探索不同的执行路径
+- **记录变更原因**：为状态修改添加适当的注释和日志
 
-### 3. 调试效率
-- 设置有意义的断点
-- 使用状态比较功能
-- 利用时间轴可视化
+### 3. 性能优化
+- **异步处理**：使用异步方式保存检查点以减少延迟
+- **压缩存储**：启用检查点压缩以节省存储空间
+- **定期清理**：自动清理过期的检查点和历史记录
 
-### 4. 存储管理
-- 监控存储使用
-- 实施数据归档
-- 优化查询性能
+### 4. 调试和监控
+- **可视化执行历史**：使用工具可视化执行路径和状态变化
+- **监控资源使用**：跟踪检查点存储的资源消耗
+- **错误处理**：妥善处理时间旅行过程中的异常情况
+
+## 常见问题
+
+### Q: 什么时候应该使用时间旅行？
+A: 时间旅行特别适用于：
+- 调试复杂的智能体行为
+- 探索不同的决策路径
+- 从错误状态恢复执行
+- 测试替代的输入或参数
+
+### Q: 时间旅行会影响性能吗？
+A: 时间旅行需要额外的存储空间来保存检查点，但通过以下方式可以最小化影响：
+- 启用检查点压缩
+- 设置合理的历史保留策略
+- 使用异步保存机制
+
+### Q: 如何选择合适的检查点？
+A: 选择检查点时考虑：
+- 选择关键决策点之前的检查点
+- 查看检查点的状态内容
+- 考虑后续执行的复杂性
+
+### Q: 可以从任意检查点恢复吗？
+A: 是的，您可以从任何有效的检查点恢复执行，但需要注意：
+- 确保检查点状态的完整性
+- 考虑状态修改的影响
+- 测试恢复后的执行路径
 
 ## 下一步
 
-- [学习子图](/docs/1.0.0.3/multi-agent/subgraphs/)
-- [探索 Playground](/docs/1.0.0.3/playground/studio/)
-- [了解 JManus](/docs/1.0.0.3/playground/jmanus/)
+- [学习子图](./subgraphs.md)
+- [探索持久化机制](./persistence.md)
+- [了解人机协作](./human-in-the-loop.md)

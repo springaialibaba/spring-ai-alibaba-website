@@ -1,12 +1,32 @@
 ---
 title: Use the Graph API
 keywords: ["Spring AI Alibaba", "Graph API", "Multi-Agent", "Workflow", "Practice"]
-description: "Learn how to use Spring AI Alibaba Graph API to build real multi-agent applications, including practical examples, advanced features, and best practices."
+description: "Learn how to use Spring AI Alibaba Graph API to build real multi-agent applications, including basic usage, advanced features, and best practices."
 ---
 
-## Real-World Application Examples
+This guide demonstrates how to use Spring AI Alibaba Graph API to build complex workflow applications through practical examples. We'll start with simple linear flows and gradually introduce conditional branching, parallel processing, and advanced features.
 
-### 1. Customer Feedback Processing System
+## Learning Path
+
+This guide is organized along the following path to help you gradually master the Graph API:
+
+1. **Basic Usage**: Start with simple linear graphs to understand basic concepts
+2. **Conditional Branching**: Learn how to dynamically select execution paths based on state
+3. **Dynamic Routing**: Use Command objects for more flexible control flow
+4. **Advanced Features**: Explore streaming execution, checkpoints, interrupt recovery, and other features
+5. **Real Applications**: Demonstrate best practices through complete business scenarios
+
+## Basic Usage
+
+### 1. Creating a Simple Linear Graph
+
+Linear graphs are the most basic graph structure where nodes execute sequentially in a fixed order. This pattern is suitable for:
+
+- **Data Processing Pipelines**: Data needs to go through multiple transformation and processing steps
+- **Workflow Processes**: Business processes with clear sequential order
+- **Validation Chains**: Scenarios requiring multiple validation steps
+
+Let's start with the simplest example - a graph with three sequentially executing nodes:
 
 ```java
 @Configuration

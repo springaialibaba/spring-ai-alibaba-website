@@ -1,597 +1,212 @@
 ---
-title: 持久化 (Persistence)
-description: Spring AI Alibaba 多智能体持久化
+title: 持久化
+description: Spring AI Alibaba Graph 持久化系统
 ---
 
-# 持久化 (Persistence)
+# 持久化
 
-持久化是多智能体系统的重要组成部分，确保智能体状态、对话历史和执行进度能够可靠保存和恢复。
+Spring AI Alibaba Graph 内置了持久化层，通过检查点保存器（checkpointers）实现。当您使用检查点保存器编译图时，检查点保存器会在每个超级步骤保存图状态的 `检查点`。这些检查点保存到一个 `线程` 中，可以在图执行后访问。由于 `线程` 允许在执行后访问图的状态，因此可以实现人机交互、记忆、时间旅行和容错等强大功能。
 
-## 持久化类型
+:::note[Spring AI Alibaba API 自动处理检查点]
+当使用 Spring AI Alibaba API 时，您无需手动实现或配置检查点保存器。API 会在后台为您处理所有持久化基础设施。
+:::
 
-### 1. 状态持久化
-保存智能体的执行状态，支持中断恢复。
+## 线程
 
-### 2. 对话持久化
-保存完整的对话历史和上下文。
+线程是分配给检查点保存器保存的每个检查点的唯一 ID 或线程标识符。它包含一系列运行的累积状态。当执行运行时，助手底层图的状态将持久化到线程中。
 
-### 3. 知识持久化
-保存智能体学习的知识和经验。
-
-### 4. 配置持久化
-保存智能体的配置和设置。
-
-## 状态持久化
-
-### 基本配置
+当使用检查点保存器调用图时，您**必须**在配置的 `configurable` 部分指定 `thread_id`：
 
 ```java
-@Configuration
-public class PersistenceConfig {
-    
-    @Bean
-    public StateStore stateStore() {
-        return new RedisStateStore(redisTemplate());
-    }
-    
-    @Bean
-    public CheckpointManager checkpointManager() {
-        return new DatabaseCheckpointManager(dataSource());
-    }
-}
+Map<String, Object> config = Map.of(
+    "configurable", Map.of("thread_id", "1")
+);
 ```
 
-### 状态保存
+线程的当前和历史状态可以被检索。要持久化状态，必须在执行运行之前创建线程。
+
+## 检查点
+
+线程在特定时间点的状态称为检查点。检查点是在每个超级步骤保存的图状态快照，由 `StateSnapshot` 对象表示，具有以下关键属性：
+
+- `config`: 与此检查点关联的配置。
+- `metadata`: 与此检查点关联的元数据。
+- `values`: 此时间点状态通道的值。
+- `next`: 图中下一个要执行的节点名称元组。
+- `tasks`: 包含下一个要执行任务信息的 `PregelTask` 对象元组。如果之前尝试过该步骤，它将包含错误信息。如果图从节点内部动态中断，任务将包含与中断相关的附加数据。
+
+检查点被持久化，可用于稍后恢复线程的状态。
+
+让我们看看当简单图按如下方式调用时保存了哪些检查点：
 
 ```java
-@Component
-public class StatePersistenceService {
-    
-    @Autowired
-    private StateStore stateStore;
-    
-    public void saveState(String executionId, OverallState state) {
-        StateSnapshot snapshot = StateSnapshot.builder()
-            .executionId(executionId)
-            .state(state)
-            .timestamp(Instant.now())
-            .version(generateVersion())
-            .build();
-        
-        stateStore.save(executionId, snapshot);
-    }
-    
-    public OverallState loadState(String executionId) {
-        StateSnapshot snapshot = stateStore.load(executionId);
-        return snapshot != null ? snapshot.getState() : null;
-    }
-    
-    public List<StateSnapshot> getStateHistory(String executionId) {
-        return stateStore.getHistory(executionId);
-    }
+import com.alibaba.cloud.ai.graph.StateGraph;
+import com.alibaba.cloud.ai.graph.checkpoint.InMemoryCheckpointSaver;
+import static com.alibaba.cloud.ai.graph.StateGraph.*;
+
+public class State {
+    private String foo;
+    private List<String> bar; // 使用 reducer 累加
+
+    // 构造函数、getter 和 setter
 }
+
+NodeAction nodeA = state -> {
+    return Map.of("foo", "a", "bar", List.of("a"));
+};
+
+NodeAction nodeB = state -> {
+    return Map.of("foo", "b", "bar", List.of("b"));
+};
+
+StateGraph workflow = new StateGraph(State.class);
+workflow.addNode("node_a", nodeA);
+workflow.addNode("node_b", nodeB);
+workflow.addEdge(START, "node_a");
+workflow.addEdge("node_a", "node_b");
+workflow.addEdge("node_b", END);
+
+CheckpointSaver checkpointer = new InMemoryCheckpointSaver();
+CompiledGraph graph = workflow.compile(checkpointer);
+
+Map<String, Object> config = Map.of("configurable", Map.of("thread_id", "1"));
+graph.invoke(Map.of("foo", ""), config);
 ```
 
-## 检查点机制
+运行图后，我们期望看到恰好 4 个检查点：
 
-### 自动检查点
+- 空检查点，`START` 作为下一个要执行的节点
+- 包含用户输入 `{'foo': '', 'bar': []}` 和 `node_a` 作为下一个要执行节点的检查点
+- 包含 `node_a` 输出 `{'foo': 'a', 'bar': ['a']}` 和 `node_b` 作为下一个要执行节点的检查点
+- 包含 `node_b` 输出 `{'foo': 'b', 'bar': ['a', 'b']}` 且没有下一个要执行节点的检查点
+
+注意 `bar` 通道值包含两个节点的输出，因为我们为 `bar` 通道设置了 reducer。
+
+### 获取状态
+
+与保存的图状态交互时，您**必须**指定线程标识符。您可以通过调用 `graph.getState(config)` 查看图的_最新_状态。这将返回一个 `StateSnapshot` 对象，对应于配置中提供的线程 ID 关联的最新检查点，或者如果提供了检查点 ID，则对应于线程的特定检查点。
 
 ```java
-@Component
-public class AutoCheckpointService {
-    
-    @Autowired
-    private CheckpointManager checkpointManager;
-    
-    @EventListener
-    public void onNodeCompletion(NodeCompletionEvent event) {
-        if (shouldCreateCheckpoint(event)) {
-            Checkpoint checkpoint = Checkpoint.builder()
-                .executionId(event.getExecutionId())
-                .nodeId(event.getNodeId())
-                .state(event.getState())
-                .timestamp(Instant.now())
-                .build();
-            
-            checkpointManager.createCheckpoint(checkpoint);
-        }
-    }
-    
-    private boolean shouldCreateCheckpoint(NodeCompletionEvent event) {
-        // 检查点创建策略
-        return event.getNodeId().endsWith("_checkpoint") || 
-               event.getExecutionTime().toSeconds() > 30;
-    }
-}
+// 获取最新状态快照
+Map<String, Object> config = Map.of("configurable", Map.of("thread_id", "1"));
+StateSnapshot snapshot = graph.getState(config);
+
+// 获取特定 checkpoint_id 的状态快照
+Map<String, Object> config = Map.of(
+    "configurable", Map.of(
+        "thread_id", "1",
+        "checkpoint_id", "1ef663ba-28fe-6528-8002-5a559208592c"
+    )
+);
+StateSnapshot snapshot = graph.getState(config);
 ```
 
-### 手动检查点
+在我们的示例中，`getState` 的输出将如下所示：
 
 ```java
-@Service
-public class ManualCheckpointService {
-    
-    public String createCheckpoint(String executionId, String description) {
-        GraphExecution execution = executionRegistry.getExecution(executionId);
-        OverallState currentState = execution.getCurrentState();
-        
-        Checkpoint checkpoint = Checkpoint.builder()
-            .id(UUID.randomUUID().toString())
-            .executionId(executionId)
-            .state(currentState)
-            .description(description)
-            .timestamp(Instant.now())
-            .build();
-        
-        checkpointManager.createCheckpoint(checkpoint);
-        return checkpoint.getId();
-    }
-    
-    public void restoreFromCheckpoint(String checkpointId) {
-        Checkpoint checkpoint = checkpointManager.getCheckpoint(checkpointId);
-        
-        GraphExecution execution = executionRegistry.getExecution(checkpoint.getExecutionId());
-        execution.restoreState(checkpoint.getState());
-    }
-}
+StateSnapshot.builder()
+    .values(Map.of("foo", "b", "bar", List.of("a", "b")))
+    .next(List.of())
+    .config(Map.of("configurable", Map.of(
+        "thread_id", "1",
+        "checkpoint_ns", "",
+        "checkpoint_id", "1ef663ba-28fe-6528-8002-5a559208592c"
+    )))
+    .metadata(Map.of(
+        "source", "loop",
+        "writes", Map.of("node_b", Map.of("foo", "b", "bar", List.of("b"))),
+        "step", 2
+    ))
+    .createdAt(Instant.parse("2024-08-29T19:19:38.821749Z"))
+    .parentConfig(Map.of("configurable", Map.of(
+        "thread_id", "1",
+        "checkpoint_ns", "",
+        "checkpoint_id", "1ef663ba-28f9-6ec4-8001-31981c2c39f8"
+    )))
+    .tasks(List.of())
+    .build();
 ```
 
-## 数据库持久化
+### 获取状态历史
 
-### 实体定义
+您可以通过调用 `graph.getStateHistory(config)` 获取给定线程的图执行完整历史。这将返回与配置中提供的线程 ID 关联的 `StateSnapshot` 对象列表。重要的是，检查点将按时间顺序排列，最新的检查点/`StateSnapshot` 在列表的第一位。
 
 ```java
-@Entity
-@Table(name = "agent_executions")
-public class AgentExecution {
-    @Id
-    private String id;
-    
-    @Column(name = "graph_id")
-    private String graphId;
-    
-    @Column(name = "current_node")
-    private String currentNode;
-    
-    @Column(name = "state", columnDefinition = "jsonb")
-    private Map<String, Object> state;
-    
-    @Enumerated(EnumType.STRING)
-    private ExecutionStatus status;
-    
-    @Column(name = "created_at")
-    private Instant createdAt;
-    
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-    
-    // getters and setters
-}
-
-@Entity
-@Table(name = "execution_checkpoints")
-public class ExecutionCheckpoint {
-    @Id
-    private String id;
-    
-    @Column(name = "execution_id")
-    private String executionId;
-    
-    @Column(name = "node_id")
-    private String nodeId;
-    
-    @Column(name = "state", columnDefinition = "jsonb")
-    private Map<String, Object> state;
-    
-    @Column(name = "description")
-    private String description;
-    
-    @Column(name = "created_at")
-    private Instant createdAt;
-    
-    // getters and setters
-}
+Map<String, Object> config = Map.of("configurable", Map.of("thread_id", "1"));
+List<StateSnapshot> history = graph.getStateHistory(config);
 ```
 
-### Repository 实现
+### 重放
+
+也可以回放先前的图执行。如果我们使用 `thread_id` 和 `checkpoint_id` 调用图，那么我们将_重放_对应于 `checkpoint_id` 的检查点_之前_先前执行的步骤，并且只执行检查点_之后_的步骤。
+
+- `thread_id` 是线程的 ID。
+- `checkpoint_id` 是指线程内特定检查点的标识符。
+
+调用图时，您必须将这些作为配置的 `configurable` 部分传递：
 
 ```java
-@Repository
-public interface AgentExecutionRepository extends JpaRepository<AgentExecution, String> {
-    List<AgentExecution> findByGraphIdAndStatus(String graphId, ExecutionStatus status);
-    List<AgentExecution> findByStatusAndCreatedAtBefore(ExecutionStatus status, Instant before);
-}
-
-@Repository
-public interface ExecutionCheckpointRepository extends JpaRepository<ExecutionCheckpoint, String> {
-    List<ExecutionCheckpoint> findByExecutionIdOrderByCreatedAtDesc(String executionId);
-    Optional<ExecutionCheckpoint> findFirstByExecutionIdOrderByCreatedAtDesc(String executionId);
-}
+Map<String, Object> config = Map.of(
+    "configurable", Map.of(
+        "thread_id", "1",
+        "checkpoint_id", "0c62ca34-ac19-445d-bbb0-5b4984975b2a"
+    )
+);
+graph.invoke(null, config);
 ```
 
-### 服务实现
+重要的是，Spring AI Alibaba Graph 知道特定步骤是否之前已执行。如果已执行，Spring AI Alibaba Graph 只是_重放_图中的特定步骤而不重新执行该步骤，但仅适用于提供的 `checkpoint_id` _之前_的步骤。`checkpoint_id` _之后_的所有步骤都将被执行（即新分支），即使它们之前已执行过。
 
-```java
-@Service
-@Transactional
-public class DatabasePersistenceService {
-    
-    @Autowired
-    private AgentExecutionRepository executionRepository;
-    
-    @Autowired
-    private ExecutionCheckpointRepository checkpointRepository;
-    
-    public void saveExecution(GraphExecution execution) {
-        AgentExecution entity = new AgentExecution();
-        entity.setId(execution.getId());
-        entity.setGraphId(execution.getGraphId());
-        entity.setCurrentNode(execution.getCurrentNode());
-        entity.setState(execution.getState().toMap());
-        entity.setStatus(execution.getStatus());
-        entity.setUpdatedAt(Instant.now());
-        
-        if (entity.getCreatedAt() == null) {
-            entity.setCreatedAt(Instant.now());
-        }
-        
-        executionRepository.save(entity);
-    }
-    
-    public GraphExecution loadExecution(String executionId) {
-        AgentExecution entity = executionRepository.findById(executionId)
-            .orElseThrow(() -> new ExecutionNotFoundException(executionId));
-        
-        return GraphExecution.builder()
-            .id(entity.getId())
-            .graphId(entity.getGraphId())
-            .currentNode(entity.getCurrentNode())
-            .state(OverallState.fromMap(entity.getState()))
-            .status(entity.getStatus())
-            .build();
-    }
-}
-```
+### 更新状态
 
-## Redis 持久化
+除了从特定`检查点`重放图之外，我们还可以_编辑_图状态。我们使用 `graph.updateState()` 来做到这一点。此方法接受三个不同的参数：
 
-### Redis 配置
+#### `config`
 
-```java
-@Configuration
-public class RedisPersistenceConfig {
-    
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        return template;
-    }
-    
-    @Bean
-    public RedisStateStore redisStateStore(RedisTemplate<String, Object> redisTemplate) {
-        return new RedisStateStore(redisTemplate);
-    }
-}
-```
+配置应包含指定要更新哪个线程的 `thread_id`。当只传递 `thread_id` 时，我们更新（或分叉）当前状态。可选地，如果我们包含 `checkpoint_id` 字段，那么我们分叉该选定的检查点。
 
-### Redis 状态存储
+#### `values`
 
-```java
-@Component
-public class RedisStateStore implements StateStore {
-    
-    private final RedisTemplate<String, Object> redisTemplate;
-    private static final String STATE_PREFIX = "agent:state:";
-    private static final String HISTORY_PREFIX = "agent:history:";
-    
-    public RedisStateStore(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-    
-    @Override
-    public void save(String executionId, StateSnapshot snapshot) {
-        String key = STATE_PREFIX + executionId;
-        redisTemplate.opsForValue().set(key, snapshot, Duration.ofHours(24));
-        
-        // 保存到历史记录
-        String historyKey = HISTORY_PREFIX + executionId;
-        redisTemplate.opsForList().rightPush(historyKey, snapshot);
-        redisTemplate.expire(historyKey, Duration.ofDays(7));
-    }
-    
-    @Override
-    public StateSnapshot load(String executionId) {
-        String key = STATE_PREFIX + executionId;
-        return (StateSnapshot) redisTemplate.opsForValue().get(key);
-    }
-    
-    @Override
-    public List<StateSnapshot> getHistory(String executionId) {
-        String historyKey = HISTORY_PREFIX + executionId;
-        List<Object> history = redisTemplate.opsForList().range(historyKey, 0, -1);
-        
-        return history.stream()
-            .map(obj -> (StateSnapshot) obj)
-            .collect(Collectors.toList());
-    }
-}
-```
+这些是将用于更新状态的值。请注意，此更新的处理方式与来自节点的任何更新完全相同。这意味着这些值将传递给 reducer 函数（如果为图状态中的某些通道定义了它们）。这意味着 `updateState` 不会自动覆盖每个通道的通道值，而只覆盖没有 reducer 的通道。
 
-## 对话持久化
+#### `asNode`
 
-### 对话存储
+调用 `updateState` 时可以选择性地指定的最后一件事是 `asNode`。如果您提供了它，更新将被应用，就像它来自节点 `asNode` 一样。如果未提供 `asNode`，它将设置为最后更新状态的节点（如果不模糊）。这很重要，因为下一步执行取决于最后给出更新的节点，因此这可以用来控制下一个执行哪个节点。
 
-```java
-@Service
-public class ConversationPersistenceService {
-    
-    @Autowired
-    private ConversationRepository conversationRepository;
-    
-    @Autowired
-    private MessageRepository messageRepository;
-    
-    public void saveMessage(String conversationId, Message message) {
-        ConversationMessage entity = ConversationMessage.builder()
-            .id(UUID.randomUUID().toString())
-            .conversationId(conversationId)
-            .messageType(message.getMessageType().name())
-            .content(message.getContent())
-            .metadata(message.getMetadata())
-            .timestamp(Instant.now())
-            .build();
-        
-        messageRepository.save(entity);
-        
-        // 更新对话的最后活动时间
-        updateConversationActivity(conversationId);
-    }
-    
-    public List<Message> loadConversationHistory(String conversationId) {
-        List<ConversationMessage> messages = messageRepository
-            .findByConversationIdOrderByTimestamp(conversationId);
-        
-        return messages.stream()
-            .map(this::toMessage)
-            .collect(Collectors.toList());
-    }
-    
-    private Message toMessage(ConversationMessage entity) {
-        MessageType type = MessageType.valueOf(entity.getMessageType());
-        
-        switch (type) {
-            case USER:
-                return new UserMessage(entity.getContent(), entity.getMetadata());
-            case ASSISTANT:
-                return new AssistantMessage(entity.getContent(), entity.getMetadata());
-            case SYSTEM:
-                return new SystemMessage(entity.getContent(), entity.getMetadata());
-            default:
-                throw new IllegalArgumentException("Unknown message type: " + type);
-        }
-    }
-}
-```
+## 记忆存储
 
-## 知识持久化
+状态模式指定了在图执行时填充的一组键。如上所述，状态可以通过检查点保存器在每个图步骤写入线程，从而实现状态持久化。
 
-### 向量数据库
+但是，如果我们想要在_线程之间_保留一些信息怎么办？考虑聊天机器人的情况，我们希望在与该用户的_所有_聊天对话（例如线程）中保留关于用户的特定信息！
 
-```java
-@Service
-public class VectorKnowledgePersistence {
-    
-    @Autowired
-    private VectorStore vectorStore;
-    
-    @Autowired
-    private EmbeddingModel embeddingModel;
-    
-    public void saveKnowledge(String agentId, String content, Map<String, Object> metadata) {
-        Document document = new Document(content);
-        document.getMetadata().putAll(metadata);
-        document.getMetadata().put("agentId", agentId);
-        document.getMetadata().put("timestamp", Instant.now());
-        
-        vectorStore.add(List.of(document));
-    }
-    
-    public List<Document> searchKnowledge(String agentId, String query, int limit) {
-        return vectorStore.similaritySearch(
-            SearchRequest.query(query)
-                .withTopK(limit)
-                .withSimilarityThreshold(0.7)
-                .withFilterExpression("agentId == '" + agentId + "'")
-        );
-    }
-    
-    public void updateKnowledge(String documentId, String newContent) {
-        // 删除旧文档
-        vectorStore.delete(List.of(documentId));
-        
-        // 添加新文档
-        Document newDocument = new Document(newContent);
-        newDocument.getMetadata().put("updated", Instant.now());
-        vectorStore.add(List.of(newDocument));
-    }
-}
-```
+仅使用检查点保存器，我们无法在线程之间共享信息。这促使需要 `Store` 接口。作为说明，我们可以定义一个 `InMemoryStore` 来存储跨线程的用户信息。我们只需像以前一样使用检查点保存器编译我们的图，并使用我们新的 `inMemoryStore` 变量。
 
-## 配置持久化
+:::note[Spring AI Alibaba API 自动处理存储]
+当使用 Spring AI Alibaba API 时，您无需手动实现或配置存储。API 会在后台为您处理所有存储基础设施。
+:::
 
-### 配置管理
+## 检查点保存器库
 
-```java
-@Service
-public class ConfigurationPersistenceService {
-    
-    @Autowired
-    private AgentConfigRepository configRepository;
-    
-    public void saveAgentConfig(String agentId, AgentConfiguration config) {
-        AgentConfigEntity entity = AgentConfigEntity.builder()
-            .agentId(agentId)
-            .configuration(config.toMap())
-            .version(generateVersion())
-            .createdAt(Instant.now())
-            .build();
-        
-        configRepository.save(entity);
-    }
-    
-    public AgentConfiguration loadAgentConfig(String agentId) {
-        AgentConfigEntity entity = configRepository
-            .findFirstByAgentIdOrderByCreatedAtDesc(agentId)
-            .orElseThrow(() -> new ConfigNotFoundException(agentId));
-        
-        return AgentConfiguration.fromMap(entity.getConfiguration());
-    }
-    
-    public List<AgentConfiguration> getConfigHistory(String agentId) {
-        List<AgentConfigEntity> entities = configRepository
-            .findByAgentIdOrderByCreatedAtDesc(agentId);
-        
-        return entities.stream()
-            .map(entity -> AgentConfiguration.fromMap(entity.getConfiguration()))
-            .collect(Collectors.toList());
-    }
-}
-```
+在底层，检查点由符合 `BaseCheckpointSaver` 接口的检查点保存器对象提供支持。Spring AI Alibaba 提供了几个检查点保存器实现：
 
-## 数据清理
+- `spring-ai-alibaba-graph-checkpoint`: 检查点保存器的基础接口（`BaseCheckpointSaver`）和序列化/反序列化接口（`SerializerProtocol`）。包括用于实验的内存检查点保存器实现（`InMemoryCheckpointSaver`）。Spring AI Alibaba Graph 包含 `spring-ai-alibaba-graph-checkpoint`。
+- `spring-ai-alibaba-graph-checkpoint-database`: 使用关系数据库的 Spring AI Alibaba Graph 检查点保存器实现（`DatabaseCheckpointSaver` / `AsyncDatabaseCheckpointSaver`）。适合生产使用。需要单独安装。
+- `spring-ai-alibaba-graph-checkpoint-redis`: 使用 Redis 数据库的高级检查点保存器（`RedisCheckpointSaver` / `AsyncRedisCheckpointSaver`），在 Spring AI Alibaba Platform 中使用。适合高性能场景。需要单独安装。
 
-### 自动清理
+## 功能
 
-```java
-@Component
-public class DataCleanupService {
-    
-    @Scheduled(cron = "0 0 2 * * ?") // 每天凌晨2点执行
-    public void cleanupOldData() {
-        Instant cutoff = Instant.now().minus(Duration.ofDays(30));
-        
-        // 清理过期的执行记录
-        List<AgentExecution> expiredExecutions = executionRepository
-            .findByStatusAndCreatedAtBefore(ExecutionStatus.COMPLETED, cutoff);
-        
-        for (AgentExecution execution : expiredExecutions) {
-            cleanupExecution(execution.getId());
-        }
-        
-        // 清理过期的检查点
-        checkpointRepository.deleteByCreatedAtBefore(cutoff);
-        
-        log.info("Cleaned up {} expired executions", expiredExecutions.size());
-    }
-    
-    private void cleanupExecution(String executionId) {
-        // 删除状态快照
-        stateStore.delete(executionId);
-        
-        // 删除检查点
-        checkpointRepository.deleteByExecutionId(executionId);
-        
-        // 删除执行记录
-        executionRepository.deleteById(executionId);
-    }
-}
-```
+### 人机交互
 
-## 备份和恢复
+首先，检查点保存器通过允许人类检查、中断和批准图步骤来促进人机交互工作流。这些工作流需要检查点保存器，因为人类必须能够在任何时间点查看图的状态，并且图必须能够在人类对状态进行任何更新后恢复执行。
 
-### 数据备份
+### 记忆
 
-```java
-@Service
-public class BackupService {
-    
-    public void createBackup(String backupName) {
-        BackupMetadata metadata = BackupMetadata.builder()
-            .name(backupName)
-            .timestamp(Instant.now())
-            .build();
-        
-        // 备份执行数据
-        List<AgentExecution> executions = executionRepository.findAll();
-        backupExecutions(metadata, executions);
-        
-        // 备份检查点数据
-        List<ExecutionCheckpoint> checkpoints = checkpointRepository.findAll();
-        backupCheckpoints(metadata, checkpoints);
-        
-        // 备份配置数据
-        List<AgentConfigEntity> configs = configRepository.findAll();
-        backupConfigs(metadata, configs);
-        
-        saveBackupMetadata(metadata);
-    }
-    
-    public void restoreBackup(String backupName) {
-        BackupMetadata metadata = loadBackupMetadata(backupName);
-        
-        // 恢复数据
-        restoreExecutions(metadata);
-        restoreCheckpoints(metadata);
-        restoreConfigs(metadata);
-        
-        log.info("Backup restored: {}", backupName);
-    }
-}
-```
+其次，检查点保存器允许交互之间的"记忆"。在重复的人类交互（如对话）的情况下，任何后续消息都可以发送到该线程，该线程将保留对先前消息的记忆。
 
-## 配置选项
+### 时间旅行
 
-```properties
-# 持久化配置
-spring.ai.persistence.enabled=true
-spring.ai.persistence.type=database
+第三，检查点保存器允许"时间旅行"，允许用户重放先前的图执行以审查和/或调试特定的图步骤。此外，检查点保存器使得可以在任意检查点分叉图状态以探索替代轨迹。
 
-# 数据库配置
-spring.ai.persistence.database.auto-checkpoint=true
-spring.ai.persistence.database.checkpoint-interval=5m
+### 容错
 
-# Redis 配置
-spring.ai.persistence.redis.ttl=24h
-spring.ai.persistence.redis.history-size=100
-
-# 清理配置
-spring.ai.persistence.cleanup.enabled=true
-spring.ai.persistence.cleanup.retention-days=30
-spring.ai.persistence.cleanup.schedule=0 0 2 * * ?
-
-# 备份配置
-spring.ai.persistence.backup.enabled=true
-spring.ai.persistence.backup.schedule=0 0 3 * * SUN
-spring.ai.persistence.backup.retention-count=4
-```
-
-## 最佳实践
-
-### 1. 存储策略
-- 选择合适的存储后端
-- 设计合理的数据模型
-- 实施数据分片策略
-
-### 2. 性能优化
-- 使用连接池
-- 实施缓存机制
-- 优化查询性能
-
-### 3. 数据安全
-- 实施数据加密
-- 设置访问控制
-- 定期备份数据
-
-### 4. 监控维护
-- 监控存储使用情况
-- 定期清理过期数据
-- 验证备份完整性
-
-## 下一步
-
-- [了解持久执行](/docs/1.0.0.3/multi-agent/durable-execution/)
-- [学习记忆管理](/docs/1.0.0.3/multi-agent/memory/)
-- [探索上下文管理](/docs/1.0.0.3/multi-agent/context/)
+最后，检查点还提供容错和错误恢复：如果一个或多个节点在给定的超级步骤失败，您可以从最后一个成功的步骤重新启动图。此外，当图节点在给定超级步骤的中间执行失败时，Spring AI Alibaba Graph 存储来自在该超级步骤成功完成的任何其他节点的待处理检查点写入，以便每当我们从该超级步骤恢复图执行时，我们不会重新运行成功的节点。
