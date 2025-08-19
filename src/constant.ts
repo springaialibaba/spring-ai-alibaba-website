@@ -30,13 +30,13 @@ export const DOCS_BANNER = {
 // TODO: 文档Header数据
 export const DOCS_ITEM = [
   {
-    key: "develop",
-    label: "develop",
+    key: "1.0.0.3",
+    label: "1.0.0.3",
     target: "_self",
-    link: "/docs/develop/overview/",
+    link: "/docs/1.0.0.3/overview/",
     translations: {
-      en: "develop",
-      link: "/en/docs/develop/overview/",
+      en: "1.0.0.3",
+      link: "/en/docs/1.0.0.3/overview/",
     }
   },
   {
