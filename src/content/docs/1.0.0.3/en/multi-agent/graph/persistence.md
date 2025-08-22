@@ -455,4 +455,4 @@ public class OptimizedCheckpointSaver implements CheckpointSaver {
 
 - [Durable Execution](./durable-execution) - Learn about durable execution and failure recovery
 - [Human-in-the-loop](./human-in-the-loop) - Learn how to integrate human intervention in workflows
-- [Time Travel](./time-travel) - Explore state rollback and branching features
+- [Durable Execution & Time Travel](../durable-execution) - Explore state rollback and branching features

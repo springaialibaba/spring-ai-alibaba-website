@@ -5,7 +5,7 @@ description: Spring AI Alibaba 人机协作机制
 
 # 人机协作 (Human-in-the-loop)
 
-要在智能体或工作流中审查、编辑和批准工具调用，请[使用 Spring AI Alibaba 的人机协作功能](../how-tos/memory/add-memory.md#添加人机协作)在工作流的任何点启用人类干预。这在大语言模型（LLM）驱动的应用程序中特别有用，因为模型输出可能需要验证、纠正或额外的上下文。
+在实际业务场景中，完全自动化的智能体往往无法满足所有需求。有时我们需要在关键决策点引入人工干预，比如审核敏感操作、修正错误输出或提供额外信息。Spring AI Alibaba 提供了完整的人机协作机制，让您可以在工作流的任意节点暂停执行，等待人工处理后再继续。
 
 ![人机协作工具调用审查](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/tool-call-review.png)
 
@@ -15,336 +15,644 @@ description: Spring AI Alibaba 人机协作机制
 
 ## 核心功能
 
-* **持久执行状态**：中断使用 Spring AI Alibaba 的[持久化](./persistence.md)层，该层保存图状态，以无限期暂停图执行直到您恢复。这是可能的，因为 Spring AI Alibaba 在每个步骤后检查点图状态，这允许系统持久化执行上下文并稍后恢复工作流，从中断的地方继续。这支持异步人类审查或输入，没有时间限制。
+### 状态持久化
 
-    有两种暂停图的方式：
+人机协作的基础是状态持久化能力。当工作流需要人工干预时，系统会自动保存当前的执行状态，包括所有变量、上下文信息和执行进度。这样即使暂停很长时间，也能从中断点准确恢复执行。
 
-    - [动态中断](#使用-interrupt-暂停)：使用 `interrupt` 从特定节点内部暂停图，基于图的当前状态。
-    - [静态中断](#使用静态中断调试)：使用 `interruptBefore` 和 `interruptAfter` 在预定义点暂停图，在节点执行之前或之后。
+### 两种中断方式
 
-    ![断点示例](https://langchain-ai.github.io/langgraph/concepts/img/breakpoints.png)
-    *一个由 3 个顺序步骤组成的示例图，在 step_3 之前有一个断点。*
+根据使用场景，Spring AI Alibaba 提供了两种中断方式：
 
-* **灵活的集成点**：人机协作逻辑可以在工作流的任何点引入。这允许有针对性的人类参与，例如批准 API 调用、纠正输出或指导对话。
+- **动态中断**：在运行时根据业务逻辑决定是否需要人工干预，适用于复杂的业务判断场景
+- **静态中断**：在编译时预设中断点，主要用于调试和测试
 
-## 设计模式
+![断点示例](https://langchain-ai.github.io/langgraph/concepts/img/breakpoints.png)
+*工作流在 step_3 之前设置了一个断点*
 
-使用 `interrupt` 和 `Command` 可以实现四种典型的设计模式：
+### 灵活的接入方式
 
-- [批准或拒绝](#批准或拒绝)：在关键步骤（如 API 调用）之前暂停图以审查和批准操作。如果操作被拒绝，您可以阻止图执行该步骤，并可能采取替代操作。此模式通常涉及基于人类输入路由图。
-- [编辑图状态](#审查和编辑状态)：暂停图以审查和编辑图状态。这对于纠正错误或使用额外信息更新状态很有用。此模式通常涉及使用人类输入更新状态。
-- [审查工具调用](#审查工具调用)：暂停图以在工具执行之前审查和编辑 LLM 请求的工具调用。
-- [验证人类输入](#验证人类输入)：暂停图以在继续下一步之前验证人类输入。
+您可以在工作流的任意位置添加人工干预点，无论是数据处理前的参数确认，还是结果输出前的质量检查，都能轻松实现。
 
-## 使用 interrupt 暂停
+## 常见应用场景
 
-[动态中断](./human-in-the-loop.md#核心功能)（也称为动态断点）基于图的当前状态触发。您可以通过在适当的位置调用 [`interrupt` 函数](https://spring-ai-alibaba.github.io/reference/types/#interrupt)来设置动态中断。图将暂停，允许人类干预，然后使用他们的输入恢复图。这对于批准、编辑或收集额外上下文等任务很有用。
+根据实际业务需求，人机协作主要应用于以下四种场景：
 
-:::note
-从 v1.0 开始，`interrupt` 是暂停图的推荐方式。`NodeInterrupt` 已弃用，将在 v2.0 中删除。
+- **操作审批**：在执行敏感操作（如删除数据、发送邮件）前，先让人工确认是否继续
+- **内容审核**：对AI生成的内容进行人工校对，确保质量和准确性
+- **工具调用确认**：在调用外部API或执行系统命令前，让人工检查参数是否正确
+- **输入验证**：对用户输入进行格式和内容验证，确保数据的有效性
+
+## 动态中断实现
+
+动态中断通过 `HumanNode` 实现，可以根据运行时的状态决定是否需要人工干预。这种方式非常适合复杂的业务逻辑判断。
+
+### 基本用法
+
+使用 `HumanNode` 需要以下几个步骤：
+
+1. **配置检查点保存器** - 用于保存工作流状态
+2. **创建 HumanNode** - 定义中断条件和处理逻辑
+3. **运行工作流** - 系统会在需要时自动暂停
+4. **提供人工反馈** - 通过API接口输入处理结果
+5. **恢复执行** - 工作流从中断点继续运行
+
+:::tip
+`HumanNode` 支持两种中断策略：`always`（总是中断）和 `conditioned`（按条件中断），可以根据实际需求选择。
 :::
 
-要在图中使用 `interrupt`，您需要：
-
-1. [**指定检查点保存器**](./persistence.md#检查点)以在每个步骤后保存图状态。
-2. **调用 `interrupt()`** 在适当的位置。请参阅[常见模式](#常见模式)部分的示例。
-3. **运行图** 使用[**线程 ID**](./persistence.md#线程)直到命中 `interrupt`。
-4. **恢复执行** 使用 `invoke`/`stream`（请参阅[**`Command` 原语**](#使用-command-原语恢复)）。
+### 代码示例
 
 ```java
-import com.alibaba.cloud.ai.graph.types.Interrupt;
-import com.alibaba.cloud.ai.graph.types.Command;
-
 @Component
-public class HumanInteractionNode {
+public class DocumentReviewService {
 
-    public State humanNode(State state) {
-        // 暂停执行并等待人类输入
-        Object value = interrupt(Map.of(
-            "text_to_revise", state.getSomeText() // (1)
-        ));
+    @Autowired
+    private MemorySaver memorySaver;
 
-        return state.withSomeText((String) value); // (2)
+    // 创建文档审核节点
+    public HumanNode createReviewNode() {
+        return HumanNode.builder()
+            .interruptStrategy("always") // 总是需要人工审核
+            .stateUpdateFunc(this::handleReviewResult) // 处理审核结果
+            .build();
+    }
+
+    // 处理人工审核的结果
+    private Map<String, Object> handleReviewResult(OverAllState state) {
+        if (state.humanFeedback() != null) {
+            Map<String, Object> feedback = state.humanFeedback().data();
+            String reviewedContent = (String) feedback.get("reviewed_content");
+            boolean approved = (Boolean) feedback.getOrDefault("approved", false);
+
+            return Map.of(
+                "final_content", reviewedContent,
+                "review_status", approved ? "通过" : "需要修改"
+            );
+        }
+        return Map.of();
     }
 }
 
+// 配置工作流
 @Configuration
-public class GraphConfig {
+public class DocumentWorkflowConfig {
 
     @Bean
-    public StateGraph<State> createGraph() {
-        return StateGraph.<State>builder()
-            .addNode("human_node", humanInteractionNode::humanNode)
-            .addEdge("__start__", "human_node")
-            .build()
-            .compile(checkpointer); // (3)
+    public StateGraph createDocumentWorkflow() {
+        // 定义状态结构
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("original_content", new ReplaceStrategy());
+            state.registerKeyAndStrategy("final_content", new ReplaceStrategy());
+            state.registerKeyAndStrategy("review_status", new ReplaceStrategy());
+            return state;
+        };
+
+        return StateGraph.builder(stateFactory)
+            .addNode("review", documentReviewService.createReviewNode())
+            .addEdge(StateGraph.START, "review")
+            .addEdge("review", StateGraph.END)
+            .build();
     }
 }
 
-// 使用示例
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", "some_id")
-);
+// 实际使用
+@Service
+public class DocumentService {
 
-// 运行图直到命中中断
-State result = graph.invoke(Map.of("some_text", "original text"), config); // (4)
-System.out.println(result.getInterrupt()); // (5)
-// > [Interrupt(value={text_to_revise=original text}, resumable=true, ...)]
+    @Autowired
+    private CompiledGraph documentWorkflow;
 
-// 恢复图执行
-State finalResult = graph.invoke(Command.resume("Edited text"), config); // (6)
-System.out.println(finalResult.getSomeText()); // > "Edited text"
+    public String processDocument(String content) {
+        // 配置检查点保存器
+        SaverConfig saverConfig = SaverConfig.builder()
+            .register(SaverConstant.MEMORY, memorySaver)
+            .type(SaverConstant.MEMORY)
+            .build();
+
+        CompileConfig compileConfig = CompileConfig.builder()
+            .saverConfig(saverConfig)
+            .build();
+
+        CompiledGraph graph = documentWorkflow.compile(compileConfig);
+
+        RunnableConfig config = RunnableConfig.builder()
+            .threadId("doc_" + System.currentTimeMillis())
+            .build();
+
+        // 启动文档处理流程
+        try {
+            graph.invoke(Map.of("original_content", content), config);
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                // 工作流已暂停，等待人工审核
+                return "文档已提交审核，请等待处理结果";
+            }
+        }
+        return "处理失败";
+    }
+
+    // 提供审核结果的接口
+    public String submitReview(String threadId, String reviewedContent, boolean approved) {
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+
+        StateSnapshot snapshot = documentWorkflow.getState(config);
+        OverAllState state = snapshot.state();
+        state.withResume();
+        state.withHumanFeedback(new OverAllState.HumanFeedback(
+            Map.of(
+                "reviewed_content", reviewedContent,
+                "approved", approved
+            ),
+            null
+        ));
+
+        Optional<OverAllState> result = documentWorkflow.invoke(state, config);
+        return result.get().value("review_status", String.class).orElse("处理完成");
+    }
+}
 ```
 
-1. 任何 JSON 可序列化的值都可以传递给 `interrupt` 函数。这里是包含要修订文本的映射。
-2. 恢复后，`interrupt(...)` 的返回值是人类提供的输入，用于更新状态。
-3. 需要检查点保存器来持久化图状态。在生产环境中，这应该是持久的（例如，由数据库支持）。
-4. 使用一些初始状态调用图。
-5. 当图命中中断时，它返回一个包含有效负载和元数据的 `Interrupt` 对象。
-6. 使用 `Command.resume(...)` 恢复图，注入人类输入并继续执行。
+### 关键要点
 
-:::tip "v0.4.0 中的新功能"
-`__interrupt__` 是一个特殊键，当图被中断时运行图会返回该键。在 0.4.0 版本中添加了对 `invoke` 和 `ainvoke` 中 `__interrupt__` 的支持。如果您使用的是较旧版本，只有在使用 `stream` 或 `astream` 时才会在结果中看到 `__interrupt__`。您也可以使用 `graph.getState(threadId)` 来获取中断值。
+1. **中断策略**：`always` 表示总是需要人工干预，`conditioned` 表示按条件判断
+2. **状态处理**：通过 `stateUpdateFunc` 定义如何处理人工反馈
+3. **持久化存储**：生产环境建议使用数据库等持久化存储方案
+4. **异常处理**：中断时会抛出 `GraphRunnerException`，需要妥善处理
+5. **状态恢复**：通过 `withHumanFeedback()` 提供处理结果并恢复执行
+
+:::tip "获取执行状态"
+使用 `graph.getState(config)` 可以随时查看工作流的当前状态，包括执行进度和中断信息。
 :::
 
-:::warning
-中断在开发者体验方面类似于 Java 的 `Scanner.nextLine()` 函数，但它们不会自动从中断点恢复执行。相反，它们会重新运行使用中断的整个节点。因此，中断通常最好放在节点的开始处或专用节点中。
+:::warning "注意事项"
+`HumanNode` 会完全暂停工作流执行，直到收到人工反馈。建议将其作为独立节点使用，避免与其他业务逻辑混合。
 :::
 
-## 使用 Command 原语恢复
+## 恢复执行机制
 
-:::warning
-从 `interrupt` 恢复与 Java 的 `Scanner.nextLine()` 函数不同，后者从调用 `Scanner.nextLine()` 函数的确切点恢复执行。
+### 执行恢复原理
+
+当工作流在 `HumanNode` 处中断后，系统会保存完整的执行状态。恢复时，工作流会从 `HumanNode` 重新开始执行，但这次会处理人工提供的反馈数据，而不是再次中断。
+
+:::info "执行模式说明"
+这种恢复机制与传统的断点调试不同。系统不是从中断的精确位置继续，而是重新执行整个节点，但会使用人工反馈的数据。
 :::
 
-当在图中使用 `interrupt` 函数时，执行在该点暂停并等待用户输入。
-
-要恢复执行，请使用 [`Command`](https://spring-ai-alibaba.github.io/reference/types/#command) 原语，可以通过 `invoke` 或 `stream` 方法提供。图从最初调用 `interrupt(...)` 的节点开始恢复执行。这次，`interrupt` 函数将返回 `Command.resume(value)` 中提供的值，而不是再次暂停。从节点开始到 `interrupt` 的所有代码都将重新执行。
+### 恢复步骤
 
 ```java
-// 通过提供用户输入恢复图执行
-graph.invoke(Command.resume(Map.of("age", "25")), threadConfig);
+// 1. 获取工作流当前状态
+StateSnapshot snapshot = graph.getState(config);
+OverAllState state = snapshot.state();
+
+// 2. 标记为恢复模式
+state.withResume();
+
+// 3. 设置人工反馈数据
+state.withHumanFeedback(new OverAllState.HumanFeedback(
+    Map.of("user_input", "处理结果"),
+    null // 指定下一个节点，null表示按正常流程继续
+));
+
+// 4. 重新启动工作流
+Optional<OverAllState> result = graph.invoke(state, config);
 ```
 
 ### 一次调用恢复多个中断
 
-当具有中断条件的节点并行运行时，任务队列中可能有多个中断。例如，以下图有两个并行运行的节点，需要人类输入：
+当具有中断条件的节点并行运行时，可能有多个 `HumanNode` 同时触发中断。例如，以下图有两个并行运行的节点，需要人类输入：
 
 ![并行人机协作](https://langchain-ai.github.io/langgraph/how-tos/assets/human_in_loop_parallel.png)
 
-一旦您的图被中断并停滞，您可以使用 `Command.resume` 一次恢复所有中断，传递中断 ID 到恢复值的字典映射。
+一旦您的图被中断并停滞，您可以通过设置包含所有必要反馈的人类反馈来恢复执行。
 
 ```java
 @Component
 public class ParallelInterruptExample {
 
-    public State humanNode1(State state) {
-        Object value = interrupt(Map.of("text_to_revise", state.getText1()));
-        return state.withText1((String) value);
+    public HumanNode createHumanNode1() {
+        return HumanNode.builder()
+            .interruptStrategy("always")
+            .stateUpdateFunc(state -> {
+                if (state.humanFeedback() != null) {
+                    Map<String, Object> data = state.humanFeedback().data();
+                    return Map.of("text_1", data.get("edited_text_1"));
+                }
+                return Map.of();
+            })
+            .build();
     }
 
-    public State humanNode2(State state) {
-        Object value = interrupt(Map.of("text_to_revise", state.getText2()));
-        return state.withText2((String) value);
+    public HumanNode createHumanNode2() {
+        return HumanNode.builder()
+            .interruptStrategy("always")
+            .stateUpdateFunc(state -> {
+                if (state.humanFeedback() != null) {
+                    Map<String, Object> data = state.humanFeedback().data();
+                    return Map.of("text_2", data.get("edited_text_2"));
+                }
+                return Map.of();
+            })
+            .build();
     }
 
     @Bean
-    public StateGraph<State> createParallelGraph() {
-        return StateGraph.<State>builder()
-            .addNode("human_node_1", this::humanNode1)
-            .addNode("human_node_2", this::humanNode2)
+    public StateGraph createParallelGraph() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("text_1", new ReplaceStrategy());
+            state.registerKeyAndStrategy("text_2", new ReplaceStrategy());
+            return state;
+        };
+
+        return StateGraph.builder(stateFactory)
+            .addNode("human_node_1", this.createHumanNode1())
+            .addNode("human_node_2", this.createHumanNode2())
             // 从 START 并行添加两个节点
-            .addEdge("__start__", "human_node_1")
-            .addEdge("__start__", "human_node_2")
-            .build()
-            .compile(checkpointer);
-    }
-}
-
-// 使用示例
-String threadId = UUID.randomUUID().toString();
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", threadId)
-);
-
-State result = graph.invoke(Map.of(
-    "text_1", "original text 1",
-    "text_2", "original text 2"
-), config);
-
-// 使用中断 ID 到值的映射恢复
-Map<String, String> resumeMap = new HashMap<>();
-for (Interrupt interrupt : graph.getState(config).getInterrupts()) {
-    resumeMap.put(interrupt.getInterruptId(),
-        "human input for prompt " + interrupt.getValue());
-}
-
-State finalResult = graph.invoke(Command.resume(resumeMap), config);
-System.out.println(finalResult);
-// > {text_1=edited text for original text 1, text_2=edited text for original text 2}
-```
-
-## 常见模式
-
-以下我们展示使用 `interrupt` 和 `Command` 可以实现的不同设计模式。
-
-### 批准或拒绝
-
-![批准或拒绝](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/approve-or-reject.png)
-*根据人类的批准或拒绝，图可以继续执行操作或采取替代路径。*
-
-在关键步骤（如 API 调用）之前暂停图以审查和批准操作。如果操作被拒绝，您可以阻止图执行该步骤，并可能采取替代操作。
-
-```java
-@Component
-public class ApprovalWorkflow {
-
-    public Command<String> humanApproval(State state) {
-        boolean isApproved = (Boolean) interrupt(Map.of(
-            "question", "Is this correct?",
-            // 显示应由人类审查和批准的输出
-            "llm_output", state.getLlmOutput()
-        ));
-
-        if (isApproved) {
-            return Command.goTo("some_node");
-        } else {
-            return Command.goTo("another_node");
-        }
-    }
-
-    @Bean
-    public StateGraph<State> createApprovalGraph() {
-        return StateGraph.<State>builder()
-            .addNode("human_approval", this::humanApproval)
-            // 将节点添加到图中的适当位置并连接到相关节点
-            .build()
-            .compile(checkpointer);
-    }
-}
-
-// 运行图并命中中断后，图将暂停
-// 使用批准或拒绝恢复它
-Map<String, Object> threadConfig = Map.of(
-    "configurable", Map.of("thread_id", "some_id")
-);
-graph.invoke(Command.resume(true), threadConfig);
-```
-
-### 审查和编辑状态
-
-![编辑图状态](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/edit-graph-state-simple.png)
-*人类可以审查和编辑图的状态。这对于纠正错误或使用额外信息更新状态很有用。*
-
-```java
-@Component
-public class EditingWorkflow {
-
-    public State humanEditing(State state) {
-        Map<String, Object> result = (Map<String, Object>) interrupt(Map.of(
-            "task", "Review the output from the LLM and make any necessary edits.",
-            "llm_generated_summary", state.getLlmGeneratedSummary()
-        ));
-
-        // 使用编辑的文本更新状态
-        return state.withLlmGeneratedSummary((String) result.get("edited_text"));
-    }
-
-    @Bean
-    public StateGraph<State> createEditingGraph() {
-        return StateGraph.<State>builder()
-            .addNode("human_editing", this::humanEditing)
-            // 将节点添加到图中的适当位置并连接到相关节点
-            .build()
-            .compile(checkpointer);
-    }
-}
-
-// 运行图并命中中断后，图将暂停
-// 使用编辑的文本恢复它
-Map<String, Object> threadConfig = Map.of(
-    "configurable", Map.of("thread_id", "some_id")
-);
-graph.invoke(Command.resume(Map.of("edited_text", "The edited text")), threadConfig);
-```
-
-### 审查工具调用
-
-![工具调用审查](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/tool-call-review.png)
-*人类可以在继续之前审查和编辑 LLM 的输出。这在工具调用可能敏感或需要人类监督的应用程序中特别关键。*
-
-要向工具添加人类批准步骤：
-
-1. 在工具中使用 `interrupt()` 暂停执行。
-2. 使用 `Command` 根据人类输入恢复。
-
-```java
-@Component
-public class SensitiveToolExample {
-
-    @Autowired
-    private CheckpointSaver checkpointer;
-
-    // 需要人类审查/批准的敏感工具示例
-    @Tool("预订酒店")
-    public String bookHotel(@Parameter("hotel_name") String hotelName) {
-        Map<String, Object> response = (Map<String, Object>) interrupt(
-            String.format("Trying to call `book_hotel` with args {hotel_name: %s}. " +
-                "Please approve or suggest edits.", hotelName)
-        );
-
-        if ("accept".equals(response.get("type"))) {
-            // 继续执行
-        } else if ("edit".equals(response.get("type"))) {
-            Map<String, Object> args = (Map<String, Object>) response.get("args");
-            hotelName = (String) args.get("hotel_name");
-        } else {
-            throw new IllegalArgumentException("Unknown response type: " + response.get("type"));
-        }
-
-        return String.format("Successfully booked a stay at %s.", hotelName);
-    }
-
-    @Bean
-    public ReactAgent createAgent() {
-        return ReactAgent.builder()
-            .model(chatClient)
-            .tools(List.of(this::bookHotel))
-            .checkpointer(checkpointer) // (1)
+            .addEdge(StateGraph.START, "human_node_1")
+            .addEdge(StateGraph.START, "human_node_2")
+            .addEdge("human_node_1", StateGraph.END)
+            .addEdge("human_node_2", StateGraph.END)
             .build();
     }
 }
 
 // 使用示例
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", "1")
-);
+String threadId = UUID.randomUUID().toString();
+RunnableConfig config = RunnableConfig.builder()
+    .threadId(threadId)
+    .build();
 
-// 运行智能体
-for (AgentStep chunk : agent.stream(Map.of(
-    "messages", List.of(Map.of("role", "user", "content", "book a stay at McKittrick hotel"))
-), config)) {
-    System.out.println(chunk);
+try {
+    Optional<OverAllState> result = graph.invoke(Map.of(
+        "text_1", "original text 1",
+        "text_2", "original text 2"
+    ), config);
+} catch (GraphRunnerException e) {
+    if (e.getMessage().contains("interrupt")) {
+        System.out.println("图已中断，等待人类输入");
+    }
 }
 
-// 您应该看到智能体运行直到到达 interrupt() 调用，此时它暂停并等待人类输入
+// 恢复执行，提供所有必要的反馈
+StateSnapshot stateSnapshot = graph.getState(config);
+OverAllState state = stateSnapshot.state();
+state.withResume();
+state.withHumanFeedback(new OverAllState.HumanFeedback(
+    Map.of(
+        "edited_text_1", "human input for text 1",
+        "edited_text_2", "human input for text 2"
+    ),
+    null
+));
 
-// 使用 Command 根据人类输入恢复智能体
-for (AgentStep chunk : agent.stream(
-    Command.resume(Map.of("type", "accept")), // (2)
-    // Command.resume(Map.of("type", "edit", "args", Map.of("hotel_name", "McKittrick Hotel"))),
-    config
-)) {
-    System.out.println(chunk);
+Optional<OverAllState> finalResult = graph.invoke(state, config);
+System.out.println(finalResult.get().data());
+// > {text_1=human input for text 1, text_2=human input for text 2}
+```
+
+## 实际应用案例
+
+下面通过几个典型的业务场景，展示人机协作的具体实现方法。
+
+### 案例一：操作审批流程
+
+![批准或拒绝](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/approve-or-reject.png)
+*根据审批结果，工作流会执行不同的后续操作*
+
+在执行重要操作前，通常需要人工审批。比如删除重要数据、发送营销邮件等场景。
+
+```java
+@Component
+public class EmailCampaignService {
+
+    // 创建审批节点
+    public HumanNode createApprovalNode() {
+        return HumanNode.builder()
+            .interruptStrategy("always")
+            .stateUpdateFunc(this::handleApprovalResult)
+            .build();
+    }
+
+    // 处理审批结果
+    private Map<String, Object> handleApprovalResult(OverAllState state) {
+        if (state.humanFeedback() != null) {
+            Map<String, Object> feedback = state.humanFeedback().data();
+            boolean approved = (Boolean) feedback.getOrDefault("approved", false);
+            String comment = (String) feedback.getOrDefault("comment", "");
+
+            return Map.of(
+                "approval_status", approved ? "通过" : "拒绝",
+                "approval_comment", comment
+            );
+        }
+        return Map.of();
+    }
+
+    // 路由节点：根据审批结果决定下一步
+    public NodeAction createRoutingNode() {
+        return (state) -> {
+            String status = state.value("approval_status", String.class).orElse("拒绝");
+            return Map.of("next_action", "通过".equals(status) ? "send_email" : "cancel_campaign");
+        };
+    }
+
+    // 配置邮件营销审批流程
+    @Bean
+    public StateGraph createEmailCampaignWorkflow() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("campaign_content", new ReplaceStrategy());
+            state.registerKeyAndStrategy("approval_status", new ReplaceStrategy());
+            state.registerKeyAndStrategy("approval_comment", new ReplaceStrategy());
+            state.registerKeyAndStrategy("next_action", new ReplaceStrategy());
+            state.registerKeyAndStrategy("result", new ReplaceStrategy());
+            return state;
+        };
+
+        return StateGraph.builder(stateFactory)
+            .addNode("approval", this.createApprovalNode())
+            .addNode("routing", this.createRoutingNode())
+            .addNode("send_email", (state) -> Map.of("result", "邮件发送成功"))
+            .addNode("cancel_campaign", (state) -> Map.of("result", "营销活动已取消"))
+            .addEdge(StateGraph.START, "approval")
+            .addEdge("approval", "routing")
+            .addConditionalEdges("routing",
+                state -> state.value("next_action", String.class).orElse("cancel_campaign"),
+                Map.of(
+                    "send_email", "send_email",
+                    "cancel_campaign", "cancel_campaign"
+                ))
+            .addEdge("send_email", StateGraph.END)
+            .addEdge("cancel_campaign", StateGraph.END)
+            .build();
+    }
+}
+
+// 使用示例
+@RestController
+public class CampaignController {
+
+    @PostMapping("/campaign/submit")
+    public String submitCampaign(@RequestBody String content) {
+        RunnableConfig config = RunnableConfig.builder()
+            .threadId("campaign_" + System.currentTimeMillis())
+            .build();
+
+        try {
+            graph.invoke(Map.of("campaign_content", content), config);
+            return "营销活动已提交审批";
+        } catch (GraphRunnerException e) {
+            return "提交失败：" + e.getMessage();
+        }
+    }
+
+    @PostMapping("/campaign/approve")
+    public String approveCampaign(@RequestParam String threadId,
+                                 @RequestParam boolean approved,
+                                 @RequestParam String comment) {
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+
+        StateSnapshot snapshot = graph.getState(config);
+        OverAllState state = snapshot.state();
+        state.withResume();
+        state.withHumanFeedback(new OverAllState.HumanFeedback(
+            Map.of("approved", approved, "comment", comment),
+            null
+        ));
+
+        Optional<OverAllState> result = graph.invoke(state, config);
+        return result.get().value("result", String.class).orElse("处理完成");
+    }
 }
 ```
 
-1. `InMemorySaver` 用于在工具调用循环的每个步骤存储智能体状态。这启用了[短期记忆](./memory.md#添加短期记忆)和[人机协作](./human-in-the-loop.md)功能。在此示例中，我们使用 `InMemorySaver` 在内存中存储智能体状态。在生产应用程序中，智能体状态将存储在数据库中。
-2. [`interrupt` 函数](https://spring-ai-alibaba.github.io/reference/types/#interrupt)与 [`Command`](https://spring-ai-alibaba.github.io/reference/types/#command) 对象结合使用，以使用人类提供的值恢复图。
+### 案例二：内容编辑审核
+
+![编辑图状态](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/edit-graph-state-simple.png)
+*人工可以对AI生成的内容进行审核和修改*
+
+AI生成的内容往往需要人工校对和润色，确保质量和准确性。
+
+```java
+@Component
+public class ContentEditingService {
+
+    // 创建内容编辑节点
+    public HumanNode createEditingNode() {
+        return HumanNode.builder()
+            .interruptStrategy("always")
+            .stateUpdateFunc(this::handleContentEditing)
+            .build();
+    }
+
+    // 处理内容编辑结果
+    private Map<String, Object> handleContentEditing(OverAllState state) {
+        if (state.humanFeedback() != null) {
+            Map<String, Object> feedback = state.humanFeedback().data();
+            String editedContent = (String) feedback.get("edited_content");
+            String editorComment = (String) feedback.getOrDefault("comment", "");
+            boolean needsRevision = (Boolean) feedback.getOrDefault("needs_revision", false);
+
+            return Map.of(
+                "final_content", editedContent,
+                "editor_comment", editorComment,
+                "revision_needed", needsRevision
+            );
+        }
+        return Map.of();
+    }
+
+    // 配置内容编辑工作流
+    @Bean
+    public StateGraph createContentEditingWorkflow() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("original_content", new ReplaceStrategy());
+            state.registerKeyAndStrategy("final_content", new ReplaceStrategy());
+            state.registerKeyAndStrategy("editor_comment", new ReplaceStrategy());
+            state.registerKeyAndStrategy("revision_needed", new ReplaceStrategy());
+            return state;
+        };
+
+        return StateGraph.builder(stateFactory)
+            .addNode("editing", this.createEditingNode())
+            .addNode("ai_generate", this::generateContent)
+            .addNode("publish", this::publishContent)
+            .addNode("revise", this::reviseContent)
+            .addEdge(StateGraph.START, "ai_generate")
+            .addEdge("ai_generate", "editing")
+            .addConditionalEdges("editing",
+                state -> state.value("revision_needed", Boolean.class).orElse(false) ? "revise" : "publish",
+                Map.of(
+                    "publish", "publish",
+                    "revise", "revise"
+                ))
+            .addEdge("revise", "editing") // 修改后重新编辑
+            .addEdge("publish", StateGraph.END)
+            .build();
+    }
+
+    private Map<String, Object> generateContent(OverAllState state) {
+        // AI生成内容的逻辑
+        String topic = state.value("topic", String.class).orElse("默认主题");
+        String generated = "AI生成的关于" + topic + "的内容...";
+        return Map.of("original_content", generated);
+    }
+
+    private Map<String, Object> publishContent(OverAllState state) {
+        String content = state.value("final_content", String.class).orElse("");
+        // 发布内容的逻辑
+        return Map.of("status", "已发布", "published_content", content);
+    }
+
+    private Map<String, Object> reviseContent(OverAllState state) {
+        String comment = state.value("editor_comment", String.class).orElse("");
+        // 根据编辑意见修改内容的逻辑
+        return Map.of("revision_note", "已根据意见修改：" + comment);
+    }
+}
+```
+
+### 案例三：工具调用确认
+
+![工具调用审查](https://langchain-ai.github.io/langgraph/concepts/img/human_in_the_loop/tool-call-review.png)
+*在执行敏感操作前，需要人工确认工具调用的参数和操作*
+
+某些工具调用可能涉及敏感操作，比如删除文件、发送邮件、调用付费API等，需要人工确认后才能执行。
+
+实现步骤：
+
+1. 使用 `ReactAgentWithHuman` 创建支持人工干预的智能体
+2. 配置中断条件来识别需要确认的工具调用
+
+```java
+@Component
+public class PaymentToolService {
+
+    @Autowired
+    private MemorySaver memorySaver;
+
+    @Autowired
+    private ChatClient chatClient;
+
+    // 敏感的支付工具
+    @Tool("处理支付")
+    public String processPayment(@ToolParameter("amount") Double amount,
+                                @ToolParameter("account") String account) {
+        return String.format("已向账户 %s 转账 %.2f 元", account, amount);
+    }
+
+    @Bean
+    public ReactAgentWithHuman createPaymentAgent() throws GraphStateException {
+        SaverConfig saverConfig = SaverConfig.builder()
+            .register(SaverConstant.MEMORY, memorySaver)
+            .type(SaverConstant.MEMORY)
+            .build();
+
+        CompileConfig compileConfig = CompileConfig.builder()
+            .saverConfig(saverConfig)
+            .build();
+
+        List<ToolCallback> tools = List.of(
+            ToolCallback.builder()
+                .name("process_payment")
+                .description("处理支付转账")
+                .function(this::processPayment)
+                .build()
+        );
+
+        // 创建支付智能体，所有支付操作都需要人工确认
+        return new ReactAgentWithHuman(
+            "payment_agent",
+            "你是一个支付助手，可以帮助处理转账。所有支付操作都需要人工确认。",
+            chatClient,
+            tools,
+            10, // 最大迭代次数
+            null, // 键策略工厂
+            compileConfig,
+            null, // 继续条件函数
+            this::needsPaymentConfirmation // 支付确认条件
+        );
+    }
+
+    // 判断是否需要支付确认
+    private Boolean needsPaymentConfirmation(OverAllState state) {
+        List<Message> messages = state.value("messages", List.class).orElse(List.of());
+        return messages.stream()
+            .anyMatch(msg -> msg instanceof AssistantMessage &&
+                ((AssistantMessage) msg).getToolCalls() != null &&
+                ((AssistantMessage) msg).getToolCalls().stream()
+                    .anyMatch(call -> "process_payment".equals(call.name())));
+    }
+}
+
+// 使用示例
+@RestController
+public class PaymentController {
+
+    @Autowired
+    private ReactAgentWithHuman paymentAgent;
+
+    @PostMapping("/payment/request")
+    public String requestPayment(@RequestParam String instruction) {
+        RunnableConfig config = RunnableConfig.builder()
+            .threadId("payment_" + System.currentTimeMillis())
+            .build();
+
+        CompiledGraph agentGraph = paymentAgent.getAndCompileGraph();
+
+        try {
+            agentGraph.invoke(Map.of(
+                "messages", List.of(new UserMessage(instruction))
+            ), config);
+            return "支付请求已提交，等待确认";
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                return "支付操作需要人工确认，请查看详情";
+            }
+            return "处理失败：" + e.getMessage();
+        }
+    }
+
+    @PostMapping("/payment/confirm")
+    public String confirmPayment(@RequestParam String threadId,
+                                @RequestParam boolean approved,
+                                @RequestParam String reason) {
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+        CompiledGraph agentGraph = paymentAgent.getAndCompileGraph();
+
+        StateSnapshot snapshot = agentGraph.getState(config);
+        OverAllState state = snapshot.state();
+        state.withResume();
+        state.withHumanFeedback(new OverAllState.HumanFeedback(
+            Map.of(
+                "approved", approved,
+                "reason", reason
+            ),
+            null
+        ));
+
+        try {
+            Optional<OverAllState> result = agentGraph.invoke(state, config);
+            return approved ? "支付已执行" : "支付已取消：" + reason;
+        } catch (Exception e) {
+            return "操作失败：" + e.getMessage();
+        }
+    }
+}
+```
+
+这个例子展示了如何在支付场景中实现人工确认：
+
+1. **状态保存**：使用 `MemorySaver` 保存执行状态，支持长时间的审批流程
+2. **智能体配置**：`ReactAgentWithHuman` 自动识别支付工具调用并触发中断
+3. **Web接口**：提供REST API供前端调用，实现完整的审批流程
 
 ### 为任何工具添加中断
 
-您可以创建一个包装器来为_任何_工具添加中断。下面的示例提供了一个参考实现。
+您可以创建一个包装器来为_任何_工具添加人类审查功能。下面的示例提供了一个参考实现。
 
 ```java
 @Component
@@ -353,351 +661,707 @@ public class HumanInTheLoopToolWrapper {
     /**
      * 包装工具以支持人机协作审查
      */
-    public Tool addHumanInTheLoop(Tool tool, HumanInterruptConfig interruptConfig) {
-        if (interruptConfig == null) {
-            interruptConfig = HumanInterruptConfig.builder()
-                .allowAccept(true)
-                .allowEdit(true)
-                .allowRespond(true)
-                .build();
-        }
+    public ToolCallback addHumanInTheLoop(ToolCallback originalTool, String toolName) {
+        return ToolCallback.builder()
+            .name(toolName)
+            .description(originalTool.getDescription() + " (需要人类审查)")
+            .function((args) -> {
+                // 这里实际上需要在图层面处理中断
+                // 工具本身不能直接中断，需要通过图的结构来实现
+                return originalTool.getFunction().apply(args);
+            })
+            .build();
+    }
 
-        return new Tool() {
-            @Override
-            public String getName() {
-                return tool.getName();
-            }
+    /**
+     * 创建带有人类审查的工具调用节点
+     */
+    public NodeAction createToolWithHumanReview(ToolCallback tool) {
+        return (state) -> {
+            // 检查是否需要人类审查
+            List<Message> messages = state.value("messages", List.class).orElse(List.of());
 
-            @Override
-            public String getDescription() {
-                return tool.getDescription();
-            }
-
-            @Override
-            public Object call(Map<String, Object> toolInput) {
-                HumanInterrupt request = HumanInterrupt.builder()
-                    .actionRequest(ActionRequest.builder()
-                        .action(tool.getName())
-                        .args(toolInput)
-                        .build())
-                    .config(interruptConfig)
-                    .description("Please review the tool call")
-                    .build();
-
-                List<Map<String, Object>> response = (List<Map<String, Object>>)
-                    interrupt(List.of(request)); // (1)
-
-                Map<String, Object> userResponse = response.get(0);
-
-                // 批准工具调用
-                if ("accept".equals(userResponse.get("type"))) {
-                    return tool.call(toolInput);
-                }
-                // 更新工具调用参数
-                else if ("edit".equals(userResponse.get("type"))) {
-                    Map<String, Object> editedArgs = (Map<String, Object>)
-                        ((Map<String, Object>) userResponse.get("args")).get("args");
-                    return tool.call(editedArgs);
-                }
-                // 使用用户反馈响应 LLM
-                else if ("response".equals(userResponse.get("type"))) {
-                    return userResponse.get("args");
-                } else {
-                    throw new IllegalArgumentException("Unsupported interrupt response type: " +
-                        userResponse.get("type"));
+            // 提取工具调用信息
+            for (Message msg : messages) {
+                if (msg instanceof AssistantMessage) {
+                    AssistantMessage assistantMsg = (AssistantMessage) msg;
+                    if (assistantMsg.getToolCalls() != null && !assistantMsg.getToolCalls().isEmpty()) {
+                        // 保存工具调用信息供人类审查
+                        return Map.of(
+                            "pending_tool_call", assistantMsg.getToolCalls().get(0),
+                            "tool_name", tool.getName(),
+                            "needs_review", true
+                        );
+                    }
                 }
             }
+
+            return Map.of("needs_review", false);
         };
     }
 }
 
-// 使用包装器为任何工具添加 interrupt()，而无需在工具内部添加它
+// 使用包装器创建带有人类审查的工作流
 @Component
-public class ToolUsageExample {
+public class ToolReviewWorkflow {
 
     @Autowired
     private HumanInTheLoopToolWrapper toolWrapper;
 
     @Tool("预订酒店")
-    public String bookHotel(@Parameter("hotel_name") String hotelName) {
+    public String bookHotel(@ToolParameter("hotel_name") String hotelName) {
         return String.format("Successfully booked a stay at %s.", hotelName);
     }
 
     @Bean
-    public ReactAgent createAgentWithWrappedTool() {
-        Tool wrappedTool = toolWrapper.addHumanInTheLoop(
-            this::bookHotel,
-            null // 使用默认配置
-        );
+    public StateGraph createToolReviewGraph() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("messages", new AppendStrategy());
+            state.registerKeyAndStrategy("pending_tool_call", new ReplaceStrategy());
+            state.registerKeyAndStrategy("tool_name", new ReplaceStrategy());
+            state.registerKeyAndStrategy("needs_review", new ReplaceStrategy());
+            state.registerKeyAndStrategy("approved", new ReplaceStrategy());
+            return state;
+        };
 
-        return ReactAgent.builder()
-            .model(chatClient)
-            .tools(List.of(wrappedTool)) // (1)
-            .checkpointer(checkpointer)
+        ToolCallback bookHotelTool = ToolCallback.builder()
+            .name("book_hotel")
+            .description("预订酒店")
+            .function(this::bookHotel)
+            .build();
+
+        HumanNode humanReviewNode = HumanNode.builder()
+            .interruptStrategy("conditioned")
+            .interruptCondition(state -> state.value("needs_review", Boolean.class).orElse(false))
+            .stateUpdateFunc(state -> {
+                if (state.humanFeedback() != null) {
+                    Map<String, Object> feedback = state.humanFeedback().data();
+                    return Map.of("approved", feedback.getOrDefault("approved", false));
+                }
+                return Map.of();
+            })
+            .build();
+
+        return StateGraph.builder(stateFactory)
+            .addNode("extract_tool_call", toolWrapper.createToolWithHumanReview(bookHotelTool))
+            .addNode("human_review", humanReviewNode)
+            .addNode("execute_tool", (state) -> {
+                boolean approved = state.value("approved", Boolean.class).orElse(false);
+                if (approved) {
+                    // 执行工具调用
+                    String hotelName = "McKittrick Hotel"; // 从 pending_tool_call 中提取
+                    String result = bookHotel(hotelName);
+                    return Map.of("tool_result", result);
+                } else {
+                    return Map.of("tool_result", "工具调用被拒绝");
+                }
+            })
+            .addEdge(StateGraph.START, "extract_tool_call")
+            .addEdge("extract_tool_call", "human_review")
+            .addEdge("human_review", "execute_tool")
+            .addEdge("execute_tool", StateGraph.END)
             .build();
     }
 }
 
-// 运行智能体
-Map<String, Object> config = Map.of("configurable", Map.of("thread_id", "1"));
+// 使用示例
+RunnableConfig config = RunnableConfig.builder()
+    .threadId("1")
+    .build();
 
-for (AgentStep chunk : agent.stream(Map.of(
-    "messages", List.of(Map.of("role", "user", "content", "book a stay at McKittrick hotel"))
-), config)) {
-    System.out.println(chunk);
+try {
+    Optional<OverAllState> result = graph.invoke(Map.of(
+        "messages", List.of(new UserMessage("book a stay at McKittrick hotel"))
+    ), config);
+} catch (GraphRunnerException e) {
+    if (e.getMessage().contains("interrupt")) {
+        System.out.println("等待人类审查工具调用");
+    }
 }
 
-// 您应该看到智能体运行直到到达 interrupt() 调用，此时它暂停并等待人类输入
+// 恢复并批准工具调用
+StateSnapshot stateSnapshot = graph.getState(config);
+OverAllState state = stateSnapshot.state();
+state.withResume();
+state.withHumanFeedback(new OverAllState.HumanFeedback(
+    Map.of("approved", true),
+    null
+));
 
-// 使用 Command 根据人类输入恢复智能体
-for (AgentStep chunk : agent.stream(
-    Command.resume(List.of(Map.of("type", "accept"))),
-    // Command.resume(List.of(Map.of("type", "edit", "args", Map.of("args", Map.of("hotel_name", "McKittrick Hotel"))))),
-    config
-)) {
-    System.out.println(chunk);
-}
+Optional<OverAllState> finalResult = graph.invoke(state, config);
 ```
 
-1. `addHumanInTheLoop` 包装器用于向工具添加 `interrupt()`。这允许智能体在继续工具调用之前暂停执行并等待人类输入。
+1. 通过图结构实现工具调用的人类审查，而不是在工具内部直接中断。这提供了更好的控制和状态管理。
 
-### 验证人类输入
+### 案例四：输入验证
 
-如果您需要在图本身内部（而不是在客户端）验证人类提供的输入，您可以通过在单个节点内使用多个中断调用来实现这一点。
+在某些场景下，需要在工作流内部验证用户输入的有效性，确保数据格式正确后再继续处理。
 
 ```java
 @Component
-public class InputValidationExample {
+public class UserRegistrationService {
 
-    public State humanNode(State state) {
-        String question = "What is your age?";
+    // 创建用户信息验证节点
+    public HumanNode createValidationNode() {
+        return HumanNode.builder()
+            .interruptStrategy("always")
+            .stateUpdateFunc(this::validateUserInfo)
+            .build();
+    }
 
-        while (true) {
-            Object answer = interrupt(question);
+    // 验证用户输入信息
+    private Map<String, Object> validateUserInfo(OverAllState state) {
+        if (state.humanFeedback() != null) {
+            Map<String, Object> feedback = state.humanFeedback().data();
+            String email = (String) feedback.get("email");
+            String phone = (String) feedback.get("phone");
+            Integer age = (Integer) feedback.get("age");
 
-            // 验证答案，如果答案无效则再次请求输入
-            if (!(answer instanceof Integer) || (Integer) answer < 0) {
-                question = "Please enter a valid age (non-negative integer).";
-                continue;
+            // 验证邮箱格式
+            if (email == null || !email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+                return Map.of(
+                    "validation_passed", false,
+                    "error_message", "请输入有效的邮箱地址"
+                );
             }
 
-            return state.withAge((Integer) answer);
+            // 验证手机号格式
+            if (phone == null || !phone.matches("^1[3-9]\\d{9}$")) {
+                return Map.of(
+                    "validation_passed", false,
+                    "error_message", "请输入有效的手机号码"
+                );
+            }
+
+            // 验证年龄
+            if (age == null || age < 18 || age > 100) {
+                return Map.of(
+                    "validation_passed", false,
+                    "error_message", "年龄必须在18-100岁之间"
+                );
+            }
+
+            // 所有验证通过
+            return Map.of(
+                "validation_passed", true,
+                "user_email", email,
+                "user_phone", phone,
+                "user_age", age,
+                "message", "用户信息验证通过"
+            );
         }
+
+        return Map.of(
+            "validation_passed", false,
+            "message", "请填写用户注册信息"
+        );
     }
 
+    // 创建用户注册完成节点
+    public NodeAction createRegistrationNode() {
+        return (state) -> {
+            String email = state.value("user_email", String.class).orElse("");
+            String phone = state.value("user_phone", String.class).orElse("");
+            Integer age = state.value("user_age", Integer.class).orElse(0);
+
+            // 模拟用户注册逻辑
+            String userId = "USER_" + System.currentTimeMillis();
+            System.out.printf("✅ 用户注册成功：ID=%s, 邮箱=%s, 手机=%s, 年龄=%d%n",
+                userId, email, phone, age);
+
+            return Map.of(
+                "user_id", userId,
+                "registration_status", "成功",
+                "registration_time", new Date().toString()
+            );
+        };
+    }
+
+    // 配置用户注册验证工作流
     @Bean
-    public StateGraph<State> createValidationGraph() {
-        return StateGraph.<State>builder()
-            .addNode("get_valid_age", this::humanNode)
-            .addNode("report_age", this::reportAge)
-            .addEdge("__start__", "get_valid_age")
-            .addEdge("get_valid_age", "report_age")
-            .addEdge("report_age", "__end__")
-            .build()
-            .compile(checkpointer);
-    }
+    public StateGraph createRegistrationWorkflow() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("validation_passed", new ReplaceStrategy());
+            state.registerKeyAndStrategy("error_message", new ReplaceStrategy());
+            state.registerKeyAndStrategy("message", new ReplaceStrategy());
+            state.registerKeyAndStrategy("user_email", new ReplaceStrategy());
+            state.registerKeyAndStrategy("user_phone", new ReplaceStrategy());
+            state.registerKeyAndStrategy("user_age", new ReplaceStrategy());
+            state.registerKeyAndStrategy("user_id", new ReplaceStrategy());
+            state.registerKeyAndStrategy("registration_status", new ReplaceStrategy());
+            return state;
+        };
 
-    private State reportAge(State state) {
-        System.out.printf("✅ Human is %d years old.%n", state.getAge());
-        return state;
+        return StateGraph.builder(stateFactory)
+            .addNode("validate_info", this.createValidationNode())
+            .addNode("register_user", this.createRegistrationNode())
+            .addEdge(StateGraph.START, "validate_info")
+            .addConditionalEdges("validate_info",
+                state -> state.value("validation_passed", Boolean.class).orElse(false) ? "valid" : "invalid",
+                Map.of(
+                    "valid", "register_user",
+                    "invalid", "validate_info" // 验证失败，重新输入
+                ))
+            .addEdge("register_user", StateGraph.END)
+            .build();
     }
 }
 
 // 使用示例
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", UUID.randomUUID().toString())
-);
+@RestController
+public class RegistrationController {
 
-// 运行图直到第一个中断
-State result = graph.invoke(Map.of(), config);
-System.out.println(result.getInterrupt()); // 第一个提示："What is your age?"
+    @Autowired
+    private CompiledGraph registrationWorkflow;
 
-// 模拟无效输入（例如，字符串而不是整数）
-result = graph.invoke(Command.resume("not a number"), config);
-System.out.println(result.getInterrupt()); // 带验证消息的后续提示
+    @PostMapping("/user/register")
+    public ResponseEntity<Map<String, Object>> startRegistration() {
+        String threadId = "reg_" + System.currentTimeMillis();
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
 
-// 模拟第二个无效输入（例如，负数）
-result = graph.invoke(Command.resume("-10"), config);
-System.out.println(result.getInterrupt()); // 另一次重试
+        try {
+            registrationWorkflow.invoke(Map.of(), config);
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                return ResponseEntity.ok(Map.of(
+                    "status", "waiting_input",
+                    "thread_id", threadId,
+                    "message", "请填写注册信息"
+                ));
+            }
+        }
+        return ResponseEntity.badRequest().body(Map.of("error", "启动注册流程失败"));
+    }
 
-// 提供有效输入
-State finalResult = graph.invoke(Command.resume("25"), config);
-System.out.println(finalResult); // 应该包含有效年龄
+    @PostMapping("/user/submit-info")
+    public ResponseEntity<Map<String, Object>> submitUserInfo(
+            @RequestParam String threadId,
+            @RequestParam String email,
+            @RequestParam String phone,
+            @RequestParam Integer age) {
+
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+
+        StateSnapshot snapshot = registrationWorkflow.getState(config);
+        OverAllState state = snapshot.state();
+        state.withResume();
+        state.withHumanFeedback(new OverAllState.HumanFeedback(
+            Map.of("email", email, "phone", phone, "age", age),
+            null
+        ));
+
+        try {
+            Optional<OverAllState> result = registrationWorkflow.invoke(state, config);
+            if (result.isPresent()) {
+                OverAllState finalState = result.get();
+                String status = finalState.value("registration_status", String.class).orElse("");
+
+                if ("成功".equals(status)) {
+                    return ResponseEntity.ok(Map.of(
+                        "status", "success",
+                        "user_id", finalState.value("user_id", String.class).orElse(""),
+                        "message", "注册成功"
+                    ));
+                }
+            }
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                // 验证失败，需要重新输入
+                StateSnapshot newSnapshot = registrationWorkflow.getState(config);
+                String errorMsg = newSnapshot.state().value("error_message", String.class)
+                    .orElse("信息验证失败，请重新输入");
+
+                return ResponseEntity.badRequest().body(Map.of(
+                    "status", "validation_failed",
+                    "thread_id", threadId,
+                    "error", errorMsg
+                ));
+            }
+        }
+
+        return ResponseEntity.badRequest().body(Map.of("error", "注册失败"));
+    }
+}
 ```
 
-## 使用静态中断调试
+## 静态中断调试
 
-要调试和测试图，请使用[静态中断](./human-in-the-loop.md#核心功能)（也称为静态断点）逐个节点地单步执行图或在特定节点暂停图执行。静态中断在定义的点触发，在节点执行之前或之后。您可以通过在编译时或运行时指定 `interruptBefore` 和 `interruptAfter` 来设置静态中断。
+静态中断主要用于开发和调试阶段，可以在指定的节点前后自动暂停执行，方便开发者检查工作流的执行状态。
 
-:::warning
-静态中断**不**推荐用于人机协作工作流。请改用[动态中断](#使用-interrupt-暂停)。
+### 使用场景
+
+静态中断适用于以下场景：
+- **开发调试**：逐步执行工作流，检查每个节点的输入输出
+- **性能分析**：在特定节点暂停，分析执行时间和资源消耗
+- **问题排查**：在出现问题的节点前后设置断点，定位问题原因
+
+:::warning "使用建议"
+静态中断主要用于开发调试，生产环境的人机协作应该使用动态中断（`HumanNode`）。
 :::
 
-### 编译时设置
+### 配置静态中断
 
 ```java
 @Configuration
-public class GraphWithBreakpoints {
+public class DebugWorkflowConfig {
+
+    @Autowired
+    private MemorySaver memorySaver;
 
     @Bean
-    public StateGraph<State> createGraphWithBreakpoints() {
-        return StateGraph.<State>builder()
-            .addNode("step_1", this::step1)
-            .addNode("step_2", this::step2)
-            .addNode("step_3", this::step3)
-            .addEdge("__start__", "step_1")
-            .addEdge("step_1", "step_2")
-            .addEdge("step_2", "step_3")
-            .addEdge("step_3", "__end__")
-            .build()
-            .compile(
-                checkpointer,                    // (1)
-                List.of("node_a"),              // (2) interruptBefore
-                List.of("node_b", "node_c")     // (3) interruptAfter
-            );
+    public CompiledGraph createDebugWorkflow() {
+        OverAllStateFactory stateFactory = () -> {
+            OverAllState state = new OverAllState();
+            state.registerKeyAndStrategy("current_step", new ReplaceStrategy());
+            state.registerKeyAndStrategy("data", new ReplaceStrategy());
+            state.registerKeyAndStrategy("debug_info", new ReplaceStrategy());
+            return state;
+        };
+
+        StateGraph stateGraph = StateGraph.builder(stateFactory)
+            .addNode("data_preparation", this::prepareData)
+            .addNode("data_processing", this::processData)
+            .addNode("result_generation", this::generateResult)
+            .addEdge(StateGraph.START, "data_preparation")
+            .addEdge("data_preparation", "data_processing")
+            .addEdge("data_processing", "result_generation")
+            .addEdge("result_generation", StateGraph.END)
+            .build();
+
+        SaverConfig saverConfig = SaverConfig.builder()
+            .register(SaverConstant.MEMORY, memorySaver)
+            .type(SaverConstant.MEMORY)
+            .build();
+
+        CompileConfig compileConfig = CompileConfig.builder()
+            .saverConfig(saverConfig)                        // 启用状态保存
+            .interruptBefore("data_processing")              // 在数据处理前暂停
+            .interruptAfter("data_preparation", "result_generation")  // 在指定节点后暂停
+            .build();
+
+        return stateGraph.compile(compileConfig);
     }
 
-    private State step1(State state) {
-        System.out.println("---Step 1---");
-        return state;
+    private Map<String, Object> prepareData(OverAllState state) {
+        System.out.println("🔄 正在准备数据...");
+        // 模拟数据准备逻辑
+        return Map.of(
+            "current_step", "数据准备完成",
+            "data", "prepared_data_" + System.currentTimeMillis(),
+            "debug_info", "数据准备耗时: 100ms"
+        );
     }
 
-    private State step2(State state) {
-        System.out.println("---Step 2---");
-        return state;
+    private Map<String, Object> processData(OverAllState state) {
+        System.out.println("⚙️ 正在处理数据...");
+        String data = state.value("data", String.class).orElse("");
+        return Map.of(
+            "current_step", "数据处理完成",
+            "data", "processed_" + data,
+            "debug_info", "数据处理耗时: 200ms"
+        );
     }
 
-    private State step3(State state) {
-        System.out.println("---Step 3---");
-        return state;
+    private Map<String, Object> generateResult(OverAllState state) {
+        System.out.println("📊 正在生成结果...");
+        String processedData = state.value("data", String.class).orElse("");
+        return Map.of(
+            "current_step", "结果生成完成",
+            "final_result", "result_" + processedData,
+            "debug_info", "结果生成耗时: 50ms"
+        );
     }
 }
 
-// 使用示例
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", "some_thread")
-);
+// 调试使用示例
+@Service
+public class DebugService {
 
-// 运行图直到断点
-graph.invoke(inputs, config); // (4)
+    @Autowired
+    private CompiledGraph debugWorkflow;
 
-// 恢复图
-graph.invoke(null, config); // (5)
+    public void runDebugSession() {
+        String threadId = "debug_" + System.currentTimeMillis();
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+
+        System.out.println("🚀 开始调试会话...");
+
+        try {
+            // 启动工作流，会在第一个断点暂停
+            debugWorkflow.invoke(Map.of("input", "test_data"), config);
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                System.out.println("⏸️ 工作流在断点处暂停");
+
+                // 检查当前状态
+                StateSnapshot snapshot = debugWorkflow.getState(config);
+                OverAllState currentState = snapshot.state();
+                System.out.println("当前步骤: " + currentState.value("current_step", String.class).orElse("未知"));
+                System.out.println("调试信息: " + currentState.value("debug_info", String.class).orElse("无"));
+
+                // 继续执行到下一个断点
+                this.continueExecution(threadId);
+            }
+        }
+    }
+
+    public void continueExecution(String threadId) {
+        RunnableConfig config = RunnableConfig.builder().threadId(threadId).build();
+
+        StateSnapshot snapshot = debugWorkflow.getState(config);
+        OverAllState state = snapshot.state();
+        state.withResume();
+
+        try {
+            Optional<OverAllState> result = debugWorkflow.invoke(state, config);
+            if (result.isPresent()) {
+                System.out.println("✅ 工作流执行完成");
+                System.out.println("最终结果: " + result.get().value("final_result", String.class).orElse("无结果"));
+            }
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                System.out.println("⏸️ 工作流在下一个断点暂停");
+                // 可以继续调试或检查状态
+            }
+        }
+    }
+}
 ```
 
-1. 需要检查点保存器来启用断点。
-2. `interruptBefore` 指定执行应在节点执行之前暂停的节点。
-3. `interruptAfter` 指定执行应在节点执行之后暂停的节点。
-4. 图运行直到命中第一个断点。
-5. 通过为输入传递 `null` 来恢复图。这将运行图直到命中下一个断点。
+### 关键配置说明
 
-### 运行时设置
+1. **检查点保存器**：必须配置才能支持断点功能
+2. **interruptBefore**：在指定节点执行前暂停，用于检查输入参数
+3. **interruptAfter**：在指定节点执行后暂停，用于检查输出结果
+4. **状态恢复**：通过 `withResume()` 继续执行到下一个断点
 
-```java
-// 在运行时设置断点
-GraphInvokeOptions options = GraphInvokeOptions.builder()
-    .interruptBefore(List.of("node_a"))      // (1)
-    .interruptAfter(List.of("node_b", "node_c")) // (2)
-    .build();
-
-Map<String, Object> config = Map.of(
-    "configurable", Map.of("thread_id", "some_thread")
-);
-
-// 运行图直到断点
-graph.invoke(inputs, config, options); // (3)
-
-// 恢复图
-graph.invoke(null, config); // (4)
-```
-
-1. `interruptBefore` 指定执行应在节点执行之前暂停的节点。
-2. `interruptAfter` 指定执行应在节点执行之后暂停的节点。
-3. 图运行直到命中第一个断点。
-4. 通过为输入传递 `null` 来恢复图。这将运行图直到命中下一个断点。
-
-:::note
-您不能在运行时为**子图**设置静态断点。如果您有子图，必须在编译时设置断点。
+:::tip "调试技巧"
+静态中断只能在编译时配置，适合固定的调试场景。如果需要根据运行时条件动态中断，建议使用 `HumanNode` 的条件中断功能。
 :::
 
-## 注意事项
+## 开发建议
 
-使用人机协作时，需要记住一些注意事项。
+### 避免副作用重复执行
 
-### 使用具有副作用的代码
+由于 `HumanNode` 在恢复时会重新执行，应该将有副作用的操作（如API调用、数据库写入）放在单独的节点中。
 
-将具有副作用的代码（如 API 调用）放在 `interrupt` 之后或单独的节点中，以避免重复，因为每次恢复节点时都会重新触发这些代码。
-
-#### 副作用在中断之后
+#### 推荐的节点分离方式
 
 ```java
-public State humanNode(State state) {
-    Object answer = interrupt(question);
+// 人工输入节点 - 只处理用户反馈
+public HumanNode createInputNode() {
+    return HumanNode.builder()
+        .interruptStrategy("always")
+        .stateUpdateFunc(state -> {
+            if (state.humanFeedback() != null) {
+                Map<String, Object> feedback = state.humanFeedback().data();
+                return Map.of("user_decision", feedback.get("decision"));
+            }
+            return Map.of();
+        })
+        .build();
+}
 
-    apiCall(answer); // 正确，因为它在中断之后
-    return state;
+// 业务操作节点 - 执行实际的业务逻辑
+public NodeAction createBusinessNode() {
+    return (state) -> {
+        String decision = state.value("user_decision", String.class).orElse("");
+
+        if ("approve".equals(decision)) {
+            // 执行实际的业务操作（只会执行一次）
+            String result = performBusinessOperation();
+            return Map.of("operation_result", result);
+        } else {
+            return Map.of("operation_result", "操作已取消");
+        }
+    };
+}
+
+// 工作流结构
+StateGraph.builder(stateFactory)
+    .addNode("user_input", createInputNode())
+    .addNode("business_operation", createBusinessNode())
+    .addEdge("user_input", "business_operation")
+    .build();
+```
+
+### 子图中的人机协作
+
+当在子图中使用 `HumanNode` 时，需要注意中断会影响整个调用链。
+
+```java
+// 父工作流节点
+public NodeAction createParentNode() {
+    return (state) -> {
+        // 这部分代码在恢复时会重新执行
+        System.out.println("准备调用子图...");
+
+        try {
+            // 调用包含 HumanNode 的子图
+            Optional<OverAllState> subResult = subWorkflow.invoke(
+                Map.of("input", state.value("data")),
+                config
+            );
+            return Map.of("sub_result", subResult.get().data());
+        } catch (GraphRunnerException e) {
+            if (e.getMessage().contains("interrupt")) {
+                // 子图中断，向上传播
+                throw e;
+            }
+            throw e;
+        }
+    };
 }
 ```
 
-#### 副作用在单独的节点中
+### 多个人工干预点
+
+复杂的业务流程可能需要多个人工干预点，每个点负责不同的审核内容。
 
 ```java
-public State humanNode(State state) {
-    Object answer = interrupt(question);
+@Bean
+public StateGraph createMultiApprovalWorkflow() {
+    // 内容审核节点
+    HumanNode contentReview = HumanNode.builder()
+        .interruptStrategy("always")
+        .stateUpdateFunc(this::handleContentReview)
+        .build();
 
-    return state.withAnswer(answer);
+    // 法务审核节点
+    HumanNode legalReview = HumanNode.builder()
+        .interruptStrategy("conditioned")
+        .interruptCondition(state -> needsLegalReview(state))
+        .stateUpdateFunc(this::handleLegalReview)
+        .build();
+
+    // 最终审批节点
+    HumanNode finalApproval = HumanNode.builder()
+        .interruptStrategy("always")
+        .stateUpdateFunc(this::handleFinalApproval)
+        .build();
+
+    return StateGraph.builder(stateFactory)
+        .addNode("content_review", contentReview)
+        .addNode("legal_review", legalReview)
+        .addNode("final_approval", finalApproval)
+        .addNode("publish", this::publishContent)
+        .addEdge(StateGraph.START, "content_review")
+        .addEdge("content_review", "legal_review")
+        .addEdge("legal_review", "final_approval")
+        .addEdge("final_approval", "publish")
+        .addEdge("publish", StateGraph.END)
+        .build();
 }
 
-public State apiCallNode(State state) {
-    apiCall(state.getAnswer()); // 正确，因为它在单独的节点中
-    return state;
+private boolean needsLegalReview(OverAllState state) {
+    // 根据内容类型判断是否需要法务审核
+    String contentType = state.value("content_type", String.class).orElse("");
+    return "contract".equals(contentType) || "legal_document".equals(contentType);
 }
 ```
 
-### 使用作为函数调用的子图
+### 设计原则
 
-当将子图作为函数调用时，父图将从调用子图的**节点开始**恢复执行，其中触发了 `interrupt`。类似地，**子图**将从调用 `interrupt()` 函数的**节点开始**恢复。
+1. **单一职责**：每个 `HumanNode` 只负责一种类型的人工干预
+2. **清晰边界**：明确定义每个节点的输入输出和处理逻辑
+3. **状态一致性**：确保状态更新逻辑的一致性和可预测性
+4. **错误处理**：妥善处理中断异常和恢复失败的情况
 
-```java
-public State nodeInParentGraph(State state) {
-    someCode(); // <-- 恢复子图时这将重新执行
+## 配置参考
 
-    // 将子图作为函数调用
-    // 子图包含 interrupt 调用
-    State subgraphResult = subgraph.invoke(someInput);
-    // ...
-    return state;
-}
-```
-
-### 在单个节点中使用多个中断
-
-在单个节点内使用多个中断对于验证人类输入等模式很有帮助。但是，如果处理不当，在同一节点中使用多个中断可能导致意外行为。
-
-当节点包含多个中断调用时，Spring AI Alibaba 保留特定于执行节点任务的恢复值列表。每当执行恢复时，它从节点开始。对于遇到的每个中断，Spring AI Alibaba 检查任务的恢复列表中是否存在匹配值。匹配严格基于索引，因此节点内中断调用的顺序至关重要。
-
-为避免问题，请避免在执行之间动态更改节点的结构。这包括添加、删除或重新排序中断调用，因为此类更改可能导致索引不匹配。这些问题通常来自非常规模式，例如通过 `Command.resume(..., update=SOME_STATE_MUTATION)` 变更状态或依赖全局变量动态修改节点结构。
-
-## 配置选项
+### 应用配置
 
 ```properties
-# 人机协作配置
-spring.ai.alibaba.human-in-the-loop.enabled=true
-spring.ai.alibaba.human-in-the-loop.interrupt.timeout=30m
-spring.ai.alibaba.human-in-the-loop.interrupt.max-retries=3
+# 数据库配置（用于持久化检查点）
+spring.datasource.url=jdbc:mysql://localhost:3306/workflow_db
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-# 检查点配置
-spring.ai.alibaba.human-in-the-loop.checkpointer.type=database
-spring.ai.alibaba.human-in-the-loop.checkpointer.cleanup-interval=24h
+# 连接池配置
+spring.datasource.hikari.maximum-pool-size=20
+spring.datasource.hikari.minimum-idle=5
+spring.datasource.hikari.connection-timeout=30000
 
-# 静态中断配置
-spring.ai.alibaba.human-in-the-loop.static-interrupts.enabled=true
-spring.ai.alibaba.human-in-the-loop.static-interrupts.debug-mode=false
+# Redis 配置（可选，用于缓存）
+spring.redis.host=localhost
+spring.redis.port=6379
+spring.redis.database=0
+spring.redis.timeout=5000ms
 
-# 工具审查配置
-spring.ai.alibaba.human-in-the-loop.tool-review.enabled=true
-spring.ai.alibaba.human-in-the-loop.tool-review.auto-approve-safe-tools=false
-spring.ai.alibaba.human-in-the-loop.tool-review.timeout=15m
+# 工作流执行配置
+workflow.execution.max-iterations=100
+workflow.execution.timeout=30m
+workflow.human-interaction.default-timeout=24h
+
+# 日志配置
+logging.level.com.alibaba.cloud.ai.graph=INFO
+logging.level.com.alibaba.cloud.ai.graph.node.HumanNode=DEBUG
+```
+
+### Java 配置
+
+```java
+@Configuration
+@EnableConfigurationProperties
+public class WorkflowConfig {
+
+    @Bean
+    public MemorySaver memorySaver() {
+        return new MemorySaver();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "workflow.saver.type", havingValue = "database")
+    public DatabaseSaver databaseSaver(DataSource dataSource) {
+        return new DatabaseSaver(dataSource);
+    }
+
+    @Bean
+    public SaverConfig saverConfig(MemorySaver memorySaver) {
+        return SaverConfig.builder()
+            .register(SaverConstant.MEMORY, memorySaver)
+            .type(SaverConstant.MEMORY)
+            .build();
+    }
+
+    @Bean
+    public CompileConfig compileConfig(SaverConfig saverConfig) {
+        return CompileConfig.builder()
+            .saverConfig(saverConfig)
+            // 生产环境不建议设置静态中断点
+            // .interruptBefore("review_node")
+            .build();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+
+// 工作流属性配置
+@ConfigurationProperties(prefix = "workflow")
+@Data
+public class WorkflowProperties {
+    private Execution execution = new Execution();
+    private HumanInteraction humanInteraction = new HumanInteraction();
+
+    @Data
+    public static class Execution {
+        private int maxIterations = 100;
+        private Duration timeout = Duration.ofMinutes(30);
+    }
+
+    @Data
+    public static class HumanInteraction {
+        private Duration defaultTimeout = Duration.ofHours(24);
+        private boolean enableNotification = true;
+        private String notificationUrl;
+    }
+}
 ```
 
 ## 最佳实践
@@ -724,6 +1388,6 @@ spring.ai.alibaba.human-in-the-loop.tool-review.timeout=15m
 
 ## 下一步
 
-- [了解时间旅行](./time-travel.md)
+- [了解持久执行与时间旅行](./state-context-management/durable-execution.md)
 - [学习子图](./subgraphs.md)
 - [探索持久化机制](./persistence.md)

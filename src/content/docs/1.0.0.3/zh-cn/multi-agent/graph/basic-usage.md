@@ -88,83 +88,301 @@ result.ifPresent(state -> {
 
 ### 使用 Reducers 处理状态更新
 
-状态中的每个键都可以有自己独立的 reducer 函数，用于控制如何应用节点的更新。如果没有明确指定 reducer 函数，则假定对该键的所有更新都应该覆盖它。
+#### 什么是 Reducer？
 
-在前面的示例中，我们的节点通过向消息列表追加消息来更新 `"messages"` 键。下面我们为这个键添加一个 reducer，使更新自动追加：
+在 Spring AI Alibaba Graph 中，**Reducer** 是一种状态更新策略，它决定了当节点返回新值时，如何将这些新值与现有状态进行合并。可以把它理解为"状态合并规则"。
+
+#### 为什么需要 Reducer？
+
+考虑一个聊天场景：
+- 状态中有一个 `messages` 列表，包含对话历史
+- 每个节点都可能添加新的消息
+- 我们希望新消息**追加**到现有列表，而不是**替换**整个列表
+
+#### 默认行为 vs Reducer 行为
+
+**没有 Reducer 的情况（默认覆盖行为）：**
 
 ```java
+// 假设当前状态：messages = [消息1, 消息2]
+NodeAction nodeWithoutReducer = state -> {
+    List<Message> currentMessages = state.value("messages", List.class).orElse(new ArrayList<>());
+
+    // 手动处理追加逻辑
+    List<Message> updatedMessages = new ArrayList<>(currentMessages);
+    updatedMessages.add(new AssistantMessage("新消息"));
+
+    return Map.of(
+        "messages", updatedMessages  // 必须返回完整的列表
+    );
+};
+// 结果：messages = [消息1, 消息2, 新消息]
+```
+
+**使用 Reducer 的情况（自动追加行为）：**
+
+```java
+// 1. 首先配置 Reducer 策略
 KeyStrategyFactory reducerStateFactory = () -> {
     Map<String, KeyStrategy> strategies = new HashMap<>();
-    strategies.put("messages", KeyStrategy.APPEND);  // 自动追加新消息
-    strategies.put("extra_field", KeyStrategy.REPLACE);
+    strategies.put("messages", KeyStrategy.APPEND);     // 自动追加新消息
+    strategies.put("user_name", KeyStrategy.REPLACE);   // 替换用户名
+    strategies.put("counters", KeyStrategy.MERGE);      // 合并计数器对象
     return strategies;
 };
-```
 
-现在我们的节点可以简化：
+// 2. 节点代码大大简化
+NodeAction nodeWithReducer = state -> {
+    AssistantMessage newMessage = new AssistantMessage("新消息");
 
-```java
-NodeAction simplifiedNode = state -> {
-    AssistantMessage newMessage = new AssistantMessage("Hello!");
     return Map.of(
-        "messages", List.of(newMessage),  // 直接返回新消息列表
-        "extra_field", 10
+        "messages", List.of(newMessage),  // 只需返回新消息，框架自动追加
+        "user_name", "Alice"              // 直接替换
     );
 };
+// 结果：messages = [消息1, 消息2, 新消息]（自动追加）
 ```
 
-### 定义输入和输出模式
+#### 可用的 KeyStrategy 类型
 
-默认情况下，StateGraph 使用单一模式操作，所有节点都使用该模式进行通信。但是，也可以为图定义不同的输入和输出模式。
+Spring AI Alibaba 提供了几种内置的状态更新策略：
 
 ```java
-// 定义输入模式
-public class InputState {
-    private String question;
-    // getters and setters
-}
-
-// 定义输出模式  
-public class OutputState {
-    private String answer;
-    // getters and setters
-}
-
-// 定义整体模式，结合输入和输出
-public class OverallState extends InputState {
-    private String answer;
-    // getters and setters
-}
-
-// 定义处理节点
-NodeAction answerNode = state -> {
-    String question = (String) state.value("question").orElse("");
-    return Map.of(
-        "answer", "这是对问题的回答: " + question,
-        "question", question
-    );
-};
-
-// 构建具有指定输入和输出模式的图
 KeyStrategyFactory strategyFactory = () -> {
     Map<String, KeyStrategy> strategies = new HashMap<>();
-    strategies.put("question", KeyStrategy.REPLACE);
-    strategies.put("answer", KeyStrategy.REPLACE);
+
+    // 1. APPEND - 追加到列表末尾
+    strategies.put("messages", KeyStrategy.APPEND);
+
+    // 2. REPLACE - 完全替换（默认行为）
+    strategies.put("current_user", KeyStrategy.REPLACE);
+
+    // 3. MERGE - 合并对象/Map
+    strategies.put("metadata", KeyStrategy.MERGE);
+
     return strategies;
 };
+```
 
-StateGraph graph = new StateGraph(strategyFactory)
-    .addNode("answer_node", node_async(answerNode))
-    .addEdge(START, "answer_node")
-    .addEdge("answer_node", END);
+#### 实际应用示例
 
-CompiledGraph compiledGraph = graph.compile();
+让我们看一个完整的聊天机器人示例：
 
-// 调用图并打印结果
-Optional<OverAllState> result = compiledGraph.invoke(Map.of("question", "你好"));
-result.ifPresent(state -> {
-    System.out.println("答案: " + state.value("answer", String.class).orElse("无答案"));
-});
+```java
+@Component
+public class ChatBotExample {
+
+    // 配置状态更新策略
+    @Bean
+    public KeyStrategyFactory chatKeyStrategyFactory() {
+        return () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("messages", KeyStrategy.APPEND);      // 消息追加
+            strategies.put("user_info", KeyStrategy.MERGE);      // 用户信息合并
+            strategies.put("current_topic", KeyStrategy.REPLACE); // 当前话题替换
+            return strategies;
+        };
+    }
+
+    // 用户输入节点
+    NodeAction userInputNode = state -> {
+        String userInput = (String) state.value("user_input").orElse("");
+        UserMessage userMessage = new UserMessage(userInput);
+
+        return Map.of(
+            "messages", List.of(userMessage),  // 自动追加到消息列表
+            "current_topic", extractTopic(userInput)  // 替换当前话题
+        );
+    };
+
+    // AI 回复节点
+    NodeAction aiResponseNode = state -> {
+        List<Message> messages = state.value("messages", List.class).orElse(new ArrayList<>());
+        String response = generateResponse(messages);
+        AssistantMessage aiMessage = new AssistantMessage(response);
+
+        return Map.of(
+            "messages", List.of(aiMessage),  // 自动追加 AI 回复
+            "user_info", Map.of(            // 合并用户信息
+                "last_interaction", Instant.now(),
+                "message_count", 1
+            )
+        );
+    };
+
+    private String extractTopic(String input) {
+        // 简单的话题提取逻辑
+        return input.length() > 10 ? "详细讨论" : "简单问答";
+    }
+
+    private String generateResponse(List<Message> messages) {
+        // 简单的回复生成逻辑
+        return "我理解了您的问题，让我来回答...";
+    }
+}
+```
+
+#### 关键优势
+
+使用 Reducer 的主要优势：
+
+1. **代码简化**：节点不需要手动处理状态合并逻辑
+2. **一致性**：所有节点使用相同的状态更新规则
+3. **可维护性**：状态更新逻辑集中管理
+4. **错误减少**：避免手动合并时的常见错误
+
+#### 注意事项
+
+- 每个状态键只能有一个 KeyStrategy
+- 如果没有指定 KeyStrategy，默认使用 REPLACE 行为
+- APPEND 策略要求返回的值是 List 类型
+- MERGE 策略要求返回的值是 Map 类型
+
+### 状态字段规划
+
+在构建复杂的图时，合理规划状态字段非常重要。建议按照功能和生命周期对状态字段进行分类：
+
+```java
+KeyStrategyFactory wellStructuredStateFactory = () -> {
+    Map<String, KeyStrategy> strategies = new HashMap<>();
+
+    // 输入层：原始输入数据
+    strategies.put("user_input", KeyStrategy.REPLACE);      // 用户输入
+    strategies.put("session_id", KeyStrategy.REPLACE);      // 会话ID
+    strategies.put("request_time", KeyStrategy.REPLACE);    // 请求时间
+
+    // 处理层：中间处理结果
+    strategies.put("processed_input", KeyStrategy.REPLACE); // 处理后的输入
+    strategies.put("analysis_results", KeyStrategy.MERGE);  // 分析结果（可合并）
+    strategies.put("intermediate_data", KeyStrategy.REPLACE); // 中间数据
+
+    // 输出层：最终结果
+    strategies.put("final_answer", KeyStrategy.REPLACE);    // 最终答案
+    strategies.put("confidence_score", KeyStrategy.REPLACE); // 置信度分数
+    strategies.put("response_metadata", KeyStrategy.MERGE); // 响应元数据
+
+    // 日志层：执行日志和调试信息
+    strategies.put("execution_log", KeyStrategy.APPEND);    // 执行日志
+    strategies.put("performance_metrics", KeyStrategy.APPEND); // 性能指标
+
+    return strategies;
+};
+```
+
+### 完整的问答系统示例
+
+下面是一个完整的问答系统示例，展示了如何合理组织状态字段：
+
+```java
+@Component
+public class QuestionAnswerSystem {
+
+    @Autowired
+    private ChatClient chatClient;
+
+    @Bean
+    public KeyStrategyFactory qaStateFactory() {
+        return () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("question", KeyStrategy.REPLACE);
+            strategies.put("processed_question", KeyStrategy.REPLACE);
+            strategies.put("answer", KeyStrategy.REPLACE);
+            strategies.put("confidence", KeyStrategy.REPLACE);
+            strategies.put("processing_steps", KeyStrategy.APPEND);
+            return strategies;
+        };
+    }
+
+    // 步骤1：预处理问题
+    NodeAction preprocessQuestionNode = state -> {
+        String question = (String) state.value("question").orElse("");
+        String processedQuestion = question.trim().toLowerCase();
+
+        return Map.of(
+            "processed_question", processedQuestion,
+            "processing_steps", "问题预处理完成"
+        );
+    };
+
+    // 步骤2：生成答案
+    NodeAction generateAnswerNode = state -> {
+        String processedQuestion = (String) state.value("processed_question").orElse("");
+
+        String answer = chatClient.prompt()
+            .user("请回答以下问题：" + processedQuestion)
+            .call()
+            .content();
+
+        // 简单的置信度计算
+        double confidence = Math.min(0.9, answer.length() / 100.0);
+
+        return Map.of(
+            "answer", answer,
+            "confidence", confidence,
+            "processing_steps", "答案生成完成"
+        );
+    };
+
+    @Bean
+    public CompiledGraph qaWorkflow() {
+        StateGraph graph = new StateGraph(qaStateFactory())
+            .addNode("preprocess", node_async(preprocessQuestionNode))
+            .addNode("generate_answer", node_async(generateAnswerNode))
+
+            .addEdge(START, "preprocess")
+            .addEdge("preprocess", "generate_answer")
+            .addEdge("generate_answer", END);
+
+        return graph.compile();
+    }
+}
+```
+
+### 使用问答系统
+
+```java
+@Service
+public class QAService {
+
+    @Autowired
+    private CompiledGraph qaWorkflow;
+
+    public QAResult askQuestion(String question) {
+        Map<String, Object> initialState = Map.of("question", question);
+
+        Optional<OverAllState> result = qaWorkflow.invoke(initialState);
+
+        if (result.isPresent()) {
+            OverAllState state = result.get();
+
+            String answer = state.value("answer", String.class).orElse("无法生成答案");
+            Double confidence = state.value("confidence", Double.class).orElse(0.0);
+            List<String> steps = state.value("processing_steps", List.class).orElse(new ArrayList<>());
+
+            return new QAResult(answer, confidence, steps);
+        }
+
+        return new QAResult("处理失败", 0.0, List.of("执行失败"));
+    }
+
+    // 结果类
+    public static class QAResult {
+        private final String answer;
+        private final double confidence;
+        private final List<String> processingSteps;
+
+        public QAResult(String answer, double confidence, List<String> processingSteps) {
+            this.answer = answer;
+            this.confidence = confidence;
+            this.processingSteps = processingSteps;
+        }
+
+        // getters...
+        public String getAnswer() { return answer; }
+        public double getConfidence() { return confidence; }
+        public List<String> getProcessingSteps() { return processingSteps; }
+    }
+}
 ```
 
 ## 创建简单的线性图
@@ -254,63 +472,141 @@ public class GraphService {
 }
 ```
 
-## 在图状态中使用消息
+## 构建 AI 对话系统：在图状态中使用消息
 
-### 为什么使用消息？
+在前面的示例中，我们学习了如何使用基本的状态字段（如字符串、数字）来构建图。但在实际的 AI 应用中，我们经常需要构建**对话系统**，这就需要处理对话历史记录。
 
-大多数现代 LLM 提供商都有一个聊天模型接口，接受消息列表作为输入。Spring AI 的 `ChatClient` 特别接受 `Message` 对象列表作为输入。这些消息有多种形式，如 `UserMessage`（用户输入）或 `AssistantMessage`（LLM 响应）。
+### 从简单状态到对话状态的演进
 
-### 在图中使用消息
+让我们回顾一下之前的问答系统示例。在那个例子中，我们只处理单轮问答：
 
-在许多情况下，将先前的对话历史作为消息列表存储在图状态中是有帮助的。为此，我们可以向图状态添加一个存储 `Message` 对象列表的键（通道），并使用 reducer 函数对其进行注释。
+```java
+// 之前的简单问答：每次都是独立的问答，没有上下文
+NodeAction simpleQANode = state -> {
+    String question = (String) state.value("question").orElse("");
+    String answer = chatClient.prompt()
+        .user(question)  // 只发送当前问题，没有历史上下文
+        .call()
+        .content();
+
+    return Map.of("answer", answer);
+};
+```
+
+但在真实的 AI 应用中，我们通常需要**多轮对话**，AI 需要记住之前的对话内容：
+
+```java
+// 用户：你好，我叫张三
+// AI：你好张三！很高兴认识你。
+// 用户：我刚才说我叫什么名字？
+// AI：你刚才说你叫张三。  <-- 这需要记住之前的对话
+```
+
+### 什么是 LLM 对话消息？
+
+> **重要说明**：这里的"消息"指的是 **LLM 对话消息**（如 `UserMessage`、`AssistantMessage`），而不是异步消息队列（如 RabbitMQ、RocketMQ、Kafka 等）中的消息。两者是完全不同的概念。
+
+为了实现多轮对话，我们需要使用 Spring AI 提供的对话消息类：
+
+- **`UserMessage`**：表示用户的输入消息
+- **`AssistantMessage`**：表示 AI 助手的回复消息
+- **`SystemMessage`**：表示系统指令消息（如角色设定）
+
+这些消息对象构成了对话的历史记录，LLM 可以基于这些历史来生成更准确的回复。
+
+### 为什么需要在图状态中存储对话消息？
+
+1. **保持对话上下文**：AI 需要记住之前说过的话
+2. **支持多轮交互**：用户可以基于之前的对话继续提问
+3. **提高回复质量**：有了上下文，AI 的回复更加准确和相关
+4. **符合 LLM API 规范**：大多数 LLM 提供商的 API 都接受消息列表作为输入
+
+### 在图中使用对话消息
+
+现在我们知道了为什么需要对话消息，让我们看看如何在图状态中实现它。关键是要在状态中添加一个 `messages` 字段来存储对话历史，并使用 `APPEND` 策略来累积对话记录。
+
+#### 步骤1：升级状态策略以支持对话消息
 
 ```java
 import com.alibaba.cloud.ai.graph.KeyStrategy;
 import com.alibaba.cloud.ai.graph.KeyStrategyFactory;
+// 注意：这里导入的是 Spring AI 的对话消息类，不是消息队列的消息
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.SystemMessage;
 
-// 定义包含消息的状态策略
-KeyStrategyFactory messageStateFactory = () -> {
+// 对比：之前的简单状态策略
+KeyStrategyFactory simpleStateFactory = () -> {
     Map<String, KeyStrategy> strategies = new HashMap<>();
-    
-    // 基础数据使用替换策略
-    strategies.put("input", KeyStrategy.REPLACE);
-    strategies.put("user_id", KeyStrategy.REPLACE);
-    
-    // 消息使用追加策略，支持消息历史
-    strategies.put("messages", KeyStrategy.APPEND);
-    
-    // 其他数据
-    strategies.put("analysis_results", KeyStrategy.MERGE);
-    
+    strategies.put("question", KeyStrategy.REPLACE);  // 只有当前问题
+    strategies.put("answer", KeyStrategy.REPLACE);    // 只有当前答案
     return strategies;
 };
 
-// 在节点中处理消息
-NodeAction messageProcessingAction = state -> {
-    // 读取现有消息
-    List<Message> messages = state.value("messages", List.class).orElse(new ArrayList<>());
-    String input = state.value("input", String.class).orElse("");
-    
-    // 添加用户消息
-    UserMessage userMessage = new UserMessage(input);
-    
-    // 调用 LLM
-    String response = chatClient.prompt()
-        .messages(messages)
-        .user(input)
+// 升级：支持对话历史的状态策略
+KeyStrategyFactory conversationStateFactory = () -> {
+    Map<String, KeyStrategy> strategies = new HashMap<>();
+
+    // 基础数据使用替换策略
+    strategies.put("current_input", KeyStrategy.REPLACE);
+    strategies.put("user_id", KeyStrategy.REPLACE);
+    strategies.put("session_id", KeyStrategy.REPLACE);
+
+    // 关键改进：添加对话消息历史
+    // messages 字段存储 UserMessage、AssistantMessage 等对话消息对象
+    strategies.put("messages", KeyStrategy.APPEND);  // 使用 APPEND 累积对话历史
+
+    // 其他辅助数据
+    strategies.put("conversation_metadata", KeyStrategy.MERGE);
+
+    return strategies;
+};
+```
+
+#### 步骤2：实现支持对话历史的节点
+
+```java
+// 对比：之前的简单问答节点（无历史记录）
+NodeAction simpleQANode = state -> {
+    String question = (String) state.value("question").orElse("");
+
+    // 只发送当前问题，没有上下文
+    String answer = chatClient.prompt()
+        .user(question)
         .call()
         .content();
-    
-    // 创建助手消息
+
+    return Map.of("answer", answer);
+};
+
+// 升级：支持对话历史的节点
+NodeAction conversationNode = state -> {
+    // 1. 读取现有的对话消息历史（不是消息队列中的消息）
+    List<Message> conversationHistory = state.value("messages", List.class).orElse(new ArrayList<>());
+    String currentInput = state.value("current_input", String.class).orElse("");
+
+    // 2. 创建用户当前输入的消息对象
+    UserMessage userMessage = new UserMessage(currentInput);
+
+    // 3. 调用 LLM，关键：传入完整的对话历史
+    String response = chatClient.prompt()
+        .messages(conversationHistory)  // 传入历史对话，让 AI 有上下文
+        .user(currentInput)             // 加上当前用户输入
+        .call()
+        .content();
+
+    // 4. 创建 AI 助手的回复消息对象
     AssistantMessage assistantMessage = new AssistantMessage(response);
-    
-    // 返回状态更新（消息会被追加到现有列表）
+
+    // 5. 返回状态更新：新的对话消息会被追加到历史记录中
     return Map.of(
-        "messages", List.of(userMessage, assistantMessage),
-        "last_response", response
+        "messages", List.of(userMessage, assistantMessage),  // 这两条消息会被追加
+        "last_response", response,
+        "conversation_metadata", Map.of(
+            "last_interaction_time", Instant.now(),
+            "message_count", conversationHistory.size() + 2
+        )
     );
 };
 ```
@@ -319,4 +615,4 @@ NodeAction messageProcessingAction = state -> {
 
 - 学习高级配置：[高级配置](./advanced-config)
 - 了解控制流：[控制流](./control-flow)
-- 返回总览：[使用 Graph API](./use-graph-api)
+- 返回总览：[概览](./overview)

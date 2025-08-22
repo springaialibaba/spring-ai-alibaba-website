@@ -548,6 +548,225 @@ spring.ai.durable-execution.monitoring.alerts=true
 - Clean up old checkpoints regularly
 - Monitor checkpoint storage usage
 
+## Time Travel ⏱️
+
+Time travel functionality allows developers to trace back the execution history of multi-agent systems, view states at any point in time, and support recovery from historical states.
+
+When working with non-deterministic systems based on model decisions (e.g., LLM-driven agents), it can be useful to examine their decision-making process in detail:
+
+1. 🤔 **Understanding reasoning**: Analyze the steps that led to successful outcomes.
+2. 🐞 **Debugging errors**: Identify where and why errors occurred.
+3. 🔍 **Exploring alternatives**: Test different paths to discover better solutions.
+
+Spring AI Alibaba provides time travel functionality to support these use cases. Specifically, you can restore execution from previous checkpoints—either replaying the same state or modifying it to explore alternatives. In all cases, restoring past execution creates new branches in history.
+
+### Time Travel Core Concepts
+
+#### Time Point Snapshots
+- **State Snapshots**: Complete system state at specific time points
+- **Incremental Snapshots**: Changes relative to the previous snapshot
+- **Automatic Snapshots**: System-generated snapshots
+- **Manual Snapshots**: User-created snapshots
+
+#### Timeline Management
+- **Linear Timeline**: Single execution timeline
+- **Branching Timeline**: Support for multiple execution branches
+- **Merged Timeline**: Merging branches back to main timeline
+
+### Time Travel Configuration
+
+```java
+@Configuration
+@EnableTimeTravel
+public class TimeTravelConfig {
+
+    @Bean
+    public TimeTravelManager timeTravelManager() {
+        return TimeTravelManager.builder()
+            .snapshotStore(snapshotStore())
+            .snapshotInterval(Duration.ofMinutes(5))
+            .maxSnapshots(100)
+            .compressionEnabled(true)
+            .build();
+    }
+
+    @Bean
+    public SnapshotStore snapshotStore() {
+        return new DatabaseSnapshotStore(dataSource());
+    }
+}
+```
+
+### Using Time Travel
+
+To use time travel in Spring AI Alibaba:
+
+1. **Run the graph**: Use `invoke` or `stream` methods to run the graph with initial input.
+2. **Identify checkpoints in existing thread**: Use `getStateHistory()` method to retrieve execution history for a specific `threadId` and locate the desired `checkpointId`.
+   Alternatively, set interrupts before nodes where you want execution to pause. Then you can find the latest checkpoint recorded to that interrupt.
+3. **Update graph state (optional)**: Use `updateState` method to modify the graph state at the checkpoint and restore execution from the alternative state.
+4. **Resume execution from checkpoint**: Use `invoke` or `stream` methods with `null` input and configuration containing appropriate `threadId` and `checkpointId`.
+
+### Time Travel Examples
+
+#### State Snapshots
+
+```java
+@Component
+public class AutoSnapshotService {
+
+    @Autowired
+    private TimeTravelManager timeTravelManager;
+
+    @EventListener
+    public void onNodeCompletion(NodeCompletionEvent event) {
+        if (shouldCreateSnapshot(event)) {
+            createSnapshot(event.getExecutionId(), "Auto snapshot after " + event.getNodeId());
+        }
+    }
+
+    @EventListener
+    public void onStateChange(StateChangeEvent event) {
+        if (isSignificantChange(event)) {
+            createSnapshot(event.getExecutionId(), "State change: " + event.getChangeDescription());
+        }
+    }
+
+    @Scheduled(fixedRate = 300000) // Every 5 minutes
+    public void createPeriodicSnapshots() {
+        List<String> activeExecutions = executionManager.getActiveExecutionIds();
+
+        for (String executionId : activeExecutions) {
+            createSnapshot(executionId, "Periodic snapshot");
+        }
+    }
+
+    private void createSnapshot(String executionId, String description) {
+        try {
+            GraphExecution execution = executionManager.getExecution(executionId);
+
+            Snapshot snapshot = Snapshot.builder()
+                .id(UUID.randomUUID().toString())
+                .executionId(executionId)
+                .timestamp(Instant.now())
+                .description(description)
+                .state(execution.getCurrentState())
+                .nodeId(execution.getCurrentNode())
+                .metadata(execution.getMetadata())
+                .build();
+
+            timeTravelManager.saveSnapshot(snapshot);
+
+        } catch (Exception e) {
+            log.error("Failed to create snapshot for execution: {}", executionId, e);
+        }
+    }
+}
+```
+
+#### Time Travel Restoration
+
+```java
+@Service
+public class TimeTravelService {
+
+    @Autowired
+    private TimeTravelManager timeTravelManager;
+
+    @Autowired
+    private GraphExecutionManager executionManager;
+
+    public void restoreToSnapshot(String snapshotId) {
+        Snapshot snapshot = timeTravelManager.getSnapshot(snapshotId);
+
+        if (snapshot == null) {
+            throw new SnapshotNotFoundException("Snapshot not found: " + snapshotId);
+        }
+
+        GraphExecution execution = executionManager.getExecution(snapshot.getExecutionId());
+
+        try {
+            // Pause current execution
+            execution.pause();
+
+            // Restore state from snapshot
+            execution.restoreState(snapshot.getState());
+            execution.setCurrentNode(snapshot.getNodeId());
+
+            // Create new branch for continued execution
+            String branchId = createExecutionBranch(execution, snapshot);
+
+            // Resume execution from restored state
+            execution.resume();
+
+            log.info("Successfully restored to snapshot: {} in branch: {}", snapshotId, branchId);
+
+        } catch (Exception e) {
+            log.error("Failed to restore to snapshot: {}", snapshotId, e);
+            execution.resume(); // Resume original execution
+            throw new StateRestorationException("Failed to restore state", e);
+        }
+    }
+
+    public void restoreToTimepoint(String executionId, Instant timepoint) {
+        Snapshot nearestSnapshot = findNearestSnapshot(executionId, timepoint);
+
+        if (nearestSnapshot == null) {
+            throw new NoSnapshotFoundException("No snapshot found near timepoint: " + timepoint);
+        }
+
+        restoreToSnapshot(nearestSnapshot.getId());
+    }
+}
+```
+
+### Time Travel Best Practices
+
+#### 1. Snapshot Strategy
+- Create snapshots at key decision points
+- Set reasonable snapshot intervals
+- Implement snapshot compression
+- Clean up expired snapshots regularly
+
+#### 2. State Update Strategy
+- Carefully modify state to ensure consistency and validity
+- Test alternative paths using time travel
+- Add appropriate comments and logs for state modifications
+
+#### 3. Performance Optimization
+- Use asynchronous processing to save checkpoints and reduce latency
+- Enable checkpoint compression to save storage space
+- Automatically clean up expired checkpoints and historical records
+
+#### 4. Debugging and Monitoring
+- Visualize execution history using tools to visualize execution paths and state changes
+- Monitor resource usage and track checkpoint storage resource consumption
+- Handle exceptions properly during time travel processes
+
+### Time Travel Configuration Options
+
+```properties
+# Time travel configuration
+spring.ai.time-travel.enabled=true
+spring.ai.time-travel.auto-snapshot.enabled=true
+spring.ai.time-travel.auto-snapshot.interval=5m
+
+# Snapshot storage configuration
+spring.ai.time-travel.snapshot.store=database
+spring.ai.time-travel.snapshot.compression.enabled=true
+spring.ai.time-travel.snapshot.max-count=100
+
+# Performance configuration
+spring.ai.time-travel.performance.async-save=true
+spring.ai.time-travel.performance.batch-size=10
+spring.ai.time-travel.performance.cleanup-interval=1h
+
+# Debug configuration
+spring.ai.time-travel.debug.enabled=true
+spring.ai.time-travel.debug.breakpoints.enabled=true
+spring.ai.time-travel.debug.session-timeout=1h
+```
+
 ## Next Steps
 
 - [Learn about Memory Management](/docs/1.0.0.3/multi-agent/memory/)

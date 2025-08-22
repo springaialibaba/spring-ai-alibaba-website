@@ -680,6 +680,6 @@ spring.ai.observability.monitoring.retention-days=30
 
 ## 下一步
 
-- [了解时间旅行](/docs/1.0.0.3/multi-agent/time-travel/)
+- [了解持久执行与时间旅行](./state-context-management/durable-execution/)
 - [学习子图](/docs/1.0.0.3/multi-agent/subgraphs/)
 - [探索 Playground](/docs/1.0.0.3/playground/studio/)

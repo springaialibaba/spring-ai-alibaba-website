@@ -594,5 +594,5 @@ spring.ai.context.global.broadcast=true
 ## Next Steps
 
 - [Learn about Human-in-the-Loop](/docs/1.0.0.3/multi-agent/human-in-the-loop/)
-- [Understand Time Travel](/docs/1.0.0.3/multi-agent/time-travel/)
+- [Understand Durable Execution & Time Travel](/docs/1.0.0.3/multi-agent/state-context-management/durable-execution/)
 - [Explore Subgraphs](/docs/1.0.0.3/multi-agent/subgraphs/)

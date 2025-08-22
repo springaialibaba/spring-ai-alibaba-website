@@ -189,13 +189,6 @@
                         "link": "docs/1.0.0.3/multi-agent/graph/overview"
                     },
                     {
-                        "label": "使用 Graph API",
-                        "translations": {
-                            "en": "Use the Graph API"
-                        },
-                        "link": "docs/1.0.0.3/multi-agent/graph/use-graph-api"
-                    },
-                    {
                         "label": "基础用法",
                         "translations": {
                             "en": "Basic Usage"
@@ -277,32 +270,62 @@
                 ]
             },
             {
-                "label": "持久化 (Persistence)",
+                "label": "状态与上下文管理",
                 "translations": {
-                    "en": "Persistence"
+                    "en": "State & Context Management"
                 },
-                "link": "docs/1.0.0.3/multi-agent/persistence"
-            },
-            {
-                "label": "持久执行 (Durable Execution)",
-                "translations": {
-                    "en": "Durable Execution"
-                },
-                "link": "docs/1.0.0.3/multi-agent/durable-execution"
-            },
-            {
-                "label": "记忆 (Memory)",
-                "translations": {
-                    "en": "Memory"
-                },
-                "link": "docs/1.0.0.3/multi-agent/memory"
-            },
-            {
-                "label": "上下文 (Context)",
-                "translations": {
-                    "en": "Context"
-                },
-                "link": "docs/1.0.0.3/multi-agent/context"
+                "collapsed": true,
+                "items": [
+                    {
+                        "label": "概览",
+                        "translations": {
+                            "en": "Overview"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/overview"
+                    },
+                    {
+                        "label": "基础概念",
+                        "translations": {
+                            "en": "Fundamentals"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/fundamentals"
+                    },
+                    {
+                        "label": "短期状态管理",
+                        "translations": {
+                            "en": "Short-term State Management"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/short-term-state"
+                    },
+                    {
+                        "label": "长期状态管理",
+                        "translations": {
+                            "en": "Long-term State Management"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/long-term-state"
+                    },
+                    {
+                        "label": "持久执行",
+                        "translations": {
+                            "en": "Durable Execution"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/durable-execution"
+                    },
+                    {
+                        "label": "上下文工程",
+                        "translations": {
+                            "en": "Context Engineering"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/context-engineering"
+                    },
+                    {
+                        "label": "实践指南",
+                        "translations": {
+                            "en": "Best Practices"
+                        },
+                        "link": "docs/1.0.0.3/multi-agent/state-context-management/best-practices"
+                    }
+                ]
             },
             {
                 "label": "人机协作 (Human-in-the-loop)",
@@ -311,13 +334,7 @@
                 },
                 "link": "docs/1.0.0.3/multi-agent/human-in-the-loop"
             },
-            {
-                "label": "时间旅行 (Time Travel)",
-                "translations": {
-                    "en": "Time Travel"
-                },
-                "link": "docs/1.0.0.3/multi-agent/time-travel"
-            },
+
             {
                 "label": "子图 (Subgraphs)",
                 "translations": {

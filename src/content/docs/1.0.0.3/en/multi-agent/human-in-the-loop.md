@@ -647,6 +647,6 @@ spring.ai.human-in-the-loop.notification.sms.enabled=false
 
 ## Next Steps
 
-- [Learn about Time Travel](/docs/1.0.0.3/multi-agent/time-travel/)
+- [Learn about Durable Execution & Time Travel](/docs/1.0.0.3/multi-agent/durable-execution/)
 - [Understand Subgraphs](/docs/1.0.0.3/multi-agent/subgraphs/)
 - [Explore Observability](/docs/1.0.0.3/multi-agent/observability/)

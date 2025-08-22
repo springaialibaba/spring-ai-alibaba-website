@@ -328,7 +328,7 @@ This simple example demonstrates:
 
 Now that you understand the core concepts of Spring AI Alibaba Graph, you can learn:
 
-- [Using Graph API](./use-graph-api) - Detailed API usage guide and practical examples
+- [Basic Usage](./basic-usage) - Detailed API usage guide and practical examples
 - [Streaming](./streaming) - How to implement real-time streaming output
 - [Persistence](./persistence) - Checkpoints and state recovery
 - [Human-in-the-loop](./human-in-the-loop) - Integrating human intervention in workflows

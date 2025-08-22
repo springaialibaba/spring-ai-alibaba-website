@@ -614,4 +614,4 @@ spring.ai.memory.optimization.cleanup.schedule=0 0 3 * * ?
 
 - [Learn about Context Management](/docs/1.0.0.3/multi-agent/context/)
 - [Understand Human-in-the-Loop](/docs/1.0.0.3/multi-agent/human-in-the-loop/)
-- [Explore Time Travel](/docs/1.0.0.3/multi-agent/time-travel/)
+- [Explore Durable Execution & Time Travel](/docs/1.0.0.3/multi-agent/durable-execution/)

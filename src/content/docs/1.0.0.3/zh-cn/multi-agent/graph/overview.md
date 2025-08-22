@@ -843,13 +843,13 @@ public class SimpleGraphExample {
 现在您已经了解了 Spring AI Alibaba Graph 的核心概念，接下来可以学习：
 
 ### 基础使用
-- [使用 Graph API](./use-graph-api) - 详细的 API 使用指南和实际示例
+- [基础用法](../basic-usage) - 详细的 API 使用指南和实际示例
 - [流式处理](../streaming) - 如何实现实时的流式输出和响应式编程
 
 ### 高级功能
 - [持久化](../persistence) - 检查点和状态恢复机制
 - [人机协作](../human-in-the-loop) - 在工作流中集成人工干预
-- [时间旅行](../time-travel) - 回溯和调试图执行历史
+- [持久执行与时间旅行](./state-context-management/durable-execution) - 持久执行机制和时间旅行功能
 - [子图](../subgraphs) - 构建模块化和可重用的图组件
 
 ### 实际应用
