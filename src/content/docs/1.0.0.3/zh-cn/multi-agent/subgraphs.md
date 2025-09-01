@@ -7,8 +7,6 @@ description: Spring AI Alibaba 子图功能
 
 子图是 Spring AI Alibaba Graph 中的重要概念，它允许将一个完整的 StateGraph 作为另一个图中的节点使用。这是模块化设计和组合模式在图工作流中的体现，使您能够构建具有多个可重用组件的复杂系统。
 
-![子图](https://langchain-ai.github.io/langgraph/concepts/img/subgraph.png)
-
 ## 子图的核心价值
 
 子图提供了强大的模块化能力，主要应用场景包括：
