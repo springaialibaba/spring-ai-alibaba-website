@@ -11,126 +11,51 @@ description: 持久化和长期记忆管理
 
 长期记忆是指跨任务、跨会话的持久化记忆存储，它允许系统在不同对话或会话之间保留和检索结构化信息。Spring AI Alibaba 基于 Store 接口提供了强大的长期记忆管理能力。
 
-> **开发状态**：Store 接口和实现正在开发中，将在未来版本中提供。Store 提供了灵活的跨任务记忆管理能力，支持层次化命名空间和结构化数据存储。
-### Store 接口设计
+Store 接口专门用于管理长期记忆数据，如用户偏好、历史交互、学习到的知识等。与 CheckpointSaver 专注于图状态的短期持久化不同，Store 提供跨会话、跨任务的持久化记忆存储能力。
+### Store 核心概念
 
-Spring AI Alibaba 将提供以下接口：
+Store 提供了跨会话、跨任务的持久化记忆存储能力，主要特性包括：
 
-```java
-/**
- * Store 接口用于跨任务的长期记忆存储
- * 支持层次化命名空间和结构化数据存储
- */
-public interface Store {
+- **层次化命名空间**：使用 `["users", "user123", "preferences"]` 这样的路径组织数据
+- **结构化存储**：存储 Map 格式的复杂数据
+- **搜索和查询**：支持按命名空间、内容搜索数据
+- **多种实现**：内存、文件系统、Redis、MongoDB 等后端
 
-    /**
-     * 存储项目
-     *
-     * @param item 要存储的项目，不能为 null
-     */
-    void putItem(StoreItem item);
+### 选择合适的 Store 实现
 
-    /**
-     * 获取指定命名空间和键的项目
-     *
-     * @param namespace 层次化命名空间，不能为 null
-     * @param key 项目键，不能为 null 或空字符串
-     * @return 存储的项目，如果不存在则返回 Optional.empty()
-     */
-    Optional<StoreItem> getItem(List<String> namespace, String key);
-
-    /**
-     * 删除指定命名空间和键的项目
-     *
-     * @param namespace 层次化命名空间，不能为 null
-     * @param key 项目键，不能为 null 或空字符串
-     * @return true 如果项目存在并被删除，false 如果项目不存在
-     */
-    boolean deleteItem(List<String> namespace, String key);
-
-    /**
-     * 搜索项目
-     *
-     * @param searchRequest 搜索请求参数
-     * @return 搜索结果
-     */
-    StoreSearchResult searchItems(StoreSearchRequest searchRequest);
-
-    /**
-     * 列出命名空间
-     *
-     * @param namespaceRequest 命名空间列表请求参数
-     * @return 命名空间列表
-     */
-    List<String> listNamespaces(NamespaceListRequest namespaceRequest);
-}
-```
+根据你的应用场景选择合适的 Store 实现：
 
 ```java
-/**
- * Store 项目数据结构
- */
-public final class StoreItem {
-    private final List<String> namespace;
-    private final String key;
-    private final Map<String, Object> value;
-}
+// 开发和测试环境
+Store store = new MemoryStore();
+
+// 单机部署，需要持久化
+Store store = new FileSystemStore("/app/data/store");
+
+// 分布式环境，高性能需求
+Store store = new RedisStore("myapp:");
+
+// 大规模数据，复杂查询
+Store store = new MongoStore("user_memories");
 ```
 
-```java
-/**
- * Store 搜索请求参数
- */
-public final class StoreSearchRequest {
-    private final String[] namespace;
-    private final Map<String, Object> filter;
-    private final int limit;
-    private final int offset;
-    private final String query;
-    private final String cursor;
-    private final List<String> sortFields;
-    private final boolean ascending;
-}
-```
-
-```java
-/**
- * Store 搜索请求结果
- */
-public final class StoreSearchResult {
-    private final List<StoreItem> items;
-    private final long totalCount;
-    private final boolean hasMore;
-    private final String nextCursor;
-}
-```
-
-```java
-/**
- * 命名空间列表请求参数
- */
-public final class NamespaceListRequest {
-    private final List<String> namespace;
-    private final List<String> suffix;
-    private final Integer maxDepth;
-    private final int limit;
-    private final int offset;
-
-}
-```
-
-### Store 使用方式
-
-Store 提供了跨会话、跨任务的持久化记忆存储能力，让智能体能够在长时间运行中保持连续性和学习能力。
-
-与 CheckpointSaver 专注于图状态的短期持久化不同，Store 专门用于管理长期记忆数据，如用户偏好、历史交互、学习到的知识等。两者协同工作，为多智能体系统提供完整的状态管理解决方案。
+### 在图中配置和使用 Store
 
 ```java
 @Configuration
 public class GraphWithStoreConfig {
 
     @Bean
-    public CompiledGraph createGraphWithStore(Store store, BaseCheckpointSaver checkpointSaver) {
+    public Store memoryStore() {
+        // 选择合适的 Store 实现
+        return new MemoryStore();
+        // return new FileSystemStore("/app/data/store");
+        // return new RedisStore("app:");
+        // return new MongoStore("app_store");
+    }
+
+    @Bean
+    public CompiledGraph createGraphWithStore(Store store) {
         // 创建 StateGraph 实例
         StateGraph workflow = new StateGraph()
                 .addNode("agent", new AgentNode())
@@ -139,11 +64,11 @@ public class GraphWithStoreConfig {
                 .addEdge("agent", "memory_manager")
                 .addEdge("memory_manager", END);
 
-        // 编译时配置 CheckpointSaver 和 Store
+        // 编译时配置 Store
         CompileConfig compileConfig = CompileConfig.builder()
                 .saverConfig(SaverConfig.builder()
                     .type(SaverConstant.MEMORY)
-                    .register(SaverConstant.MEMORY, checkpointSaver)
+                    .register(SaverConstant.MEMORY, new MemorySaver())
                     .build())
                 .store(store)  // 关键：在编译时配置 Store
                 .build();
@@ -164,23 +89,38 @@ public class GraphWithStoreConfig {
             // 直接从 OverAllState 获取 Store 实例
             // Store 在图编译时配置，在节点执行时可通过状态对象访问
             Store store = state.getStore();
-            String userId = (String) state.value("user_id").orElse(null);
+            String userId = state.value("user_id", "");
 
-            // 读取用户的语言偏好
-            // 使用层次化命名空间组织数据：["users", userId, "preferences"]
-            Optional<StoreItem> preference = store.getItem(
-                new String[]{"users", userId, "preferences"},
-                "language"
-            );
+            if (store != null && !userId.isEmpty()) {
+                // 读取用户的语言偏好
+                // 使用层次化命名空间组织数据：["users", userId, "preferences"]
+                Optional<StoreItem> preference = store.getItem(
+                    List.of("users", userId, "preferences"),
+                    "language"
+                );
 
-            // 基于用户偏好生成个性化响应
-            String preferredLanguage = preference
-                .map(item -> (String) item.getValue().get("value"))
-                .orElse("zh-CN");
+                // 基于用户偏好生成个性化响应
+                String preferredLanguage = preference
+                    .map(item -> (String) item.getValue().get("value"))
+                    .orElse("zh-CN");
 
-            String response = generateResponse(state.data(), preferredLanguage);
+                // 记录用户交互历史
+                StoreItem interaction = StoreItem.of(
+                    List.of("users", userId, "interactions"),
+                    "session_" + System.currentTimeMillis(),
+                    Map.of(
+                        "timestamp", System.currentTimeMillis(),
+                        "input", state.value("input", ""),
+                        "language", preferredLanguage
+                    )
+                );
+                store.putItem(interaction);
 
-            return Map.of("messages", response, "language", preferredLanguage);
+                String response = generateResponse(state.data(), preferredLanguage);
+                return Map.of("messages", response, "language", preferredLanguage);
+            }
+
+            return Map.of("messages", "Hello!", "language", "zh-CN");
         }
 
         private String generateResponse(Map<String, Object> stateData, String language) {
@@ -202,14 +142,18 @@ public class GraphWithStoreConfig {
             // 直接从 OverAllState 获取 Store 实例
             Store store = state.getStore();
 
-            String userId = (String) state.value("user_id").orElse(null);
-            String sessionId = (String) state.value("session_id").orElse(null);
+            if (store == null) {
+                return Map.of(); // Store 未配置，跳过记忆管理
+            }
+
+            String userId = state.value("user_id", "");
+            String sessionId = state.value("session_id", "session_" + System.currentTimeMillis());
 
             // 提取并保存会话摘要
             // 会话摘要是重要的长期记忆，用于后续的上下文理解
             Map<String, Object> summary = extractSessionSummary(state.data());
             StoreItem summaryItem = StoreItem.of(
-                new String[]{"users", userId, "sessions", sessionId},
+                List.of("users", userId, "sessions", sessionId),
                 "summary",
                 summary
             );
@@ -219,18 +163,115 @@ public class GraphWithStoreConfig {
             // 这是一个学习过程，系统会根据用户行为调整偏好设置
             updateUserPreferences(store, userId, state.data());
 
-            return Map.of(); // 返回空 Map，保持状态不变
+            // 保存关键实体和概念
+            extractAndSaveEntities(store, userId, state.data());
+
+            return Map.of("memory_updated", true); // 标记记忆已更新
         }
 
         private Map<String, Object> extractSessionSummary(Map<String, Object> stateData) {
             // 实现会话摘要提取逻辑
-            return Map.of("summary", "Session summary", "timestamp", System.currentTimeMillis());
+            String messages = (String) stateData.getOrDefault("messages", "");
+            return Map.of(
+                "summary", "Session summary: " + messages.substring(0, Math.min(100, messages.length())),
+                "timestamp", System.currentTimeMillis(),
+                "messageCount", 1
+            );
         }
 
         private void updateUserPreferences(Store store, String userId, Map<String, Object> stateData) {
-            // 实现用户偏好更新逻辑
+            // 基于用户行为更新偏好
+            String language = (String) stateData.get("language");
+            if (language != null) {
+                StoreItem langPref = StoreItem.of(
+                    List.of("users", userId, "preferences"),
+                    "language",
+                    Map.of("value", language, "updatedAt", System.currentTimeMillis())
+                );
+                store.putItem(langPref);
+            }
+        }
+
+        private void extractAndSaveEntities(Store store, String userId, Map<String, Object> stateData) {
+            // 提取并保存重要实体和概念
+            // 这里可以集成 NER（命名实体识别）或其他 AI 服务
+            String input = (String) stateData.getOrDefault("input", "");
+            if (!input.isEmpty()) {
+                StoreItem entityItem = StoreItem.of(
+                    List.of("users", userId, "entities"),
+                    "entity_" + System.currentTimeMillis(),
+                    Map.of(
+                        "text", input,
+                        "extractedAt", System.currentTimeMillis(),
+                        "type", "user_input"
+                    )
+                );
+                store.putItem(entityItem);
+            }
         }
     }
+}
+```
+
+### 常用操作示例
+
+#### 存储和检索用户数据
+
+```java
+// 存储用户偏好
+StoreItem preferences = StoreItem.of(
+    List.of("users", "user123", "preferences"),
+    "ui_settings",
+    Map.of("theme", "dark", "language", "zh-CN")
+);
+store.putItem(preferences);
+
+// 检索用户偏好
+Optional<StoreItem> item = store.getItem(
+    List.of("users", "user123", "preferences"),
+    "ui_settings"
+);
+```
+
+#### 搜索历史交互
+
+```java
+// 搜索用户最近的交互记录
+StoreSearchRequest request = StoreSearchRequest.builder()
+    .namespace("users", "user123", "interactions")
+    .sortBy("createdAt")
+    .ascending(false)  // 最新的在前
+    .limit(20)
+    .build();
+
+StoreSearchResult result = store.searchItems(request);
+List<StoreItem> recentInteractions = result.getItems();
+```
+
+#### 管理会话记忆
+
+```java
+// 保存会话摘要
+StoreItem sessionSummary = StoreItem.of(
+    List.of("users", userId, "sessions", sessionId),
+    "summary",
+    Map.of(
+        "summary", "用户询问了关于AI的问题",
+        "topics", List.of("AI", "技术"),
+        "timestamp", System.currentTimeMillis()
+    )
+);
+store.putItem(sessionSummary);
+
+// 清理过期会话
+long oneWeekAgo = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000;
+StoreSearchRequest expiredSessions = StoreSearchRequest.builder()
+    .namespace("users", userId, "sessions")
+    .filter(Map.of("timestamp", Map.of("$lt", oneWeekAgo)))
+    .build();
+
+for (StoreItem item : store.searchItems(expiredSessions).getItems()) {
+    store.deleteItem(item.getNamespace(), item.getKey());
 }
 ```
 

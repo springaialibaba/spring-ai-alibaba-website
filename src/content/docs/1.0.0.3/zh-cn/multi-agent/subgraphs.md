@@ -5,637 +5,656 @@ description: Spring AI Alibaba 子图功能
 
 # 子图 (Subgraphs)
 
-子图是作为另一个图中的[节点](./low-level.md#节点)使用的[图](./low-level.md#图)——这是封装概念在 Spring AI Alibaba 中的应用。子图允许您构建具有多个组件的复杂系统，这些组件本身就是图。
+子图是 Spring AI Alibaba Graph 中的重要概念，它允许将一个完整的 StateGraph 作为另一个图中的节点使用。这是模块化设计和组合模式在图工作流中的体现，使您能够构建具有多个可重用组件的复杂系统。
 
 ![子图](https://langchain-ai.github.io/langgraph/concepts/img/subgraph.png)
 
-使用子图的一些原因包括：
+## 子图的核心价值
 
-- 构建[多智能体系统](./multi-agent.md)
-- 当您想在多个图中重用一组节点时
-- 当您希望不同团队独立工作在图的不同部分时，您可以将每个部分定义为子图，只要子图接口（输入和输出模式）得到遵守，父图就可以在不了解子图任何细节的情况下构建
+子图提供了强大的模块化能力，主要应用场景包括：
 
-添加子图时的主要问题是父图和子图如何通信，即它们在图执行期间如何在彼此之间传递[状态](./low-level.md#状态)。有两种场景：
+- **构建多智能体系统**：每个智能体可以是一个独立的子图，具有自己的内部逻辑和状态管理
+- **代码复用**：将通用的处理逻辑封装为子图，在多个父图中重复使用
+- **团队协作**：不同团队可以独立开发各自的子图模块，只需要约定好接口规范
+- **分层架构**：将复杂的业务流程分解为多个层次，每个层次用子图表示
 
-- 父图和子图在其状态[模式](./low-level.md#状态)中有**共享状态键**。在这种情况下，您可以[将子图作为节点包含在父图中](#共享状态模式)
-- 父图和子图有**不同的模式**（在其状态[模式](./low-level.md#状态)中没有共享状态键）。在这种情况下，您必须[从父图中的节点内部调用子图](#不同状态模式)：当父图和子图有不同的状态模式，您需要在调用子图之前或之后转换状态时，这很有用
+## 子图的实现机制
+
+Spring AI Alibaba Graph 提供了两种子图实现方式：
+
+1. **SubStateGraphNode**：包装未编译的 StateGraph，支持运行时动态编译
+2. **SubCompiledGraphNode**：包装已编译的 CompiledGraph，提供更高的执行效率
+
+子图与父图的通信方式取决于它们的状态模式：
+
+- **共享状态模式**：父图和子图共享相同的状态键，可以直接传递状态
+- **不同状态模式**：父图和子图使用不同的状态结构，需要进行状态转换
 
 :::tip
-有关如何使用子图的信息，请参阅[使用子图](../how-tos/subgraph.md)。
+子图的状态管理基于 OverAllState，支持灵活的键策略配置和状态合并机制。
 :::
 
 ## 共享状态模式
 
-父图和子图通过状态[模式](./low-level.md#状态)中的共享状态键（通道）进行通信的常见情况。例如，在[多智能体](./multi-agent.md)系统中，智能体通常通过共享的 [messages](./low-level.md#为什么使用消息) 键进行通信。
+当父图和子图使用相同的状态键时，可以直接将子图作为节点添加到父图中。这是最常见的子图使用方式，特别适用于多智能体系统中智能体间的协作场景。
 
-如果您的子图与父图共享状态键，您可以按照以下步骤将其添加到图中：
+### 基本使用方式
 
-1. 定义子图工作流（下面示例中的 `subgraphBuilder`）并编译它
-2. 在定义父图工作流时，将编译的子图传递给 `.addNode` 方法
+在共享状态模式下，子图和父图都操作相同的 OverAllState 实例，通过共享的状态键进行数据传递：
 
 ```java
 import com.alibaba.cloud.ai.graph.StateGraph;
-import com.alibaba.cloud.ai.graph.START;
+import com.alibaba.cloud.ai.graph.CompiledGraph;
+import com.alibaba.cloud.ai.graph.OverAllState;
+import com.alibaba.cloud.ai.graph.action.AsyncNodeAction;
+import com.alibaba.cloud.ai.graph.state.strategy.AppendStrategy;
+import static com.alibaba.cloud.ai.graph.StateGraph.START;
+import static com.alibaba.cloud.ai.graph.StateGraph.END;
+import static com.alibaba.cloud.ai.graph.action.AsyncNodeAction.node_async;
 
-// 定义状态类
-public class State {
-    private String foo;
-
-    public State() {}
-
-    public String getFoo() { return foo; }
-    public void setFoo(String foo) { this.foo = foo; }
-}
-
-@Component
-public class SubgraphExample {
-
-    // 子图
-    public State subgraphNode1(State state) {
-        return new State() {{
-            setFoo("hi! " + state.getFoo());
-        }};
-    }
-
-    @Bean
-    public StateGraph<State> createSubgraph() {
-        StateGraph<State> subgraphBuilder = StateGraph.<State>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addEdge(START, "subgraph_node_1")
-            .build();
-
-        return subgraphBuilder.compile();
-    }
-
-    // 父图
-    @Bean
-    public StateGraph<State> createParentGraph() {
-        StateGraph<State> subgraph = createSubgraph();
-
-        return StateGraph.<State>builder()
-            .addNode("node_1", subgraph)
-            .addEdge(START, "node_1")
-            .build()
-            .compile();
-    }
-}
-```
-
-### 完整示例：共享状态模式
-
-```java
-// 定义子图状态
-public class SubgraphState {
-    private String foo; // (1) 与父图状态共享的键
-    private String bar; // (2) 子图私有的键，父图不可见
-
-    public SubgraphState() {}
-
-    public String getFoo() { return foo; }
-    public void setFoo(String foo) { this.foo = foo; }
-
-    public String getBar() { return bar; }
-    public void setBar(String bar) { this.bar = bar; }
-}
-
-@Component
+@Configuration
 public class SharedStateSubgraphExample {
 
-    // 子图节点
-    public SubgraphState subgraphNode1(SubgraphState state) {
-        SubgraphState newState = new SubgraphState();
-        newState.setFoo(state.getFoo());
-        newState.setBar("bar");
-        return newState;
-    }
-
-    public SubgraphState subgraphNode2(SubgraphState state) {
-        // 注意这个节点使用了只在子图中可用的状态键（'bar'）
-        // 并在共享状态键（'foo'）上发送更新
-        SubgraphState newState = new SubgraphState();
-        newState.setFoo(state.getFoo() + state.getBar());
-        newState.setBar(state.getBar());
-        return newState;
-    }
-
+    /**
+     * 创建子图 - 文档处理子图
+     * 子图专注于文档的提取和分析处理
+     */
     @Bean
-    public StateGraph<SubgraphState> createSubgraph() {
-        return StateGraph.<SubgraphState>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addNode("subgraph_node_2", this::subgraphNode2)
-            .addEdge(START, "subgraph_node_1")
-            .addEdge("subgraph_node_1", "subgraph_node_2")
-            .build()
-            .compile();
+    public CompiledGraph createDocumentProcessingSubgraph() {
+        StateGraph subgraph = new StateGraph("document-processing", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("messages", new AppendStrategy());  // 与父图共享的消息键
+            strategies.put("document_content", new ReplaceStrategy());  // 子图内部状态
+            return strategies;
+        });
+
+        // 文档提取节点
+        AsyncNodeAction extractorNode = node_async(state -> {
+            String input = (String) state.value("input").orElse("");
+            return Map.of(
+                "messages", "文档提取完成",
+                "document_content", "提取的文档内容: " + input
+            );
+        });
+
+        // 文档分析节点
+        AsyncNodeAction analyzerNode = node_async(state -> {
+            String content = (String) state.value("document_content").orElse("");
+            return Map.of(
+                "messages", "文档分析完成",
+                "analysis_result", "分析结果: " + content
+            );
+        });
+
+        subgraph.addNode("extractor", extractorNode)
+                .addNode("analyzer", analyzerNode)
+                .addEdge(START, "extractor")
+                .addEdge("extractor", "analyzer")
+                .addEdge("analyzer", END);
+
+        return subgraph.compile();
     }
 
-    // 定义父图状态
-    public static class ParentState {
-        private String foo;
-
-        public ParentState() {}
-
-        public String getFoo() { return foo; }
-        public void setFoo(String foo) { this.foo = foo; }
-    }
-
-    // 父图节点
-    public ParentState node1(ParentState state) {
-        ParentState newState = new ParentState();
-        newState.setFoo("hi! " + state.getFoo());
-        return newState;
-    }
-
+    /**
+     * 创建父图 - 主工作流
+     * 包含预处理、子图调用和后处理步骤
+     */
     @Bean
-    public StateGraph<ParentState> createParentGraph() {
-        StateGraph<SubgraphState> subgraph = createSubgraph();
+    public CompiledGraph createMainWorkflow() {
+        StateGraph mainGraph = new StateGraph("main-workflow", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("messages", new AppendStrategy());  // 与子图共享
+            strategies.put("input", new ReplaceStrategy());
+            strategies.put("final_result", new ReplaceStrategy());
+            return strategies;
+        });
 
-        return StateGraph.<ParentState>builder()
-            .addNode("node_1", this::node1)
-            .addNode("node_2", subgraph)
-            .addEdge(START, "node_1")
-            .addEdge("node_1", "node_2")
-            .build()
-            .compile();
-    }
-}
+        // 预处理节点
+        AsyncNodeAction preprocessNode = node_async(state -> {
+            return Map.of("messages", "开始处理文档");
+        });
 
-// 使用示例
-@Service
-public class SubgraphUsageExample {
+        // 后处理节点
+        AsyncNodeAction postprocessNode = node_async(state -> {
+            List<String> messages = (List<String>) state.value("messages").orElse(new ArrayList<>());
+            return Map.of(
+                "messages", "处理完成",
+                "final_result", "共处理了 " + messages.size() + " 个步骤"
+            );
+        });
 
-    @Autowired
-    private StateGraph<ParentState> parentGraph;
+        // 获取子图实例
+        CompiledGraph documentSubgraph = createDocumentProcessingSubgraph();
 
-    public void demonstrateSharedStateSubgraph() {
-        ParentState initialState = new ParentState();
-        initialState.setFoo("foo");
+        mainGraph.addNode("preprocess", preprocessNode)
+                 .addNode("document_processing", documentSubgraph)  // 添加子图作为节点
+                 .addNode("postprocess", postprocessNode)
+                 .addEdge(START, "preprocess")
+                 .addEdge("preprocess", "document_processing")
+                 .addEdge("document_processing", "postprocess")
+                 .addEdge("postprocess", END);
 
-        for (Map<String, Object> chunk : parentGraph.stream(initialState)) {
-            System.out.println(chunk);
-        }
-
-        // 输出：
-        // {'node_1': {'foo': 'hi! foo'}}
-        // {'node_2': {'foo': 'hi! foobar'}}
+        return mainGraph.compile();
     }
 }
 ```
 
-1. 这个键与父图状态共享
-2. 这个键是 `SubgraphState` 私有的，父图不可见
+### 使用示例和执行结果
+
+```java
+@Service
+public class SubgraphUsageService {
+
+    @Autowired
+    private CompiledGraph mainWorkflow;
+
+    /**
+     * 演示共享状态子图的执行
+     */
+    public void demonstrateSharedStateSubgraph() {
+        // 准备初始状态
+        Map<String, Object> initialState = Map.of("input", "用户上传的文档.pdf");
+
+        // 执行主工作流
+        Optional<OverAllState> result = mainWorkflow.invoke(initialState);
+
+        if (result.isPresent()) {
+            OverAllState finalState = result.get();
+
+            // 获取消息历史（展示整个执行过程）
+            List<String> messages = (List<String>) finalState.value("messages").orElse(new ArrayList<>());
+            System.out.println("执行步骤：");
+            messages.forEach(msg -> System.out.println("- " + msg));
+
+            // 获取最终结果
+            String finalResult = (String) finalState.value("final_result").orElse("");
+            System.out.println("最终结果：" + finalResult);
+        }
+    }
+
+    /**
+     * 流式执行，观察每个节点的输出
+     */
+    public void demonstrateStreamExecution() {
+        Map<String, Object> initialState = Map.of("input", "测试文档内容");
+
+        mainWorkflow.stream(initialState)
+                   .stream()
+                   .forEach(nodeOutput -> {
+                       System.out.println("节点: " + nodeOutput.node());
+                       System.out.println("状态: " + nodeOutput.state().data());
+                       System.out.println("---");
+                   });
+    }
+}
+```
+
+**执行输出示例：**
+
+```
+执行步骤：
+- 开始处理文档
+- 文档提取完成
+- 文档分析完成
+- 处理完成
+最终结果：共处理了 4 个步骤
+
+节点: preprocess
+状态: {input=测试文档内容, messages=[开始处理文档]}
+---
+节点: document_processing-extractor
+状态: {input=测试文档内容, messages=[开始处理文档, 文档提取完成], document_content=提取的文档内容: 测试文档内容}
+---
+节点: document_processing-analyzer
+状态: {input=测试文档内容, messages=[开始处理文档, 文档提取完成, 文档分析完成], document_content=提取的文档内容: 测试文档内容, analysis_result=分析结果: 提取的文档内容: 测试文档内容}
+---
+节点: postprocess
+状态: {input=测试文档内容, messages=[开始处理文档, 文档提取完成, 文档分析完成, 处理完成], final_result=共处理了 4 个步骤, ...}
+---
+```
+
+### 关键特性说明
+
+1. **节点ID格式化**：子图内的节点会自动添加前缀，如 `document_processing-extractor`
+2. **状态共享**：`messages` 键在父图和子图间无缝传递
+3. **状态隔离**：子图的私有状态（如 `document_content`）不会影响父图的核心逻辑
+4. **执行顺序**：子图内的节点按照定义的边顺序执行，完成后返回父图继续执行
 
 ## 不同状态模式
 
-对于更复杂的系统，您可能希望定义与父图具有**完全不同模式**的子图（没有共享键）。例如，您可能希望为[多智能体](./multi-agent.md)系统中的每个智能体保留私有消息历史。
+当父图和子图需要使用完全不同的状态结构时，需要通过节点函数来调用子图，并在调用前后进行状态转换。这种模式适用于需要状态隔离或不同业务域的场景。
 
-如果您的应用程序是这种情况，您需要定义一个**调用子图的节点函数**。此函数需要在调用子图之前将输入（父）状态转换为子图状态，并在从节点返回状态更新之前将结果转换回父状态。
+### 基本实现方式
+
+在不同状态模式下，需要创建一个包装节点来处理状态转换和子图调用：
 
 ```java
-// 定义子图状态
-public class SubgraphState {
-    private String bar;
+import com.alibaba.cloud.ai.graph.StateGraph;
+import com.alibaba.cloud.ai.graph.CompiledGraph;
+import com.alibaba.cloud.ai.graph.OverAllState;
+import com.alibaba.cloud.ai.graph.action.AsyncNodeActionWithConfig;
+import static com.alibaba.cloud.ai.graph.action.AsyncNodeAction.node_async;
 
-    public SubgraphState() {}
-
-    public String getBar() { return bar; }
-    public void setBar(String bar) { this.bar = bar; }
-}
-
-@Component
+@Configuration
 public class DifferentStateSubgraphExample {
 
-    // 子图
-    public SubgraphState subgraphNode1(SubgraphState state) {
-        SubgraphState newState = new SubgraphState();
-        newState.setBar("hi! " + state.getBar());
-        return newState;
-    }
-
+    /**
+     * 创建专门的数据处理子图
+     * 使用独立的状态结构，专注于数据转换逻辑
+     */
     @Bean
-    public StateGraph<SubgraphState> createSubgraph() {
-        return StateGraph.<SubgraphState>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addEdge(START, "subgraph_node_1")
-            .build()
-            .compile();
+    public CompiledGraph createDataProcessingSubgraph() {
+        StateGraph subgraph = new StateGraph("data-processing", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("raw_data", new ReplaceStrategy());
+            strategies.put("processed_data", new ReplaceStrategy());
+            strategies.put("processing_steps", new AppendStrategy());
+            return strategies;
+        });
+
+        // 数据清洗节点
+        AsyncNodeAction cleaningNode = node_async(state -> {
+            String rawData = (String) state.value("raw_data").orElse("");
+            String cleanedData = rawData.trim().toLowerCase();
+            return Map.of(
+                "processed_data", cleanedData,
+                "processing_steps", "数据清洗完成"
+            );
+        });
+
+        // 数据验证节点
+        AsyncNodeAction validationNode = node_async(state -> {
+            String processedData = (String) state.value("processed_data").orElse("");
+            boolean isValid = !processedData.isEmpty();
+            return Map.of(
+                "processed_data", isValid ? processedData : "无效数据",
+                "processing_steps", "数据验证完成"
+            );
+        });
+
+        subgraph.addNode("cleaning", cleaningNode)
+                .addNode("validation", validationNode)
+                .addEdge(START, "cleaning")
+                .addEdge("cleaning", "validation")
+                .addEdge("validation", END);
+
+        return subgraph.compile();
     }
 
-    // 父图状态
-    public static class State {
-        private String foo;
-
-        public State() {}
-
-        public String getFoo() { return foo; }
-        public void setFoo(String foo) { this.foo = foo; }
-    }
-
-    // 调用子图的节点
-    public State callSubgraph(State state) {
-        // (1) 将状态转换为子图状态
-        SubgraphState subgraphInput = new SubgraphState();
-        subgraphInput.setBar(state.getFoo());
-
-        SubgraphState subgraphOutput = createSubgraph().invoke(subgraphInput);
-
-        // (2) 将响应转换回父状态
-        State newState = new State();
-        newState.setFoo(subgraphOutput.getBar());
-        return newState;
-    }
-
+    /**
+     * 创建主业务流程图
+     * 使用不同的状态结构，通过包装节点调用子图
+     */
     @Bean
-    public StateGraph<State> createParentGraph() {
-        return StateGraph.<State>builder()
-            .addNode("node_1", this::callSubgraph)
-            .addEdge(START, "node_1")
-            .build()
-            .compile();
+    public CompiledGraph createMainBusinessFlow() {
+        StateGraph mainGraph = new StateGraph("main-business", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("user_input", new ReplaceStrategy());
+            strategies.put("business_result", new ReplaceStrategy());
+            strategies.put("execution_log", new AppendStrategy());
+            return strategies;
+        });
+
+        // 输入预处理节点
+        AsyncNodeAction preprocessNode = node_async(state -> {
+            return Map.of("execution_log", "开始处理用户输入");
+        });
+
+        // 调用数据处理子图的包装节点
+        AsyncNodeActionWithConfig dataProcessingWrapperNode =
+            AsyncNodeActionWithConfig.node_async((state, config) -> {
+                // 1. 状态转换：从主业务状态转换为数据处理状态
+                String userInput = (String) state.value("user_input").orElse("");
+                Map<String, Object> subgraphInput = Map.of("raw_data", userInput);
+
+                // 2. 调用子图
+                CompiledGraph dataSubgraph = createDataProcessingSubgraph();
+                Optional<OverAllState> subgraphResult = dataSubgraph.invoke(subgraphInput);
+
+                // 3. 状态转换：从数据处理状态转换回主业务状态
+                if (subgraphResult.isPresent()) {
+                    OverAllState result = subgraphResult.get();
+                    String processedData = (String) result.value("processed_data").orElse("");
+                    List<String> steps = (List<String>) result.value("processing_steps").orElse(new ArrayList<>());
+
+                    return Map.of(
+                        "business_result", "处理结果: " + processedData,
+                        "execution_log", "数据处理子图执行完成，步骤: " + String.join(", ", steps)
+                    );
+                } else {
+                    return Map.of(
+                        "business_result", "处理失败",
+                        "execution_log", "数据处理子图执行失败"
+                    );
+                }
+            });
+
+        // 结果后处理节点
+        AsyncNodeAction postprocessNode = node_async(state -> {
+            String result = (String) state.value("business_result").orElse("");
+            return Map.of(
+                "business_result", "最终结果: " + result,
+                "execution_log", "处理流程完成"
+            );
+        });
+
+        mainGraph.addNode("preprocess", preprocessNode)
+                 .addNode("data_processing_wrapper", dataProcessingWrapperNode)
+                 .addNode("postprocess", postprocessNode)
+                 .addEdge(START, "preprocess")
+                 .addEdge("preprocess", "data_processing_wrapper")
+                 .addEdge("data_processing_wrapper", "postprocess")
+                 .addEdge("postprocess", END);
+
+        return mainGraph.compile();
     }
 }
-```
 
-1. 将状态转换为子图状态
-2. 将响应转换回父状态
-
-### 完整示例：不同状态模式
+### 使用示例和状态转换
 
 ```java
-// 定义子图状态
-public class SubgraphState {
-    // 注意这些键都不与父图状态共享
-    private String bar;
-    private String baz;
-
-    public SubgraphState() {}
-
-    public String getBar() { return bar; }
-    public void setBar(String bar) { this.bar = bar; }
-
-    public String getBaz() { return baz; }
-    public void setBaz(String baz) { this.baz = baz; }
-}
-
-@Component
-public class ComplexSubgraphExample {
-
-    // 子图节点
-    public SubgraphState subgraphNode1(SubgraphState state) {
-        SubgraphState newState = new SubgraphState();
-        newState.setBar(state.getBar());
-        newState.setBaz("baz");
-        return newState;
-    }
-
-    public SubgraphState subgraphNode2(SubgraphState state) {
-        SubgraphState newState = new SubgraphState();
-        newState.setBar(state.getBar() + state.getBaz());
-        newState.setBaz(state.getBaz());
-        return newState;
-    }
-
-    @Bean
-    public StateGraph<SubgraphState> createSubgraph() {
-        return StateGraph.<SubgraphState>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addNode("subgraph_node_2", this::subgraphNode2)
-            .addEdge(START, "subgraph_node_1")
-            .addEdge("subgraph_node_1", "subgraph_node_2")
-            .build()
-            .compile();
-    }
-
-    // 定义父图状态
-    public static class ParentState {
-        private String foo;
-
-        public ParentState() {}
-
-        public String getFoo() { return foo; }
-        public void setFoo(String foo) { this.foo = foo; }
-    }
-
-    // 父图节点
-    public ParentState node1(ParentState state) {
-        ParentState newState = new ParentState();
-        newState.setFoo("hi! " + state.getFoo());
-        return newState;
-    }
-
-    public ParentState node2(ParentState state) {
-        // (1) 将状态转换为子图状态
-        SubgraphState subgraphInput = new SubgraphState();
-        subgraphInput.setBar(state.getFoo());
-
-        SubgraphState response = createSubgraph().invoke(subgraphInput);
-
-        // (2) 将响应转换回父状态
-        ParentState newState = new ParentState();
-        newState.setFoo(response.getBar());
-        return newState;
-    }
-
-    @Bean
-    public StateGraph<ParentState> createParentGraph() {
-        return StateGraph.<ParentState>builder()
-            .addNode("node_1", this::node1)
-            .addNode("node_2", this::node2)
-            .addEdge(START, "node_1")
-            .addEdge("node_1", "node_2")
-            .build()
-            .compile();
-    }
-}
-
-// 使用示例
 @Service
-public class DifferentStateUsageExample {
+public class DifferentStateUsageService {
 
     @Autowired
-    private StateGraph<ParentState> parentGraph;
+    private CompiledGraph mainBusinessFlow;
 
+    /**
+     * 演示不同状态模式的子图调用
+     */
     public void demonstrateDifferentStateSubgraph() {
-        ParentState initialState = new ParentState();
-        initialState.setFoo("foo");
+        // 准备主业务流程的初始状态
+        Map<String, Object> initialState = Map.of("user_input", "  Hello World  ");
 
-        for (Map<String, Object> chunk : parentGraph.stream(initialState, true)) {
-            System.out.println(chunk);
+        // 执行主业务流程
+        Optional<OverAllState> result = mainBusinessFlow.invoke(initialState);
+
+        if (result.isPresent()) {
+            OverAllState finalState = result.get();
+
+            // 查看最终业务结果
+            String businessResult = (String) finalState.value("business_result").orElse("");
+            System.out.println("业务结果: " + businessResult);
+
+            // 查看执行日志
+            List<String> executionLog = (List<String>) finalState.value("execution_log").orElse(new ArrayList<>());
+            System.out.println("执行日志:");
+            executionLog.forEach(log -> System.out.println("- " + log));
         }
+    }
 
-        // 输出：
-        // ((), {'node_1': {'foo': 'hi! foo'}})
-        // (('node_2:9c36dd0f-151a-cb42-cbad-fa2f851f9ab7',), {'subgraph_node_1': {'baz': 'baz'}})
-        // (('node_2:9c36dd0f-151a-cb42-cbad-fa2f851f9ab7',), {'subgraph_node_2': {'bar': 'hi! foobaz'}})
-        // ((), {'node_2': {'foo': 'hi! foobaz'}})
+    /**
+     * 演示状态转换的详细过程
+     */
+    public void demonstrateStateTransformation() {
+        System.out.println("=== 状态转换演示 ===");
+
+        // 1. 主业务状态
+        Map<String, Object> mainState = Map.of("user_input", "  MIXED Case Data  ");
+        System.out.println("主业务状态: " + mainState);
+
+        // 2. 转换为子图状态
+        String userInput = (String) mainState.get("user_input");
+        Map<String, Object> subgraphState = Map.of("raw_data", userInput);
+        System.out.println("子图输入状态: " + subgraphState);
+
+        // 3. 子图处理（模拟）
+        String processedData = userInput.trim().toLowerCase();
+        Map<String, Object> subgraphResult = Map.of(
+            "processed_data", processedData,
+            "processing_steps", List.of("数据清洗完成", "数据验证完成")
+        );
+        System.out.println("子图输出状态: " + subgraphResult);
+
+        // 4. 转换回主业务状态
+        Map<String, Object> finalMainState = Map.of(
+            "business_result", "处理结果: " + processedData,
+            "execution_log", List.of("数据处理子图执行完成")
+        );
+        System.out.println("最终主业务状态: " + finalMainState);
     }
 }
 ```
 
-1. 将状态转换为子图状态
-2. 将响应转换回父状态
+**执行输出示例：**
 
-## 添加持久化
+```
+业务结果: 最终结果: 处理结果: hello world
+执行日志:
+- 开始处理用户输入
+- 数据处理子图执行完成，步骤: 数据清洗完成, 数据验证完成
+- 处理流程完成
 
-您只需要**在编译父图时提供检查点保存器**。Spring AI Alibaba 将自动将检查点保存器传播到子图。
+=== 状态转换演示 ===
+主业务状态: {user_input=  MIXED Case Data  }
+子图输入状态: {raw_data=  MIXED Case Data  }
+子图输出状态: {processed_data=mixed case data, processing_steps=[数据清洗完成, 数据验证完成]}
+最终主业务状态: {business_result=处理结果: mixed case data, execution_log=[数据处理子图执行完成]}
+```
+
+### 状态转换的关键要点
+
+1. **输入转换**：将父图的状态字段映射到子图所需的状态结构
+2. **子图执行**：子图在独立的状态空间中执行，不影响父图状态
+3. **输出转换**：将子图的执行结果转换回父图的状态格式
+4. **错误处理**：包装节点需要处理子图执行失败的情况
+5. **状态隔离**：父图和子图的状态完全独立，提供更好的模块化
+
+## 子图的持久化和检查点
+
+Spring AI Alibaba Graph 支持为子图配置独立的持久化机制，这对于多智能体系统和长期运行的工作流特别有用。
+
+### 继承父图的检查点配置
+
+默认情况下，子图会继承父图的检查点保存器配置：
 
 ```java
-import com.alibaba.cloud.ai.graph.START;
 import com.alibaba.cloud.ai.graph.StateGraph;
-import com.alibaba.cloud.ai.checkpoint.memory.InMemoryCheckpointSaver;
+import com.alibaba.cloud.ai.graph.CompiledGraph;
+import com.alibaba.cloud.ai.graph.CompileConfig;
+import com.alibaba.cloud.ai.graph.saver.SaverConfig;
+import com.alibaba.cloud.ai.graph.saver.SaverConstant;
+import com.alibaba.cloud.ai.graph.saver.memory.InMemoryCheckpointSaver;
 
-public class State {
-    private String foo;
-
-    public State() {}
-
-    public String getFoo() { return foo; }
-    public void setFoo(String foo) { this.foo = foo; }
-}
-
-@Component
+@Configuration
 public class PersistentSubgraphExample {
 
-    // 子图
-    public State subgraphNode1(State state) {
-        State newState = new State();
-        newState.setFoo(state.getFoo() + "bar");
-        return newState;
+    /**
+     * 创建带持久化的子图
+     */
+    @Bean
+    public CompiledGraph createPersistentSubgraph() {
+        StateGraph subgraph = new StateGraph("persistent-subgraph", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("messages", new AppendStrategy());
+            strategies.put("step_count", new ReplaceStrategy());
+            return strategies;
+        });
+
+        AsyncNodeAction stepNode = node_async(state -> {
+            int currentCount = (Integer) state.value("step_count").orElse(0);
+            return Map.of(
+                "messages", "执行步骤 " + (currentCount + 1),
+                "step_count", currentCount + 1
+            );
+        });
+
+        subgraph.addNode("step", stepNode)
+                .addEdge(START, "step")
+                .addEdge("step", END);
+
+        return subgraph.compile();
     }
 
+    /**
+     * 创建带持久化的父图
+     * 子图会自动继承父图的检查点配置
+     */
     @Bean
-    public StateGraph<State> createSubgraph() {
-        return StateGraph.<State>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addEdge(START, "subgraph_node_1")
-            .build()
-            .compile();
-    }
+    public CompiledGraph createParentGraphWithPersistence() {
+        StateGraph parentGraph = new StateGraph("parent-with-persistence", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("messages", new AppendStrategy());
+            strategies.put("session_id", new ReplaceStrategy());
+            return strategies;
+        });
 
-    // 父图
-    @Bean
-    public StateGraph<State> createParentGraphWithPersistence() {
-        StateGraph<State> subgraph = createSubgraph();
+        AsyncNodeAction initNode = node_async(state -> {
+            return Map.of("messages", "开始执行");
+        });
 
-        InMemoryCheckpointSaver checkpointer = new InMemoryCheckpointSaver();
+        CompiledGraph subgraph = createPersistentSubgraph();
 
-        return StateGraph.<State>builder()
-            .addNode("node_1", subgraph)
-            .addEdge(START, "node_1")
-            .build()
-            .compile(checkpointer);
+        parentGraph.addNode("init", initNode)
+                   .addNode("persistent_subgraph", subgraph)
+                   .addEdge(START, "init")
+                   .addEdge("init", "persistent_subgraph")
+                   .addEdge("persistent_subgraph", END);
+
+        // 配置检查点保存器
+        InMemoryCheckpointSaver checkpointSaver = new InMemoryCheckpointSaver();
+        CompileConfig compileConfig = CompileConfig.builder()
+                .saverConfig(SaverConfig.builder()
+                    .type(SaverConstant.MEMORY)
+                    .register(SaverConstant.MEMORY, checkpointSaver)
+                    .build())
+                .build();
+
+        return parentGraph.compile(compileConfig);
     }
 }
 ```
 
-如果您希望子图**拥有自己的内存**，您可以使用适当的检查点保存器选项编译它。这在[多智能体](./multi-agent.md)系统中很有用，如果您希望智能体跟踪其内部消息历史：
+### 独立的子图持久化
+
+对于需要独立状态管理的子图（如多智能体系统中的智能体），可以为子图配置独立的检查点保存器：
 
 ```java
-@Bean
-public StateGraph<SubgraphState> createSubgraphWithOwnMemory() {
-    return StateGraph.<SubgraphState>builder()
-        // ... 添加节点和边
-        .build()
-        .compile(true); // 使用独立的检查点保存器
+@Configuration
+public class IndependentSubgraphPersistenceExample {
+
+    /**
+     * 创建具有独立持久化的智能体子图
+     */
+    @Bean
+    public CompiledGraph createAgentSubgraphWithIndependentPersistence() {
+        StateGraph agentGraph = new StateGraph("agent-subgraph", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("agent_messages", new AppendStrategy());
+            strategies.put("agent_state", new ReplaceStrategy());
+            return strategies;
+        });
+
+        AsyncNodeAction agentThinkNode = node_async(state -> {
+            List<String> messages = (List<String>) state.value("agent_messages").orElse(new ArrayList<>());
+            return Map.of(
+                "agent_messages", "智能体思考中...",
+                "agent_state", "thinking"
+            );
+        });
+
+        AsyncNodeAction agentActNode = node_async(state -> {
+            return Map.of(
+                "agent_messages", "智能体执行动作",
+                "agent_state", "acting"
+            );
+        });
+
+        agentGraph.addNode("think", agentThinkNode)
+                  .addNode("act", agentActNode)
+                  .addEdge(START, "think")
+                  .addEdge("think", "act")
+                  .addEdge("act", END);
+
+        // 为子图配置独立的检查点保存器
+        InMemoryCheckpointSaver agentCheckpointSaver = new InMemoryCheckpointSaver();
+        CompileConfig agentCompileConfig = CompileConfig.builder()
+                .saverConfig(SaverConfig.builder()
+                    .type(SaverConstant.MEMORY)
+                    .register(SaverConstant.MEMORY, agentCheckpointSaver)
+                    .build())
+                .build();
+
+        return agentGraph.compile(agentCompileConfig);
+    }
+
+    /**
+     * 使用独立持久化子图的父图
+     */
+    @Bean
+    public CompiledGraph createMultiAgentSystem() {
+        StateGraph multiAgentGraph = new StateGraph("multi-agent-system", () -> {
+            Map<String, KeyStrategy> strategies = new HashMap<>();
+            strategies.put("system_messages", new AppendStrategy());
+            strategies.put("coordination_state", new ReplaceStrategy());
+            return strategies;
+        });
+
+        AsyncNodeAction coordinatorNode = node_async(state -> {
+            return Map.of(
+                "system_messages", "协调器启动",
+                "coordination_state", "coordinating"
+            );
+        });
+
+        CompiledGraph agentSubgraph = createAgentSubgraphWithIndependentPersistence();
+
+        multiAgentGraph.addNode("coordinator", coordinatorNode)
+                      .addNode("agent", agentSubgraph)
+                      .addEdge(START, "coordinator")
+                      .addEdge("coordinator", "agent")
+                      .addEdge("agent", END);
+
+        // 父图使用自己的检查点保存器
+        InMemoryCheckpointSaver systemCheckpointSaver = new InMemoryCheckpointSaver();
+        CompileConfig systemCompileConfig = CompileConfig.builder()
+                .saverConfig(SaverConfig.builder()
+                    .type(SaverConstant.MEMORY)
+                    .register(SaverConstant.MEMORY, systemCheckpointSaver)
+                    .build())
+                .build();
+
+        return multiAgentGraph.compile(systemCompileConfig);
+    }
 }
 ```
 
-## 查看子图状态
-
-当您启用[持久化](./persistence.md)时，您可以通过适当的方法[检查图状态](./persistence.md#检查点)（检查点）。要查看子图状态，您可以使用 subgraphs 选项。
-
-您可以通过 `graph.getState(config)` 检查图状态。要查看子图状态，您可以使用 `graph.getState(config, true)`。
-
-:::important 仅在中断时可用
-子图状态只能在**子图被中断时**查看。一旦您恢复图，您将无法访问子图状态。
-:::
-
-### 查看中断的子图状态示例
-
-```java
-import com.alibaba.cloud.ai.graph.START;
-import com.alibaba.cloud.ai.graph.StateGraph;
-import com.alibaba.cloud.ai.checkpoint.memory.InMemoryCheckpointSaver;
-import com.alibaba.cloud.ai.types.interrupt;
-import com.alibaba.cloud.ai.types.Command;
-
-public class State {
-    private String foo;
-
-    public State() {}
-
-    public String getFoo() { return foo; }
-    public void setFoo(String foo) { this.foo = foo; }
-}
-
-@Component
-public class InterruptedSubgraphExample {
-
-    // 子图
-    public State subgraphNode1(State state) {
-        String value = interrupt("Provide value:");
-        State newState = new State();
-        newState.setFoo(state.getFoo() + value);
-        return newState;
-    }
-
-    @Bean
-    public StateGraph<State> createInterruptedSubgraph() {
-        return StateGraph.<State>builder()
-            .addNode("subgraph_node_1", this::subgraphNode1)
-            .addEdge(START, "subgraph_node_1")
-            .build()
-            .compile();
-    }
-
-    // 父图
-    @Bean
-    public StateGraph<State> createParentGraphWithInterruption() {
-        StateGraph<State> subgraph = createInterruptedSubgraph();
-
-        InMemoryCheckpointSaver checkpointer = new InMemoryCheckpointSaver();
-
-        return StateGraph.<State>builder()
-            .addNode("node_1", subgraph)
-            .addEdge(START, "node_1")
-            .build()
-            .compile(checkpointer);
-    }
-
-    public void demonstrateSubgraphStateViewing() {
-        StateGraph<State> graph = createParentGraphWithInterruption();
-        Map<String, Object> config = Map.of("configurable", Map.of("thread_id", "1"));
-
-        State initialState = new State();
-        initialState.setFoo("");
-
-        graph.invoke(initialState, config);
-
-        GraphState parentState = graph.getState(config);
-        GraphState subgraphState = graph.getState(config, true).getTasks().get(0).getState(); // (1)
-
-        // 恢复子图
-        graph.invoke(Command.resume("bar"), config);
-    }
-}
-```
-
-1. 这只有在子图被中断时才可用。一旦您恢复图，您将无法访问子图状态。
-
-## 流式输出子图
-
-要在流式输出中包含子图的输出，您可以在父图的 stream 方法中设置 subgraphs 选项。这将流式输出父图和任何子图的输出。
+### 持久化的使用示例
 
 ```java
 @Service
-public class SubgraphStreamingExample {
+public class PersistentSubgraphUsageService {
 
     @Autowired
-    private StateGraph<ParentState> parentGraph;
+    private CompiledGraph multiAgentSystem;
 
-    public void demonstrateSubgraphStreaming() {
-        ParentState initialState = new ParentState();
-        initialState.setFoo("foo");
+    /**
+     * 演示带持久化的子图执行
+     */
+    public void demonstratePersistentExecution() {
+        // 创建运行时配置，指定线程ID用于持久化
+        RunnableConfig config = RunnableConfig.builder()
+                .threadId("multi-agent-session-001")
+                .build();
 
-        for (Map<String, Object> chunk : parentGraph.stream(
-            initialState,
-            true, // (1) 设置 subgraphs=true 以流式输出子图
-            "updates"
-        )) {
-            System.out.println(chunk);
+        Map<String, Object> initialState = Map.of("input", "启动多智能体系统");
+
+        // 执行系统
+        Optional<OverAllState> result = multiAgentSystem.invoke(initialState, config);
+
+        if (result.isPresent()) {
+            OverAllState finalState = result.get();
+            System.out.println("系统执行完成，最终状态: " + finalState.data());
         }
 
-        // 输出：
-        // ((), {'node_1': {'foo': 'hi! foo'}})
-        // (('node_2:e58e5673-a661-ebb0-70d4-e298a7fc28b7',), {'subgraph_node_1': {'bar': 'bar'}})
-        // (('node_2:e58e5673-a661-ebb0-70d4-e298a7fc28b7',), {'subgraph_node_2': {'foo': 'hi! foobar'}})
-        // ((), {'node_2': {'foo': 'hi! foobar'}})
+        // 可以通过相同的线程ID恢复执行状态
+        // 这对于长期运行的多智能体系统特别有用
     }
 }
 ```
-
-1. 设置 `subgraphs=true` 以流式输出子图。
-
-## 配置选项
-
-```properties
-# 子图基本配置
-spring.ai.alibaba.subgraphs.enabled=true
-spring.ai.alibaba.subgraphs.max-depth=5
-spring.ai.alibaba.subgraphs.timeout=30m
-
-# 状态管理配置
-spring.ai.alibaba.subgraphs.state.isolation=true
-spring.ai.alibaba.subgraphs.state.auto-cleanup=true
-spring.ai.alibaba.subgraphs.state.memory-limit=100MB
-
-# 执行配置
-spring.ai.alibaba.subgraphs.execution.parallel=true
-spring.ai.alibaba.subgraphs.execution.max-concurrent=10
-spring.ai.alibaba.subgraphs.execution.retry-attempts=3
-
-# 监控配置
-spring.ai.alibaba.subgraphs.monitoring.enabled=true
-spring.ai.alibaba.subgraphs.monitoring.metrics=true
-spring.ai.alibaba.subgraphs.monitoring.tracing=true
-```
-
-## 最佳实践
-
-### 1. 设计原则
-- **单一职责**：每个子图应该有明确的单一功能
-- **清晰接口**：定义明确的输入输出状态模式
-- **错误处理**：实现适当的错误处理和恢复机制
-- **状态隔离**：合理使用状态隔离避免意外的状态污染
-
-### 2. 性能优化
-- **并行执行**：在可能的情况下使用并行子图执行
-- **状态传递**：优化状态转换以减少序列化开销
-- **资源管理**：监控子图的资源使用情况
-- **缓存策略**：对重复的子图调用实施缓存
-
-### 3. 可维护性
-- **模块化设计**：将复杂逻辑分解为可重用的子图
-- **版本管理**：为子图实施版本控制策略
-- **文档完整**：提供详细的子图文档和使用示例
-- **测试覆盖**：为每个子图编写全面的单元测试
-
-### 4. 多智能体系统
-- **智能体隔离**：为每个智能体使用独立的子图
-- **通信机制**：通过共享状态键实现智能体间通信
-- **协调策略**：实施适当的智能体协调和同步机制
-- **故障恢复**：设计智能体故障时的恢复策略
-
-## 常见问题
-
-### Q: 什么时候应该使用子图？
-A: 子图适用于以下场景：
-- 构建多智能体系统
-- 需要重用一组节点的逻辑
-- 不同团队独立开发图的不同部分
-- 需要模块化复杂的工作流
-
-### Q: 共享状态模式和不同状态模式如何选择？
-A:
-- **共享状态模式**：当父图和子图需要共享某些状态信息时使用
-- **不同状态模式**：当需要完全隔离状态或进行复杂状态转换时使用
-
-### Q: 子图的性能开销如何？
-A: 子图会带来一些开销：
-- 状态序列化/反序列化
-- 额外的内存使用
-- 可能的网络通信（分布式场景）
-- 通过合理设计和优化可以最小化这些开销
-
-### Q: 如何调试子图？
-A: 调试子图的方法：
-- 使用流式输出查看子图执行过程
-- 启用详细的日志记录
-- 使用中断功能检查子图状态
-- 编写针对子图的单元测试
 
 ## 下一步
 
-- [学习多智能体系统](./multi-agent.md)
-- [了解持久化机制](./persistence.md)
-- [探索人机协作](./human-in-the-loop.md)
+- [学习多智能体系统](./multi-agent.md) - 了解如何使用子图构建多智能体系统
+- [了解持久化机制](./persistence.md) - 深入理解检查点和状态管理
+- [探索人机协作](./human-in-the-loop.md) - 学习如何在子图中集成人工干预
