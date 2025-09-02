@@ -127,8 +127,6 @@ public void submitFeedback(String threadId, boolean approved) {
 这种策略更加智能，只有在满足特定条件时才会中断。通过 `interruptCondition` 函数可以定义复杂的业务逻辑，实现精确的中断控制。
 
 ```java
-
-```java
 // 按条件中断
 public HumanNode createConditionalNode() {
     return HumanNode.builder()
